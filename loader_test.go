@@ -71,7 +71,8 @@ func (*testWrap) TestRelease(c *C.C) {
 	c.Check(pf.Path, C.Equals, "main/binary-i386/Release")
 }
 
-const testRelease = `Origin: deepin
+const testRelease = `
+Origin: deepin
 Label: deepin
 Codename: experimental
 Version: 151218

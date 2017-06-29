@@ -91,7 +91,8 @@ func (*testWrap) TestControlFile(c *C.C) {
 	c.Check(d.GetString("Filename"), C.Equals, "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
 }
 
-var testDSC = `Package: aac-enc
+var testDSC = `
+Package: aac-enc
 Source: fdk-aac
 Version: 0.1.3+20140816-2
 Installed-Size: 705

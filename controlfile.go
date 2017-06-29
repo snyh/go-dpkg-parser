@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode"
 )
 
 var Strict = true
@@ -13,6 +14,13 @@ var Strict = true
 type ControlFile map[string]string
 
 func NewControlFile(data []byte) (ControlFile, error) {
+	for i, c := range data {
+		if !unicode.IsSpace(rune(c)) {
+			data = data[i:]
+			break
+		}
+	}
+
 	r := bytes.NewBuffer(data)
 	splitFn := func(data []byte, atEOF bool) (advance int, toke []byte, err error) {
 		l := len(data)
