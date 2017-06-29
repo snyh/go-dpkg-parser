@@ -3,8 +3,10 @@ package dpkg
 import (
 	"bufio"
 	"bytes"
+	"compress/gzip"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 	"unicode"
 )
@@ -76,6 +78,25 @@ func (d ControlFile) GetArrayString(key string, sep string) []string {
 
 func (d ControlFile) GetMultiline(key string) []string {
 	return strings.Split(d[strings.ToLower(key)], "\n")
+}
+
+func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
+	f, err := os.Open(fPath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	if strings.HasSuffix(strings.ToLower(fPath), ".gz") {
+		gr, err := gzip.NewReader(f)
+		if err != nil {
+			return nil, fmt.Errorf("parsePackageDBComponent handle zip file(%v) error:%v", fPath, err)
+		}
+		defer gr.Close()
+		return ParseControlFileGroup(gr)
+	}
+
+	return ParseControlFileGroup(f)
 }
 
 func ParseControlFileGroup(r io.Reader) ([]ControlFile, error) {

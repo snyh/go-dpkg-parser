@@ -16,7 +16,7 @@ func init() {
 }
 
 func (*testWrap) TestParsingDBComponent(c *C.C) {
-	cs, err := ParseBinaryPackages("testdata/Packages")
+	cs, err := LoadBinaryPackages("testdata/Packages")
 	c.Check(err, C.Equals, nil)
 	c.Check(len(cs), C.Equals, 523)
 }

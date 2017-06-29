@@ -1,12 +1,9 @@
 package dpkg
 
 import (
-	"compress/gzip"
 	"fmt"
-	"os"
 	"path"
 	"sort"
-	"strings"
 )
 
 type PackageDB map[string]BinaryPackage
@@ -90,39 +87,6 @@ func BuildCache(rf ReleaseFile, rawDataDir string, targetDir string) error {
 	return nil
 }
 
-func ParseBinaryPackages(path string) ([]BinaryPackage, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf("parsePackageDBComponent error:%v", err)
-	}
-	defer f.Close()
-
-	var cfs []ControlFile
-	if strings.HasSuffix(strings.ToLower(path), ".gz") {
-		gr, err := gzip.NewReader(f)
-		if err != nil {
-			return nil, fmt.Errorf("parsePackageDBComponent handle zip file(%v) error:%v", path, err)
-		}
-		defer gr.Close()
-		cfs, err = ParseControlFileGroup(gr)
-	} else {
-		cfs, err = ParseControlFileGroup(f)
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	var ret []BinaryPackage
-	for _, cf := range cfs {
-		bcf, err := cf.ToBinary()
-		if err != nil {
-			return nil, err
-		}
-		ret = append(ret, bcf)
-	}
-	return ret, nil
-}
-
 func createPackageIndex(dbsPath map[Architecture]string, dbs map[Architecture]PackageDB) PackageDBIndex {
 	index := PackageDBIndex{
 		DBPaths:      dbsPath,
@@ -141,7 +105,7 @@ func createPackageIndex(dbsPath map[Architecture]string, dbs map[Architecture]Pa
 func createPackageDB(sourcePaths []string) (PackageDB, error) {
 	r := make(map[string]BinaryPackage)
 	for _, source := range sourcePaths {
-		cs, err := ParseBinaryPackages(source)
+		cs, err := LoadBinaryPackages(source)
 		if err != nil {
 			return nil, err
 		}

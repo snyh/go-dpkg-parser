@@ -2,7 +2,6 @@ package dpkg
 
 import (
 	"fmt"
-	"os"
 )
 
 // see also deb-src-control(5)
@@ -15,12 +14,7 @@ type PackageDatabase struct {
 }
 
 func NewPackageDatabase(fPath string, keyId string) (*PackageDatabase, error) {
-	f, err := os.Open(fPath)
-	if err != nil {
-		return nil, err
-	}
-
-	cfs, err := ParseControlFileGroup(f)
+	cfs, err := LoadControlFileGroup(fPath)
 	if err != nil {
 		return nil, err
 	}

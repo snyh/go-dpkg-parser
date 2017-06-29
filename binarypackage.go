@@ -60,3 +60,19 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 
 	return t, t.valid()
 }
+
+func LoadBinaryPackages(path string) ([]BinaryPackage, error) {
+	cfs, err := LoadControlFileGroup(path)
+	if err != nil {
+		return nil, err
+	}
+	var ret []BinaryPackage
+	for _, cf := range cfs {
+		bcf, err := cf.ToBinary()
+		if err != nil {
+			return nil, err
+		}
+		ret = append(ret, bcf)
+	}
+	return ret, nil
+}
