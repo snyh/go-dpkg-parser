@@ -58,10 +58,10 @@ func (d ControlFile) GetString(key string) string {
 	return d[strings.ToLower(key)]
 }
 
-func (d ControlFile) GetArrayString(key string) []string {
+func (d ControlFile) GetArrayString(key string, sep string) []string {
 	var r []string
-	for _, c := range strings.Split(d.GetString(key), " ") {
-		r = append(r, c)
+	for _, c := range strings.Split(d.GetString(key), sep) {
+		r = append(r, strings.TrimSpace(c))
 	}
 	return r
 }

@@ -50,7 +50,7 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.InstalledSize, _ = strconv.Atoi(cf.GetString("installed-size"))
 	t.Size, _ = strconv.Atoi(cf.GetString("size"))
 
-	for _, arch := range cf.GetArrayString("architecture") {
+	for _, arch := range cf.GetArrayString("architecture", " ") {
 		t.Architectures = append(t.Architectures, Architecture(arch))
 	}
 	t.Description = cf.GetString("description")

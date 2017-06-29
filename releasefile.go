@@ -51,7 +51,7 @@ func GetReleaseFile(dataDir string, codeName string) (ReleaseFile, error) {
 func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf := ReleaseFile{}
 
-	for _, arch := range cf.GetArrayString("architectures") {
+	for _, arch := range cf.GetArrayString("architectures", " ") {
 		rf.Architectures = append(rf.Architectures, Architecture(arch))
 	}
 	rf.Date = cf.GetString("date")
@@ -60,7 +60,7 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf.CodeName = cf.GetString("codename")
 	rf.Description = cf.GetString("description")
 	rf.Date = cf.GetString("date")
-	rf.Components = cf.GetArrayString("components")
+	rf.Components = cf.GetArrayString("components", " ")
 
 	var ps []PackagesFileInfo
 	for _, v := range cf.GetMultiline("md5sum") {

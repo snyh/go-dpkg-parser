@@ -24,7 +24,7 @@ func loadPackageDB(fpath string) (PackageDB, error) {
 func (m *Suite) DataHash() string {
 	rf, err := GetReleaseFile(m.cacheDir, m.name)
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	return rf.Hash()
 }
