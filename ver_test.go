@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestListVersion(t *testing.T) {
+func TestBuildDepends(t *testing.T) {
 	vs := []string{
 		"python:native",
 		"debhelper (>= 3.10), gcc (<< 7.0)",
@@ -27,6 +27,21 @@ func TestListVersion(t *testing.T) {
 		t.Logf("%q --> %+v", v, r)
 	}
 }
+
+func TestAllVersions(t *testing.T) {
+	bs, err := ioutil.ReadFile("testdata/ver.list")
+	if err != nil {
+		t.Fatal("Can't load deps.list", err)
+	}
+
+	for _, v := range strings.Split(string(bs), "\n") {
+		_, err := ParseDepends("dump (>=" + v + ")")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func TestAllDepends(t *testing.T) {
 	bs, err := ioutil.ReadFile("testdata/deps.list")
 	if err != nil {

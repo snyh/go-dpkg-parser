@@ -11,10 +11,13 @@ import "./lexer"
 %token ')' '('
 %token ']' '['
 %token '<' '>'
-%token VER_NUM
+%token ALPHA_NUMERIC
 %token PKG_NAME
 %token PROFILE
 %token ARCH_NAME
+
+%left ',' '.' '+' '~'
+%right '-'
 
 %union {
     val string
@@ -50,7 +53,13 @@ group:
                 }
         ;
 
-package:        PKG_NAME
+pkg_name:       ALPHA_NUMERIC
+        |       pkg_name '.' ALPHA_NUMERIC
+        |       pkg_name '-' ALPHA_NUMERIC
+        |       pkg_name '+' ALPHA_NUMERIC
+        ;
+
+package:        pkg_name
                 {
                     $$.tmp.Name = $1.val
                     $$.tmp.Version = ""
@@ -72,31 +81,55 @@ arch_qualifier: ANY
         |       ARCH_NAME
         ;
 
-ver_spec:       VER_NUM
+ver_spec:       ver_num
                 {
                     $$.tmp.Version = $1.val
                 }
-        |       '>' '>' VER_NUM
+        |       '>' '>' ver_num
                 {
                     $$.tmp.Version = $3.val
                     $$.tmp.Operation = "GT"
                 }
-        |       '>' '=' VER_NUM
+        |       '>' '=' ver_num
                {
                     $$.tmp.Version = $3.val
                     $$.tmp.Operation = "GTE"
                 }
-        |       '<' '<' VER_NUM
+        |       '<' '<' ver_num
                 {
                     $$.tmp.Version = $3.val
                     $$.tmp.Operation = "ST"
                 }
-        |       '<' '=' VER_NUM
+        |       '<' '=' ver_num
                 {
                     $$.tmp.Version = $3.val
                     $$.tmp.Operation = "STE"
                 }
         ;
+
+ver_num:        upstream_version
+        |       upstream_version2 '-' debian_version
+        ;
+
+upstream_version:
+                ALPHA_NUMERIC
+        |       upstream_version '+' upstream_version
+        |       upstream_version '.' upstream_version
+        |       upstream_version '~' upstream_version
+        ;
+
+upstream_version2:
+                upstream_version
+        |       upstream_version2 '-' upstream_version2
+        ;
+
+debian_version:
+                ALPHA_NUMERIC
+        |       ALPHA_NUMERIC '+' debian_version
+        |       ALPHA_NUMERIC '.' debian_version
+        |       ALPHA_NUMERIC '~' debian_version
+        ;
+
 arch_spec:      ARCH_NAME
         |       '!' arch_spec
         |       ARCH_NAME arch_spec
@@ -124,13 +157,11 @@ func NewMyLexer(raw string, archList, profileList []string) *myLexer {
     sl.Add(ANY, []string{"any"})
     sl.Add(NATIVE, []string{"native"})
 
-    sl.SetBasicToken("()[]<>=!,")
+    sl.SetBasicToken("()[]<>=!,:+-~.")
 
-    sl.AddR(VER_NUM, []string{})
     sl.AddI(ARCH_NAME, archList);
     sl.AddI(PROFILE, profileList);
-    sl.AddR(PKG_NAME, []string{`^[a-z][a-z0-9\.\-\+]+`})
-    sl.AddR(VER_NUM, []string{`^[0-9]+[a-z0-9\.\+\-\~\:]*`})
+    sl.AddR(ALPHA_NUMERIC, []string{`^[0-9a-zA-Z]+`})
     return &myLexer{
        slex: sl,
     }
@@ -143,6 +174,7 @@ func saveResult(l verLexer, r []Depend) {
 func (l *myLexer) Lex(lval *verSymType) int {
     t, s := l.slex.Token()
     lval.val = s
+    __yyfmt__.Println("HH:",t, s)
     return int(t)
 }
 
