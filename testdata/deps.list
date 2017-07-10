@@ -1,0 +1,1471 @@
+gcc-multilib [amd64 i386 kfreebsd-amd64 powerpc ppc64 s390 sparc]
+python-gdbm (>= 2.4.3)
+libghc-hashable-dev (<< 1.3)
+haskell-devscripts (>= 0.8.19~)
+libdb5.3-dev <!stage1>
+debhelper (>= 9.0.0)
+libbabeltrace-dev [amd64 armel armhf i386 kfreebsd-amd64 kfreebsd-i386 mips mipsel mips64el powerpc s390x]
+libxrender-dev (>= 1:0.9.0-2)
+libcurl4-openssl-dev | libcurl-dev
+libglib2.0-dev (>= 2.6.0)
+shared-mime-info (>= 0.60)
+unixodbc-dev <!stage1>
+realpath (>= 1.9.12)
+node-get-caller-file (>= 1.0.1)
+libstrictures-perl (>= 2)
+libatomic-ops-dev [ia64]
+debhelper (>= 9.20150628)
+python (>= 2.6.6-3~)
+linux-libc-dev (>= 3.9) [linux-any]
+libgtk-3-dev (>= 3.2.0)
+cdbs (>= 0.4.49)
+libglib2.0-dev (>= 2.16)
+xcb-proto (<< 2.0)
+node-cliui (>= 3.2.0)
+ruby-dev (>= 1:2.2)
+libghc-texmath-dev (>= 0.8.6.4)
+libghc-base64-bytestring-dev (>= 1.0)
+libghc-x509-store-dev (>= 1.6.2)
+libfontconfig-dev
+lintian <!nocheck>
+debhelper (>= 9.20141010~)
+autopoint | gettext (<< 0.18-1)
+libusb-1.0-0-dev [!hurd-any]
+libglib2.0-dev (>= 2.26)
+autoconf (>= 2.69)
+debhelper (>= 9.20160403)
+libghc-highlighting-kate-dev (>= 0.6.2)
+libxxf86vm-dev [amd64 i386]
+node-assertion-error (>= 1.0.1)
+flex (>= 2.5.34)
+gccgo-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libghc-cmark-dev (>= 0.5)
+libxshmfence-dev (>= 1.1) [!hurd-i386]
+xutils-dev (>= 1:7.7~1~)
+gdc-6-x86-64-linux-gnux32 [x32] <cross>
+alex <!stage1>
+libpam0g-dev | libpam-dev
+debhelper (>= 9.20131213~)
+libglib2.0-dev (>= 2.16.0)
+libgpg-error-dev (>= 1.11)
+libghc-mtl-dev (<< 2.3)
+libghc-x509-store-dev (>= 1.5)
+libjavascriptcoregtk-4.0-dev <!stage1>
+libghc-aeson-qq-dev [!mips !mipsel !mips64el]
+xauth <!nocheck>
+debhelper (>> 7.0.50~)
+gtk-doc-tools (>= 1.12)
+libglu1-mesa-dev [!armel !armhf] | libglu-dev [!armel !armhf]
+dh-exec (>= 0.3)
+x11proto-kb-dev (>= 1.0.3)
+libghc-old-locale-dev (<< 1.1)
+libghc-tagged-dev (<< 0.9)
+gnome-pkg-tools (>= 0.14)
+libsamplerate-dev
+gnat-6-powerpc64le-linux-gnu [ppc64el] <cross>
+gccgo-6-mips64-linux-gnuabi64 [mips64] <cross>
+python:native
+check <!nocheck>
+libghc-cryptonite-dev (>= 0.15)
+ruby (>= 1:2.1.0.3~)
+python-all (>= 2.6.6-3~)
+libatomic-ops-dev (>= 7.3~)
+po4a (>= 0.40)
+libghc-ansi-terminal-dev (>= 0.5)
+gir1.2-glib-2.0 (>= 0.9.12)
+libcmocka-dev <!nocheck>
+libglib2.0-dev (>= 2.38.0)
+po4a (>= 0.31~)
+gettext (>= 0.11-0)
+gfortran-6-mips64-linux-gnuabi64 [mips64] <cross>
+libxml2-dev (>= 2.7.0)
+libmhash-dev (>= 0.8.8)
+python-all-dev (>= 2.3.5-11)
+libbsf-java (>= 2.3.0rc1)
+libghc-aeson-dev (<< 0.12)
+libghc-quickcheck2-dev (<< 2.9)
+libgdk-pixbuf2.0-dev (>= 2.30.0)
+bison (>= 1:2.4)
+dpkg-dev (>= 1.18.2~)
+libltdl-dev <!stage1>
+libdw-dev (>= 0.158) <!stage1>
+m4 (>= 1.4-14)
+libghc-ansi-wl-pprint-dev (>= 0.6.6)
+libwebkit2gtk-4.0-dev <!stage1>
+maven-debian-helper (>= 1.6.7)
+automake (>= 1.11)
+libghc-mtl-dev (>= 1.1)
+libphonon-dev (>= 4:4.6.0really4.3.80)
+g++-6-mips64-linux-gnuabi64 [mips64] <cross>
+libghc-transformers-base-dev (<< 0.5)
+dh-python (>= 1.20130807)
+libgbm-dev [linux-any kfreebsd-any]
+ruby-shoulda-context <!nocheck>
+libc-bin (>= 2.24) <cross>
+libxext-dev (>= 2:1.1.1-3)
+libghc-transformers-compat-dev (<< 1)
+texinfo (>= 4.7-2.2)
+x11proto-input-dev (>= 2.3)
+libghc-parsec3-dev (<< 3.2)
+libghc-x509-store-dev (>= 1.6)
+libpango1.0-dev (>= 1.28.3)
+libkeyutils-dev [linux-any]
+libghc-digest-dev (>= 0.0.0.1)
+libasound2-dev (>= 0.9.0) [linux-any]
+libfreetype6-dev (>= 2.1.10)
+libghc-primitive-dev (>= 0.3)
+liblz4-dev (>= 0.0~r131)
+stunnel4 <!nocheck>
+libghc-test-framework-dev (>= 0.2.0)
+libncursesw5-dev | libncurses-dev
+gettext (>= 0.12.1)
+libegl1-mesa-dev [linux-any kfreebsd-any]
+libghc-unordered-containers-dev (>= 0.2.5.0)
+default-libmysqlclient-dev | libmysqlclient-dev
+libjpeg-dev | libjpeg62-dev
+debhelper (>= 7.2.3~)
+libtiff-dev
+x11proto-bigreqs-dev (>= 1:1.1.0)
+gccgo-6-x86-64-linux-gnux32 [x32] <cross>
+gyp (>= 0.1~svn1773)
+libtdb-dev [!hurd-any]
+gccgo-6-x86-64-linux-gnu [amd64] <cross>
+libghc-quickcheck2-dev (>= 2.5.1)
+libxi-dev (>= 2:1.3-4)
+libghc-regex-base-dev (>= 0.93.1)
+dpkg-dev (>= 1.16.0)
+libdbus-1-dev (>= 1.0) [linux-any]
+libghc-tasty-dev (>= 0.10.1)
+libdrm-dev (>= 2.4.69) [!hurd-any]
+debhelper (>= 9.20160709~)
+libghc-quickcheck2-dev (>= 2.7.4)
+libsoup2.4-dev (>= 2.30)
+libdbus-1-dev (>= 1.3.2) <!nocheck>
+x11proto-input-dev (>= 2.2.99.1)
+tcl8.6-dev | tcl8.5-dev
+libncurses5-dev (>= 5.0-6)
+python-pyflakes (>= 0.8.1)
+lastore-daemon-dev (>= 0.9.0)
+gdc-6-mips64-linux-gnuabi64 [mips64] <cross>
+libghc-memory-dev (>= 0.8)
+bison (>= 1.875a)
+libghc-exceptions-dev (>= 0.4)
+libcups2-dev (>= 1.2)
+debhelper (>= 8.9.7~)
+cdbs (>= 0.4.147~)
+shunit2 (>= 2.1.6)
+libunwind7-dev [ia64]
+libghc-temporary-dev (<< 1.3)
+libglib2.0-dev (>= 2.40)
+libreadline6-dev
+libattica-dev (>= 0.4.2)
+python3-nose (>= 1.0)
+debhelper (>= 9.20120630~)
+libghc-text-dev (<< 2)
+libgirepository1.0-dev (>= 0.9.12-4~)
+debhelper (>= 9~)
+libghc-monad-control-dev (<< 1.1)
+libghc-resourcet-dev (>= 0.3)
+perl (>= 5.8.0-7)
+cmake (>= 2.6.4)
+x11proto-damage-dev (>= 1.1)
+libvorbis-dev (>= 1.0.0-2)
+gnupg | gnupg2
+libnuma-dev [amd64 arm64 i386 mips mips64el mipsel powerpc ppc64el]
+kfreebsd-kernel-headers [kfreebsd-any]
+python-mock (>= 1.0.1) <!nocheck>
+libgcrypt20-dev (>= 1.7.0)
+x11proto-kb-dev (>= 1.0.5)
+dejagnu [!m68k]
+libarchive-dev (>= 2.8.0)
+ruby-sass (>= 3.3.6)
+x11proto-core-dev (>= 7.0.31)
+gdc-6-x86-64-linux-gnu [amd64] <cross>
+gccgo-6-arm-linux-gnueabihf [armhf] <cross>
+libusb-dev [!kfreebsd-any]
+g++-6-powerpc64le-linux-gnu [ppc64el] <cross>
+libghc-chasingbottoms-dev <!nocheck>
+libghc-x509-system-dev (>= 1.5)
+libtool (>= 2)
+python3.5-minimal:any
+pypy [any-amd64 any-i386 armhf ppc64 ppc64el s390x] <!stage1>
+x11proto-xf86bigfont-dev (>= 1.2.0)
+libcryptsetup-dev (>= 2:1.6.0) <!stage1>
+mig (>= 1.5-3) [hurd-i386]
+libc6-dev-mips32 [mipsn32 mipsn32el mips64 mips64el]
+g++-6-mipsel-linux-gnu [mipsel] <cross>
+node-camelcase (>= 3.0.0)
+debhelper (>= 9.20120311)
+libglib2.0-dev (>= 2.19.1)
+libpng-dev (<< 1.7)
+x11proto-core-dev (>= 7.0.1)
+dpkg-dev (>= 1.17.14~)
+libgtk-3-dev <!stage1>
+gnat-6-arm-linux-gnueabi [armel] <cross>
+mpich [m68k sh4]
+libbluetooth-dev (>= 4.99) [linux-any]
+gcj-6-alpha-linux-gnu [alpha] <cross>
+gcj-6-x86-64-linux-gnu [amd64] <cross>
+libghc-hashable-dev (>= 1.1)
+libsystemd-dev [linux-any]
+gobjc-6-sh4-linux-gnu [sh4] <cross>
+window-size (>= 0.2.0)
+libspdylay-dev (>= 1.3.2)
+libghc-ansi-terminal-dev (<< 0.7)
+libghc-tagsoup-dev (>= 0.13.7)
+dpkg-dev (>= 1.15.7)
+dh-systemd (>= 1.3)
+libglib2.0-dev (>= 2.0.0)
+libghc-transformers-compat-dev (>= 0.3)
+debhelper (>= 7.0.50)
+g++-6-i686-linux-gnu [i386] <cross>
+openssh-server <!nocheck>
+procps [!hurd-i386]
+libghc-mtl-dev (>= 2)
+x11proto-randr-dev (>= 1.5)
+libcap-dev [linux-any]
+automake (>= 1:1.14)
+libwrap0-dev <!stage1>
+uuid-dev (>= 2.16)
+x11proto-dri3-dev (>= 1.0)
+ruby-all-dev (>= 1:2.1.0.3~)
+libxml2-dev (>= 2.4.23)
+libssl-dev <!nocheck>
+libbz2-dev <!stage1>
+libxrender-dev (>= 1:0.9.5-2)
+x11proto-xf86vidmode-dev (>= 2.2.99.1)
+node-yargs-parser (>= 4.1.0)
+libx11-6 (>= 2:1.6)
+automake (>= 1:1.11)
+x11proto-composite-dev (>= 1:0.4)
+debhelper (>= 9.20151219)
+xcb-proto (>= 1.12)
+x11proto-gl-dev (>= 1.4.17)
+libghc-doctest-dev (>= 0.9.3)
+firebird-dev [!hurd-any !m68k !hppa !ppc64] | firebird2.5-dev [!hurd-any !m68k !hppa !ppc64] | firebird2.1-dev [!hurd-any !m68k !hppa !ppc64]
+libx11-dev (>= 1:0.99.2)
+gccgo-6-aarch64-linux-gnu [arm64] <cross>
+libclc-dev (>= 0.2.0+git20160907) [amd64 i386 kfreebsd-amd64 kfreebsd-i386 arm64 armhf]
+gobject-introspection (>= 1.30)
+python3-debian (>= 0.1.15)
+libpath-tiny-perl (>= 0.062)
+debhelper (>= 8.9.4)
+libxkbfile-dev (>= 1:1.0.6-2)
+libgmp-dev (>= 2:5.0.1~)
+node-y18n (>= 3.2.1)
+libglib2.0-dev (>= 2.27)
+libltdl-dev (>= 2.2.6a-2)
+python3-pyflakes (>= 0.8.1)
+libice-dev (>= 2:1.0.5)
+googletest <!nocheck> | libgtest-dev <!nocheck>
+libusb-1.0-0-dev [!kfreebsd-any]
+python-mock (>= 2.0.0)
+xutils-dev (>= 1:7.6+3)
+libxmuu-dev (>= 1:1.0.1)
+binutils (>= 2.12.90.0.9)
+libjemalloc-dev [!hurd-i386]
+libghc-primitive-dev (>= 0.4)
+libgsl-dev | libgsl0-dev
+debianutils (>= 1.13.1)
+libselinux1-dev [linux-any]
+libdbus-1-dev (>= 1.0.2)
+x11proto-core-dev (>= 7.0.8)
+libghc-zip-archive-dev (<< 0.4)
+libxdmcp-dev (>= 1:1.0.3-2)
+python (>= 2.6.6-11~)
+bison (>= 1:1.875b)
+locales | locales-all
+gfortran | fortran95-compiler
+libstring-copyright-perl (>= 0.003)
+dpkg-dev (>= 1.14.13)
+fonts-cantarell <!nocheck>
+gobject-introspection (>= 0.9.12)
+libnm-dev [linux-any]
+libtool (>= 1.5.2)
+libgirepository1.0-dev (>= 1.31.0-2)
+libncurses-dev
+libghc-x509-validation-dev (<< 1.7.0)
+libapt-pkg-dev (>= 1.4~beta3)
+libghc-hashable-dev (>= 1.1.2.3)
+python3-all (>= 3.1.2-7~)
+datefudge <!nocheck>
+python-nose (>= 1.0)
+libasound2-dev (>= 1.0.24) [linux-any]
+systemtap-sdt-dev [amd64 i386 powerpc armel armhf ia64]
+gobject-introspection (>= 0.9.12-5~)
+libghc-text-dev (>= 0.11)
+extra-cmake-modules (>= 5.27.0~)
+python3-setuptools (>= 12.2)
+happy <!stage1>
+libghc-hspec-expectations-dev [!mips !mipsel !mips64el]
+libzita-resampler-dev [linux-any]
+libncurses5-dev | libncurses-dev
+libghc-tagged-dev (<< 1)
+pkg-config (>= 0.11.0)
+dpkg-dev (>= 1.17.0)
+python3:any (>= 2.7.5-5~)
+locales-all | language-pack-de
+gnat-6-powerpc-linux-gnu [powerpc] <cross>
+libghc-directory-dev
+libghc-unordered-containers-dev (>= 0.2.1)
+x11proto-scrnsaver-dev (>= 1.2.0)
+libpcre3-dev (>= 1:8.35)
+libghc-text-dev (>= 1.1.1.0)
+cmake (>= 2.8.5)
+quilt (>= 0.40)
+gccgo-6-i686-linux-gnu [i386] <cross>
+debhelper (>= 10~)
+node-require-main-filename (>= 1.0.1)
+libghc-quickcheck2-dev (>= 2.4.0.1) <!nocheck>
+libghc-stm-dev (>= 2.2)
+javahelper [!m68k]
+python-hypothesis <!nocheck>
+qtbase5-private-dev (>= 5.7.1~20161021+dfsg~)
+python3-minimal:any
+debhelper (>= 9.20150501)
+libx11-dev (>= 2:1.3.3-2)
+gcj-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libsensors4-dev [!hurd-any]
+libx32gcc1 [amd64 i386]
+python-sphinx (>= 1.0.7+dfsg)
+debhelper (>= 9)
+gdc-6-m68k-linux-gnu [m68k] <cross>
+libva-dev (>= 1.6.0) [linux-any kfreebsd-any]
+locales [!armel !avr32 !hppa !ia64 !mipsel]
+libghc-http-client-dev (>= 0.3.5)
+libdaemon-dev (>= 0.11)
+gccgo-6-powerpc64-linux-gnu [ppc64] <cross>
+libghc-juicypixels-dev (<< 3.3)
+gem2deb (>= 0.4.1~)
+libxcb-render0-dev (>= 1.6)
+gnat-6-i686-linux-gnu [i386] <cross>
+libghc-exceptions-dev (>= 0.6)
+libghc-tagged-dev (>= 0.4.4)
+libsoxr-dev (>= 0.1.1)
+lib64ncurses5-dev [i386 powerpc sparc s390]
+debhelper (>= 8.9.4~)
+gcj-6-sh4-linux-gnu [sh4] <cross>
+cdbs (>= 0.4.27)
+debhelper (>= 8.1.3~)
+xterm <!nocheck>
+gobjc-6-arm-linux-gnueabihf [armhf] <cross>
+node-string-width (>= 1.0.2)
+cmake (>= 2.8.9~)
+nettle-dev (>= 3.1)
+libglib2.0-dev (>= 2.34.0)
+debhelper (>= 7.0.8)
+debhelper (>= 7.2.17)
+autotools-dev (>= 20100122)
+libxmu-dev (>= 1:0.99.1)
+apt (>= 1.0.9.4)
+libpspell-dev (>= 0.60.3-3)
+libgstreamer1.0-dev (>= 1.10.0)
+debhelper (>= 9.20141221~)
+byacc | bison
+libc6-dev-ppc64 [powerpc]
+gobjc-6-m68k-linux-gnu [m68k] <cross>
+libcairo2-dev (>= 1.8.6)
+xtrans-dev (>= 1.3.5)
+g++-6-arm-linux-gnueabihf [armhf] <cross>
+gccgo-6-powerpc64le-linux-gnu [ppc64el] <cross>
+libnss3-tools:native (>= 2:3.19-1-1~) <cross>
+node-deep-eql (>= 2.0~)
+libghc-conduit-dev (>= 1.1.0)
+libghc-unbounded-delays-dev (>= 0.1)
+libclang-3.9-dev (>= 1:3.9.1) [amd64 i386 kfreebsd-amd64 kfreebsd-i386 arm64 armhf]
+gcj-6-powerpc64-linux-gnu [ppc64] <cross>
+gobjc-6-x86-64-linux-gnux32 [x32] <cross>
+libghc-base-orphans-dev (<< 0.6)
+libverto-dev (>= 0.2.4)
+libinput-dev [linux-any]
+blt-dev (>= 2.4z)
+gcj-6-s390x-linux-gnu [s390x] <cross>
+debhelper (>= 9.20120312~)
+libghc-network-dev (>= 2.3)
+net-tools [!kfreebsd-i386 !kfreebsd-amd64] <!nocheck>
+libghc-hostname-dev (>= 1.0)
+libghc-tagged-dev (>= 0.8.3)
+libgpg-error-dev (>= 1.26-2~)
+qtdeclarative5-private-dev (>= 5.7.1~)
+libbluetooth-dev [linux-any] <!profile.nobluetooth>
+gnat-6-alpha-linux-gnu [alpha] <cross>
+dpkg-dev (>= 1.15.5)
+libghc-hspec-core-dev (<< 2.2.5)
+ruby-mocha (>= 0.14.0) <!nocheck>
+netbase <!nocheck>
+perl (>= 5.19.11) | libexperimental-perl
+gccgo-6-powerpc-linux-gnu [powerpc] <cross>
+libghc-text-dev (>= 0.2)
+python-all-dbg (>= 2.5.4-1~)
+help2man <!cross>
+libltdl3-dev
+python-distutils-extra (>= 2.0)
+librsvg2-bin | imagemagick
+libssl-dev (>= 1.0.1)
+libglib2.0-dev (>= 2.4)
+gobjc-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+gtk-doc-tools (>= 1.4)
+libkvm-dev [kfreebsd-i386 kfreebsd-amd64]
+libxml-commons-resolver1.1-java (>= 1.2-7~)
+libssl1.0-dev (>= 1.0.2)
+libghc-attoparsec-dev (>= 0.11.3.0)
+libjbig2dec-dev
+libghc-streaming-commons-dev (<< 0.2)
+libpango1.0-dev (>= 1.37.3)
+libice-dev (>= 1:0.99.0)
+xutils-dev (>= 7.5+4)
+valgrind [amd64 arm64 armhf i386 mips mips64el mipsel powerpc ppc64 ppc64el s390x]
+libghc-base-compat-dev [!mips !mipsel !mips64el]
+gtk-doc-tools (>= 1.11)
+bison (>= 2.3)
+libglib2.0-dev (>= 2.28.0)
+libxcb-xkb-dev (>= 1.10)
+libblkid-dev (>= 2.16)
+libdrm-dev (>= 2.4.46) [!hurd-i386]
+libghc-temporary-dev [!mips !mipsel !mips64el]
+ghc (>= 7.8)
+libghc-cmark-dev (<< 0.6)
+debhelper (>= 8)
+cdbs (>= 0.4.8)
+python3:any
+g++-multilib [amd64 i386 powerpc ppc64 s390 sparc] <!nobiarch>
+gnat-6-x86-64-linux-gnu [amd64] <cross>
+gobject-introspection (>= 0.10.8)
+libglib2.0-dev (>= 2.49.4)
+libc-client-dev
+node-os-locale (>= 1.4.0)
+libpango1.0-dev (>= 1.36.0)
+kmod [linux-any]
+libgbm-dev (>= 10.2) [linux-any kfreebsd-any]
+gobjc-6-mips64-linux-gnuabi64 [mips64] <cross>
+libxcomposite-dev (>= 1:0.2.0-3)
+libgdk-pixbuf2.0-dev (>= 2.21.6)
+cmake (>= 2.8.11)
+pkg-kde-tools (>= 0.14.2)
+guile-2.0:native <cross>
+intltool (>= 0.35.0)
+openmpi-bin (>= 1.4.3-2.1) [alpha amd64 arm64 armel armhf hppa hurd-i386 i386 kfreebsd-amd64 kfreebsd-i386 mips mips64el mipsel powerpc powerpcspe ppc64 ppc64el s390x sparc64 x32]
+libghc-mtl-dev (>= 2.2.1)
+libxt-dev (>= 6.8.2.dfsg.1-3)
+g++-6-s390x-linux-gnu [s390x] <cross>
+libghc-case-insensitive-dev (>= 0.2)
+debhelper (>= 7.0.50~)
+libfontconfig1-dev (>= 2.2.95)
+libghc-aeson-dev (>= 0.7)
+libgles2-mesa-dev | libgles2-dev
+python2.7:any (>= 2.7.13-1~)
+libncursesw5-dev (>= 5.3)
+libglib2.0-dev (>= 2.50.0)
+libghc-transformers-compat-dev (>= 0.5)
+debhelper (>= 7.0)
+libgirepository1.0-dev (>= 1.42.0-2~)
+x11proto-core-dev (>= 7.0.17)
+liblapack-dev [!arm !m68k]
+gnome-pkg-tools (>= 0.11)
+ruby-multi-json (<< 2.0)
+debhelper (>= 9.20120322~)
+libc6-dev-i386 [amd64 x32]
+libopus-dev (>= 0.9.4)
+pypy [amd64 i386]
+lib32ncursesw5-dev [amd64 ppc64]
+libglib2.0-dev (>= 2.41)
+gfortran (>= 4:4.2)
+dpkg-dev (>= 1.17.14)
+dpkg-dev (>= 1.16.2)
+node-set-blocking (>= 2.0.0)
+lib32z1-dev [amd64 kfreebsd-amd64]
+libghc-test-framework-dev (>= 0.2.4)
+automake (>= 1:1.14.1-3)
+x11proto-record-dev (>= 1.13.99.1)
+zlib1g-dev (>= 1:1.1.3-5)
+python-sphinx | python3-sphinx
+libyaml-dev (>= 0.1.2~)
+gfortran-6-powerpc-linux-gnu [powerpc] <cross>
+libp11-kit-dev (>= 0.15.1)
+lib64gcc1 [i386 mips mipsel mipsn32 mipsn32el powerpc sparc s390 x32]
+libghc-asn1-types-dev (>= 0.3.1)
+apache2-dev (>= 2.4.16)
+libglib2.0-dev | libglib-dev
+node-marked <!stage1>
+libghc-random-dev (>= 1)
+x11proto-xinerama-dev (>= 1.2)
+libghc-primitive-dev (<< 0.7)
+python3-mock (>= 2.0.0)
+libcap2-bin [linux-any]
+gccgo-6-alpha-linux-gnu [alpha] <cross>
+openssl (>= 1.0.2)
+libghc-monad-control-dev (>= 0.3.1)
+python3-mock (>= 1.0.1) <!nocheck>
+libghc-pcre-light-dev (<< 0.5)
+libssl-dev (>= 0.9.8k)
+libpam0g-dev <!stage1>
+maven-repo-helper (>= 1.4)
+libghc-test-framework-dev (<< 0.9)
+librdf0-dev (>= 1.0.14)
+debhelper (>= 9.20160403~)
+libghc-semigroups-dev (>= 0.8.2)
+dctrl-tools <!nocheck>
+debhelper (>> 9)
+x11proto-xf86dga-dev (>= 2.0.99.1)
+x11proto-dmx-dev (>= 1:2.2.99.1)
+libghc-text-dev (<< 1.3)
+cdbs (>= 0.4.35)
+libgnutls28-dev (>= 3.0)
+python-xcbgen (>= 1.12)
+libghc-hspec-core-dev (>= 2.2.4)
+libghc-old-time-dev (>= 1.0)
+debhelper (>= 9.20140227)
+apache2-dev (>= 2.4)
+gdc-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libcurl4-gnutls-dev (>= 7.19.4~)
+libghc-test-framework-hunit-dev (>= 0.2.4)
+g++-6-sh4-linux-gnu [sh4] <cross>
+automake (>= 1.14)
+bash (>= 2.05)
+ruby-chunky-png (<< 2.0)
+gcj-6-arm-linux-gnueabihf [armhf] <cross>
+libsensors4-dev [!hurd-i386 !kfreebsd-i386 !kfreebsd-amd64]
+libkvm-dev [kfreebsd-any]
+gnu-efi [amd64 i386]
+quilt (>= 0.48-1)
+gfortran-6-s390x-linux-gnu [s390x] <cross>
+g++-6-multilib [amd64 i386 kfreebsd-amd64 mips mipsel mipsn32 mipsn32el mips64 mips64el powerpc ppc64 s390x sparc sparc64 x32]
+libghc-ansi-wl-pprint-dev (>= 0.5.1)
+libghc-old-locale-dev (>= 1.0)
+libpciaccess-dev (>= 0.12.901)
+libc6-dev-s390 [s390x]
+texinfo (>= 4.3)
+libghc-aeson-dev (<< 1.1)
+libghc-attoparsec-dev (>= 0.13.0.1)
+libgirepository1.0-dev (>= 0.9.3)
+cdbs (>= 0.4.0)
+libghc-x509-validation-dev (>= 1.6.3)
+libmozjs185-dev (>= 1.8.5) <!stage1>
+gccgo-6-arm-linux-gnueabi [armel] <cross>
+g++-6 (>= 6.1.1-1~) [hurd-i386 i386 kfreebsd-i386]
+xorg-sgml-doctools (>= 1:1.8)
+pkg-kde-tools (>= 0.15.15ubuntu1~)
+mysql-server | virtual-mysql-server
+x11proto-dri2-dev (>= 2.6)
+dpkg-dev (>= 1.16.1)
+cdbs (>= 0.4.17)
+x11proto-xext-dev (>= 7.0.3)
+libgcr-3-dev (>= 3.5.3)
+xutils-dev (>= 1:7.5+4)
+libc-bin (>= 2.13)
+libghc-blaze-builder-dev (>= 0.2.1.4)
+xmlto (>= 0.0.20)
+python3-hypothesis <!nocheck>
+gcc-multilib [mips mipsel]
+openstack-pkg-tools (>= 52~)
+binutils (>= 2.14.90.0.7)
+python-setuptools (>= 0.6a9)
+debhelper (>= 7.3.8)
+binutils:native (>= 2.27.90.20170221) | binutils-multiarch:native (>= 2.27.90.20170221)
+libghc-scientific-dev (>= 0.3.1)
+libflac-dev (>= 1.1.4-3)
+libfuse-dev [linux-any kfreebsd-any]
+grep-dctrl
+libcdparanoia-dev (>= 3.10.2) [!hurd-i386]
+libsctp-dev [linux-any]
+libghc-test-framework-hunit-dev (<< 0.4)
+libghc-cereal-dev (>= 0.4)
+libwayland-dev (>= 1.9.91) [linux-any]
+libqt5opengl5-dev (>= 5.7.1+dfsg~)
+libc6.1-dev (>= 2.13-5) [alpha ia64] | libc0.3-dev (>= 2.13-5) [hurd-i386] | libc0.1-dev (>= 2.13-5) [kfreebsd-i386 kfreebsd-amd64] | libc6-dev (>= 2.13-5)
+automoc (>= 1.0~version-0.9.88)
+autopoint (>= 0.17)
+ghostscript (>= 9.02~)
+libghc-scientific-dev (>= 0.2)
+libghc-streaming-commons-dev (>= 0.1.1)
+libtiff-dev | libtiff4-dev
+libp11-kit-dev (>= 0.23.1)
+gcc-6-base (>= 6.3.0-9)
+libcairo2-dev (>= 1.14.0)
+libqt4-dev (>= 4:4.7.0)
+libecj-java (>= 3.3.0-2)
+python3-dbus <!nocheck>
+libghc-test-framework-dev (>= 0.4)
+python3-py (>= 1.4.29)
+liborc-0.4-dev (>= 1:0.4.11)
+default-jdk (>= 2:1.6) [!hurd-i386 !hppa !sparc]
+g++-6 [arm64] <!cross>
+libevent-dev (>= 2.0.8)
+libasound2-dev [linux-any]
+gnat-6:native [!m32r !sh3 !sh3eb !sh4eb !powerpcspe !m68k !mips64 !x32]
+gfortran-6-sparc64-linux-gnu [sparc64] <cross>
+libglib2.0-dev (>= 2.0)
+libpthread-stubs0-dev (>= 0.1)
+glib-networking (>= 2.32.0)
+debhelper (>= 9.20120528)
+libtool (>= 1.5-2)
+gtk-doc-tools (>= 1.9)
+dbus (>= 1.8)
+gcj-6-x86-64-linux-gnux32 [x32] <cross>
+cdbs (>= 0.4.59)
+libluajit-5.1-dev [amd64 armel armhf i386 mips mipsel powerpc hurd-i386 kfreebsd-i386]
+libcairo2-dev (>= 1.6.4-6.1)
+libpango1.0-dev (>= 1.17.5)
+libaudit-dev <!stage1>
+libgnome2-dev (>= 2.13.7)
+po4a (>= 0.36)
+guile-2.0-dev (>= 2.0.11+1-0)
+gcj-6-i686-linux-gnu [i386] <cross>
+gobject-introspection (>= 0.9.12-4~)
+libx11-dev (>= 2:1.6.0)
+libghc-random-dev (>= 1.0)
+python-sphinx (>= 1.0.7+dfsg-1~)
+libglib2.0-dev (>= 2.26) <!stage1>
+autogen <cross>
+libc6-dev-mips64 [mips mipsel mipsn32 mipsn32el]
+gobjc-6-i686-linux-gnu [i386] <cross>
+debhelper (>= 7)
+dpkg-dev (>= 1.17.0~)
+xutils-dev (>= 1:7.5+1)
+python3-mccabe (>= 0.5.0)
+libz-dev
+hurd-dev (>= 1:0.5.git20140320~) [hurd-i386] | hurd-headers-dev [hurd-i386]
+libc6-dev-amd64 [i386 x32]
+libharfbuzz-dev (>= 0.9.30)
+libxtst-dev (>= 1:0.99.1)
+gdc-6-mips-linux-gnu [mips] <cross>
+libsbc-dev [linux-any]
+mig [hurd-any]
+debhelper (>= 8~)
+libghc-texmath-dev (<< 0.9)
+patchutils (>= 0.2.25)
+gccgo-6-mips-linux-gnu [mips] <cross>
+libghc-hashable-dev (>= 1.1.2.0)
+libcairo2-dev (>= 1.2.0)
+perl (>= 5.10)
+perl-cross-config <cross>
+debhelper (>= 5.0.38)
+libglib2.0-dev (>= 2.24.0)
+gir1.2-freedesktop (>= 1.39.0)
+firebird-dev [amd64 armel i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel powerpc s390 sh4 sparc]
+g++-6-powerpc-linux-gnu [powerpc] <cross>
+libghc-quickcheck2-dev (>= 2.1)
+automake | automaken
+python-gtk2 (>= 2.8.6-2) <!stage1>
+libxfixes-dev (>= 1:3.0.0)
+gnat-6-aarch64-linux-gnu [arm64] <cross>
+libseccomp-dev (>= 2.2.3-3~) [amd64 arm64 armel armhf i386 mips mipsel mips64 mips64el x32 powerpc ppc64el s390x]
+libghc-hunit-dev (>= 1.2)
+libghc-stm-dev (>= 2.3)
+libblkid-dev (>= 2.24)
+libvisual-0.4-dev (>= 0.4.0)
+libghc-quickcheck2-dev (>= 2.7)
+libghc-blaze-html-dev (>= 0.4.2)
+intltool (>= 0.40.0)
+libxml2-dev (>= 2.4.20)
+desktop-file-utils <!nocheck>
+libdpkg-perl (>= 1.15.6~)
+xfonts-utils (>= 1:7.5+1)
+libasound2-dev [!hurd-any !kfreebsd-any]
+libghc-quickcheck2-dev (>= 2.4)
+libperl-dev (>= 5.8.0) <!stage1>
+libnumber-compare-perl (>= 0.02)
+xsltproc (>= 1.0.29)
+libghc-stm-dev (<< 3)
+libghc-lifted-base-dev (>= 0.1)
+libsndfile1-dev (>= 1.0.20)
+libghc-case-insensitive-dev (<< 1.3)
+libghc-x509-dev (<< 1.7.0)
+libgconf2-dev (>= 2.6.1-2)
+libapr1-dev (>= 1.5.0)
+gfortran-6-alpha-linux-gnu [alpha] <cross>
+libghc-quickcheck2-dev (<< 3)
+linux-libc-dev (>= 2.6.31) [linux-any]
+libkrb5-dev | heimdal-dev
+gtk-doc-tools (>= 1.0)
+libev-dev (>= 1:4.15)
+libgtk2.0-dev (>= 2.21.5)
+libxcb-xf86dri0-dev (>= 1.6)
+libghc-http-dev (<< 1:4000.4)
+libghc-text-dev (>= 0.3)
+gnat-6-mipsel-linux-gnu [mipsel] <cross>
+libghc-transformers-base-dev (>= 0.4.1)
+libghc-zlib-dev (>= 0.5.3.1)
+libatk1.0-dev (>= 1.32.0)
+libxpm-dev (>= 1:3.5.4.2)
+cdbs (>= 0.4.0.1)
+debhelper (>= 5.0.22)
+libselinux1-dev (>= 2.1.9)
+libgl1-mesa-dev (>= 9.2)
+libghc-hspec-expectations-dev (>= 0.7.2)
+freebsd-net-tools [kfreebsd-i386 kfreebsd-amd64] <!nocheck>
+x11proto-core-dev (>= 7.0.13)
+gobjc-6-s390x-linux-gnu [s390x] <cross>
+libghc-process-dev
+libghc-blaze-markup-dev (<< 0.8)
+libghc-case-insensitive-dev (>= 1.0)
+libghc-x509-dev (>= 1.5)
+fastjar [!arm !hppa !hurd-i386 !mips64el]
+automake (>= 1:1.10)
+gettext (>= 0.10.36-2)
+libxext-dev (>= 2:1.0.99.4)
+g++-multilib [amd64 i386 kfreebsd-amd64 mips mips64 mips64el mipsel mipsn32 mipsn32el powerpc ppc64 s390 s390x sparc sparc64 x32] <!cross>
+librtmp-dev (>= 2.4+20131018.git79459a2-3~)
+libmpich-dev [m68k sh4]
+docbook-xml (>= 4.2-8)
+libserf-dev (>= 1.3.4)
+junit4 (>= 4.11)
+python-all (>= 2.7)
+debhelper (>> 7.0.0)
+libffado-dev (>= 2.0.0) [linux-any]
+pypy-hypothesis <!nocheck>
+debhelper (>> 9~)
+libghc-syb-dev (>= 0.3.3)
+python (>= 2.7~)
+libvorbis-dev (>= 1.2.3)
+x11proto-resource-dev (>= 1.2.0)
+po-debconf (>= 0.5.0)
+libmoo-perl (>= 1.001000)
+libghc-aeson-dev (>= 0.7.0.5)
+libghc-haddock-library-dev (<< 1.5)
+ruby-rspec <!nocheck>
+gir1.2-glib-2.0 (>= 1.39.0)
+po4a (>= 0.24)
+libpixman-1-dev (>= 0.27.2)
+dpkg (>= 1.18.7)
+rake <!nocheck>
+quilt (>= 0.46-7)
+node-read-pkg-up (>= 1.0.1)
+libxrender-dev (>= 1:0.9.0.2-2)
+libxfixes-dev (>= 1:3.0.0-3)
+cdbs (>= 0.4.93)
+flex | flex-old
+wayland-protocols (>= 1.7) [linux-any]
+gdc-6-arm-linux-gnueabi [armel] <cross>
+libghc-dlist-dev (>= 0.2)
+libghc-stm-dev (<< 2.5)
+libghc-tf-random-dev (>= 0.4)
+libghc-network-dev (>= 2.4.0.0)
+libksba-dev (>= 1.3.4)
+gtk-doc-tools (>= 1.19)
+libffi-dev (>= 3.0.0)
+libx11-dev (>= 2:1.0.0)
+gcj-6-m68k-linux-gnu [m68k] <cross>
+pypy-py (>= 1.4.29)
+dh-systemd (>= 1.5)
+libxi-dev (>= 2:1.6.99.1)
+libghc-test-framework-quickcheck2-dev (>= 0.2.9)
+libxcursor-dev (>= 1:1.1.10-2)
+libdlrestrictions-dev (>= 0.14)
+python-py (>= 1.4.29)
+gnome-pkg-tools (>= 0.7)
+mawk | awk
+dh-apache2
+node-decamelize (>= 1.1.1)
+gobject-introspection (>= 1.42.0)
+libghc-highlighting-kate-dev (<< 0.7)
+libghc-transformers-compat-dev (<< 0.6)
+libghc-blaze-markup-dev (>= 0.7)
+libghc-socks-dev (>= 0.5.5)
+libgnome-keyring-dev (>= 0.4)
+python-all-dev (>= 2.5.4-1~)
+swig (>= 2.0.0)
+libpixman-1-dev (>= 0.30.0)
+libxshmfence-dev (>= 1.1)
+pkg-kde-tools (>= 0.6.4)
+libvulkan-dev [amd64 i386 arm64 armhf ppc64el x32]
+gfortran-6-x86-64-linux-gnux32 [x32] <cross>
+libghc-hspec-expectations-dev (<< 0.7.3)
+gettext (>= 0.19)
+texinfo (>= 4.8)
+libghc-regex-tdfa-dev (>= 1.1.8.2)
+libghc-asn1-parse-dev (<< 0.10)
+libhunspell-dev (>= 1.1.5-2)
+python-all (>= 2.6.6-14~)
+libghc-x509-dev (>= 1.6)
+gnat-6-powerpc64-linux-gnu [ppc64] <cross>
+libdbus-1-dev (>= 1.1)
+gcj-native-helper [!m68k]
+debhelper (>= 9.20151004~)
+lib32tinfo-dev [amd64 ppc64]
+x11proto-xext-dev (>= 7.2.99.901)
+libghc-vector-dev (>= 0.10)
+devscripts <!nocheck>
+tar (>= 1.28)
+liblcms2-dev (>= 2.5)
+g++-6-powerpc64-linux-gnu [ppc64] <cross>
+gtk-doc-tools (>= 1.15)
+freebsd-glue [kfreebsd-any]
+libidn11-dev (>= 1.31)
+dpkg (>= 1.16.1)
+gobject-introspection (>= 1.46.0)
+x11proto-fixes-dev (>= 1:5.0)
+gdc-6-powerpc-linux-gnu [powerpc] <cross>
+uglifyjs
+libghc-regex-posix-dev (>= 0.72)
+systemd [linux-any] <!stage1>
+javahelper (>= 0.37~)
+libdbus-1-dev (>= 0.60)
+libghc-network-uri-dev (<< 2.7)
+distro-info-data (>= 0.7~)
+flex <cross>
+binutils (>= 2.21)
+libghc-text-dev (>= 0.11.0.5)
+libdbus-1-dev (>= 1.0)
+gcj-jdk [!arm !hppa !hurd-i386 !mips64el]
+libxalan2-java (>= 2.4.0)
+gawk | awk
+gfortran-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libghc-base-orphans-dev (>= 0.5.3)
+libkmod-dev [linux-any]
+libghc-tagsoup-dev (<< 0.15)
+libdbus-1-dev (>= 1.6)
+gnat-6-mips-linux-gnu [mips] <cross>
+libcurl4-gnutls-dev <!stage1> | libcurl-dev <!stage1>
+libbabeltrace-ctf-dev [amd64 armel armhf i386 kfreebsd-amd64 kfreebsd-i386 mips mipsel mips64el powerpc s390x]
+libghc-random-dev (<< 1.2)
+libqca2-dev (>= 2.0.0)
+heimdal-multidev <!stage1>
+libxaw7-dev (>= 1:0.99.1)
+dpkg-dev (>= 1.13.19)
+g++-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libghc-test-framework-hunit-dev (>= 0.3)
+libosp-dev (>= 1.5.1.0-2.1)
+libtool (>= 2.2)
+dpkg-dev (>= 1.17.6)
+libselinux-dev [linux-any]
+latex-beamer
+libatspi2.0-dev (>= 2.17.90)
+libspeexdsp-dev (>= 1.2~rc1)
+dbus <!nocheck>
+libghc-test-framework-dev (>= 0.3.3) <!nocheck>
+libghc-text-dev (>= 1.1.1.3)
+llvm-3.9-dev (>= 1:3.9.1) [amd64 i386 kfreebsd-amd64 kfreebsd-i386 arm64 armhf ppc64el]
+wayland-protocols (>= 1.1) [linux-any]
+libgnomevfs2-dev (>= 2.8.4-2)
+libatk1.0-dev (>= 2.15.4)
+systemd [linux-any]
+libncursesw5-dev (>= 5.6)
+libghc-semigroups-dev (<< 0.19)
+perl (>= 5.8.0)
+python-all-dbg (>= 2.6.6-3~)
+python-all-dev:any (>= 2.7.5-5~)
+libc6-dev-sparc64 [sparc]
+libghc-data-default-class-dev (>= 0.1.2.0)
+libghc-text-dev (>= 0.7)
+libncurses5-dev (>= 5.9-2)
+autopoint | cvs
+libxext-dev (>= 1:1.0.0)
+gfortran-6-mips-linux-gnu [mips] <cross>
+libglade2-dev (>= 1:2.6.4-2~)
+libboost-test-dev (>= 1.58)
+libedit-dev (>= 2.11-20080614-4)
+debhelper (>> 9.0.0)
+libqt4-dev <!stage1>
+python3-all-dbg (>= 3.3)
+python3-debian <!nocheck>
+python-all-dev (>= 2.6.6-3~)
+libsystemd-dev (>= 209) [linux-any]
+libmount-dev (>= 2.27.1)
+libudev-dev [linux-any]
+findutils (>= 4.1.20)
+libxml2-dev (>= 2.7.7)
+libc6-dev (>= 2.13-31) [armel armhf]
+libisl-dev (>= 0.14)
+gobjc-6-mips-linux-gnu [mips] <cross>
+libghc-hunit-dev (>= 1.2.5)
+libghc-hspec-dev (>= 1.8)
+ghc (>= 8.0)
+libxfont-dev (>= 1:2.0.1)
+libc6-dev-x32 [amd64 i386]
+g++-6-arm-linux-gnueabi [armel] <cross>
+gcj-6-aarch64-linux-gnu [arm64] <cross>
+libghc-semigroups-dev (>= 0.18)
+libghc-tagged-dev (>= 0.5)
+libgirepository1.0-dev (>= 0.10.7-1~)
+default-jdk [!hppa !mips !mipsel !alpha !arm !hurd-i386]
+libtasn1-6-dev (>= 4.9)
+lib32gcc1 [amd64 ppc64 kfreebsd-amd64 mipsn32 mipsn32el mips64 mips64el s390x sparc64 x32]
+libn32gcc1 [mips mipsel mips64 mips64el]
+libghc-scientific-dev (<< 0.4)
+x11proto-xcmisc-dev (>= 1.2.0)
+python-dbus <!stage1>
+gperf (>= 3.0.1)
+dpkg-dev (>= 1.10)
+gfortran-6-i686-linux-gnu [i386] <cross>
+libxslt1-dev (>= 1.0.18)
+perl (>= 5.14.2~)
+libghc-blaze-html-dev (>= 0.5)
+libghc-hunit-dev (<< 1.4)
+libutil-freebsd-dev [kfreebsd-any]
+libexpat-dev
+libxres-dev (>= 1:0.99.1)
+gdb:native
+node-graceful-fs (>= 4.1.5)
+zlib1g-dev | libz-dev
+tzdata <!nocheck>
+libgtk-3-dev (>= 3.0.0)
+libghc-aeson-dev (>= 0.6.2)
+libghc-old-locale-dev (>= 1)
+libraw1394-dev [linux-any]
+gnat-6-s390x-linux-gnu [s390x] <cross>
+libapparmor-dev (>= 2.9.0-3+exp2) <!stage1>
+libxdmcp-dev (>= 1:0.99.1)
+kfreebsd-kernel-headers (>= 0.84) [kfreebsd-any]
+libghc-blaze-html-dev (<< 0.9)
+libghc-parsec3-dev (>= 3)
+python-mccabe (>= 0.5.0)
+gobject-introspection (>= 1.41.3)
+g++ (>= 4:5.2)
+libgpm-dev [linux-any]
+libdmx-dev (>= 1:1.0.1)
+gdc-6-i686-linux-gnu [i386] <cross>
+xmlto (>= 0.0.22)
+libghc-x509-store-dev (<< 1.7)
+g++-6-m68k-linux-gnu [m68k] <cross>
+libopenmpi-dev (>= 1.4.3-2.1) [alpha amd64 arm64 armel armhf hppa hurd-i386 i386 kfreebsd-amd64 kfreebsd-i386 mips mips64el mipsel powerpc powerpcspe ppc64 ppc64el s390x sparc64 x32]
+libxft-dev (>= 2.1.14-2)
+libghc-optparse-applicative-dev (>= 0.11)
+libghc-tls-dev (>= 1.2)
+libfuse-dev [!hurd-i386]
+firebird-dev [kfreebsd-any linux-any]
+libghc-yaml-dev (>= 0.8.8.2)
+libghc-transformers-base-dev (>= 0.4.4)
+libxcb-dri2-0-dev (>= 1.8)
+libghc-tasty-dev (>= 0.11)
+libghc-transformers-base-dev (>= 0.4)
+autoconf (>= 2.61)
+libblas-dev [!arm !m68k]
+libmicrohttpd-dev <!stage1>
+node-async (>= 0.2.6)
+libghc-zip-archive-dev (>= 0.2.3.4)
+libxkbcommon-dev (>= 0.2.0)
+libgnutls28-dev <!stage1>
+libghc-network-dev (<< 2.7)
+libvdpau-dev (>= 1.1.1) [linux-any kfreebsd-any]
+libudev-dev (>= 196) [linux-any]
+libdpkg-perl (>= 1.17.14~)
+libharfbuzz-dev (>= 0.9)
+comerr-dev (>= 1.41.11)
+python-setuptools (>= 0.6b3)
+libxcb1-dev (>= 1.11.1)
+g++-6-x86-64-linux-gnu [amd64] <cross>
+xtrans-dev (>= 1.0.1)
+libghc-mtl-dev (>= 2.0)
+pkg-kde-tools (>= 0.15.17)
+libxext-dev (>= 1:0.99.1)
+libghc-test-framework-hunit-dev <!nocheck>
+libsoprano-dev (>= 2.7.56)
+libgl1-mesa-dev | libgl-dev
+yasm (>= 0.7) [amd64 i386 hurd-i386 kfreebsd-amd64 kfreebsd-i386]
+python3:native
+libxpm-dev (>= 1:3.5.3)
+libghc-network-uri-dev (>= 2.6)
+libbonoboui2-dev (>= 2.14.0-2)
+haskell-devscripts (>= 0.13)
+x11proto-core-dev (>= 7.0.12)
+libghc-test-framework-quickcheck2-dev (>= 0.3)
+softhsm2 <!nocheck>
+x11proto-xext-dev (>= 7.1.99)
+gsettings-desktop-schemas <!nocheck>
+cmake (>= 2.8.2)
+gtk-doc-tools (>= 1.14)
+libx11-dev (>= 2:1.4.99.1)
+libc0.1-dev-i386 [kfreebsd-amd64]
+libghc-async-dev (>= 2.0)
+libghc-ansi-terminal-dev (>= 0.4.0)
+libghc-async-dev (>= 2)
+dpkg-dev (>= 1.16.1.1)
+libghc-quickcheck-instances-dev (>= 0.3.12)
+libsqlite3-dev (>= 3.7.12)
+debhelper (>= 10)
+x11proto-core-dev (>= 7.0.21)
+libc6-dev-sparc [sparc64]
+libghc-asn1-types-dev (<< 0.4)
+libtool (>= 2.2.6)
+asciidoc (>= 8.4.5)
+libghc-data-default-dev (<< 0.8)
+python3-all:any
+automake (>= 1:1.12)
+libnuma-dev [amd64 i386 ia64 mips mipsel mips64 mips64el powerpc ppc64el]
+node-minimist (>= 1.2.0)
+libghc-exceptions-dev (>= 0.5)
+dh-buildinfo (>= 0.9+nmu1~)
+libghc-tls-dev (>= 1.3)
+libtest-tester-perl
+libfreetype6-dev (>= 2.1.7)
+libcap-dev (>= 1:2.16) [linux-any]
+libghc-mtl-dev (>= 2.0.1)
+libgtk2.0-dev (>= 2.14)
+libc6-dev (>= 2.19-9) [s390x]
+gfortran-6-powerpc64-linux-gnu [ppc64] <cross>
+ruby-setup <!nocheck>
+dpkg-dev (>= 1.16.1~)
+libghc-connection-dev (>= 0.2.2)
+procps [!hurd-any]
+libselinux1-dev (>= 2.0.80) [linux-any]
+libwayland-dev [linux-any]
+g++-6-mips-linux-gnu [mips] <cross>
+libnspr4-dev (>= 2:4.12)
+libghc-pandoc-types-dev (>= 1.16)
+libghc-x509-dev (>= 1.6.2)
+pkg-config [kfreebsd-i386 kfreebsd-amd64]
+libxcb-glx0-dev (>= 1.8.1)
+libffi-dev (>= 3.0.5) [!or1k !avr32]
+x11proto-randr-dev (>= 1.5.0)
+libxinerama-dev (>= 2:1.1-3)
+cdbs (>= 0.4.52)
+libbsd-dev (>= 0.1.3)
+valac (>= 0.18)
+libpcre3-dev (>= 6.6)
+gobjc-6-aarch64-linux-gnu [arm64] <cross>
+libghc-pcre-light-dev (>= 0.4)
+libqt4-opengl-dev (>= 4:4.8.0)
+libjson-c-dev (>= 0.11)
+node-which-module (>= 1.0.0)
+libxdamage-dev (>= 1:1.0.1-3)
+acl <!nocheck>
+libmpc-dev (>= 1.0)
+libudev-dev (>= 143) [linux-any]
+gobjc-6-powerpc64le-linux-gnu [ppc64el] <cross>
+shared-mime-info (>= 1.2)
+libghc-text-dev (>= 1.0)
+autoconf (>= 2.59)
+gfortran-6-m68k-linux-gnu [m68k] <cross>
+python-all-dbg:any
+libclang-3.9-dev [alpha amd64 armel armhf arm64 i386 mips mipsel mips64el powerpc powerpcspe ppc64 ppc64el s390x sparc64]
+tzdata (>= 2017a)
+gdc-6-alpha-linux-gnu [alpha] <cross>
+libghc-network-dev (>= 2.6)
+libwrap0-dev (>= 7.6-8.3)
+autoconf (>= 2.69-7)
+libio-string-perl <!nocheck>
+libkpathsea-dev (>= 2.0.2-4)
+libgtk2.0-dev (>= 2.4.4-2)
+gcj-6-mips-linux-gnu [mips] <cross>
+libghc-test-framework-quickcheck2-dev (>= 0.2.9) <!nocheck>
+libqt4-dev (>= 4:4.8.6+git64-g5dc8b2b+dfsg-2~)
+libghc-zlib-dev (<< 0.7)
+python-pexpect <!nocheck>
+lib64z1-dev [i386]
+libghc-unordered-containers-dev (<< 3)
+debhelper (>= 9.20120608~)
+gfortran-6-x86-64-linux-gnu [amd64] <cross>
+libapparmor-dev (>= 2.8.95) [linux-any]
+debhelper (>= 9.20160709)
+autoconf (>= 2.64)
+libghc-vector-dev (>= 0.9)
+zlib1g-dev (>= 1:1.1.4)
+libevent-dev (>= 1.4.11)
+libaprutil1-dev (>= 1.5.0)
+libghc-hspec-dev (>= 1.3)
+libudev-dev (>= 151-3) [linux-any]
+libghc-blaze-builder-dev (<< 0.5)
+libgles2-mesa-dev [armel armhf] | libgles2-dev [armel armhf]
+autoconf (>= 2.63)
+xvfb <!nocheck>
+debhelper (>= 5.0)
+libsqlite3-dev (>= 3.3.9)
+libghc-sha-dev (>= 1.6)
+fftw3-dev
+ruby-test-unit <!nocheck>
+libghc-clock-dev (>= 0.4.4.0)
+libssl1.0-dev | libssl-dev (<< 1.1)
+libxrender-dev (>= 1:0.9.0)
+libc6-dev-powerpc [ppc64]
+libghc-pandoc-types-dev (>= 1.12.3.3)
+libatk1.0-dev (>= 2.15.1)
+python3-all-dbg:any
+gcc (>= 4:6.3)
+libxkbfile-dev (>= 1:0.99.1)
+libghc-hashable-dev (>= 1.0.1.1)
+node-uglify (>= 2.2)
+pkg-kde-tools (>= 0.6)
+systemtap-sdt-dev [linux-any kfreebsd-any hurd-any]
+libghc-asn1-encoding-dev (<< 0.10)
+d-shlibs (>= 0.58~)
+libglib2.0-dev (>= 2.39.90)
+gcj-6-powerpc64le-linux-gnu [ppc64el] <cross>
+x11proto-gl-dev (>= 1.4.14)
+dh-exec (>= 0.13~)
+gfortran-6-sh4-linux-gnu [sh4] <cross>
+doxygen (>= 1.5.6)
+python3-cairo-dev (>= 1.10.0+dfsg-3)
+gcj-6-mipsel-linux-gnu [mipsel] <cross>
+libelf-dev (>= 0.142)
+libcairo2-dev (>= 1.10.0)
+autotools-dev (>= 20100122.1)
+gobjc-6-x86-64-linux-gnu [amd64] <cross>
+libmtdev-dev [linux-any]
+libtool (>= 1.5)
+libcurl4-openssl-dev | libcurl-ssl-dev
+gdc-6-arm-linux-gnueabihf [armhf] <cross>
+libghc-extensible-exceptions-dev (<< 0.2)
+libghc-asn1-parse-dev (>= 0.9.3)
+x11proto-core-dev (>= 6.2.1+cvs.20050722)
+libusbhid-dev [kfreebsd-any]
+libgck-1-dev (>= 3.3.4)
+python-all-dev (>= 2.6.5-13~)
+libgl1-mesa-dev [!armel !armhf] | libgl-dev [!armel !armhf]
+libghc-tasty-dev (>= 0.8)
+procps [!hurd-any] <!nocheck>
+libglib2.0-dev (>= 2.48.0)
+dpkg-dev (>= 1.17.11)
+python-sphinx (>= 0.5)
+libgdk-pixbuf2.0-dev (>= 2.22.1)
+libxml2-dev (>= 2.4)
+gfortran-6-arm-linux-gnueabihf [armhf] <cross>
+qttools5-dev-tools (>= 5.4)
+debhelper (>= 5)
+pkg-config (>= 0.19)
+gdc-6-sparc64-linux-gnu [sparc64] <cross>
+libxv-dev (>= 6.8.2.dfsg.1-3)
+debhelper (>> 9.0)
+libpolkit-qt-1-dev (>= 0.99.0)
+gobjc-6-arm-linux-gnueabi [armel] <cross>
+node-type-detect (>= 1.0.0)
+dpkg (>= 1.16.0)
+libgsf-1-dev (>= 1.13.2-2)
+libhttp-date-perl | libtime-modules-perl
+python3.5 (>= 3.5.3-1~)
+gnat-6-arm-linux-gnueabihf [armhf] <cross>
+libghc-http-types-dev (>= 0.8)
+libgirepository1.0-dev (>= 1.30)
+libapr1-dev (>= 1.2.7-8)
+gettext (>= 0.18.1.1-8)
+libxfixes-dev (>= 1:3.0.0-4)
+libmount-dev (>= 2.28) [linux-any]
+libghc-quickcheck2-dev (<< 2.10)
+libnpth0-dev (>= 1.2)
+gtk-doc-tools (>= 1.20)
+cdbs (>= 0.4.93~)
+libc6-dev-mipsn32 [mips mipsel mips64 mips64el]
+libexpat1-dev (>= 1.95.2-2.1)
+unixodbc-dev (>= 2.2.11-10)
+libghc-http-client-dev (<< 0.6)
+libdb-dev (<< 1:6.0)
+xorg-sgml-doctools (>= 1:1.10)
+python3-pbr (>= 0.11)
+automake (>= 1:1.12.2)
+libxml-commons-external-java (>= 1.4.01-2)
+hspell (>= 0.7-2)
+gfortran-6-arm-linux-gnueabi [armel] <cross>
+libsystemd-dev [linux-any] | libsystemd-daemon-dev [linux-any]
+libgirepository1.0-dev (>= 0.9.5)
+libghc-pandoc-types-dev (<< 1.17)
+libghc-extensible-exceptions-dev (>= 0.1.1)
+gem2deb (>= 0.5.0~)
+libudev-dev [linux-any] <!stage1>
+zlib1g-dev <!stage1> | libz-dev <!stage1>
+node-require-directory (>= 2.1.1)
+libghc-parsec3-dev (>= 3.0)
+libtidy-dev (>= 1:5.2.0)
+libgd-dev (>= 2.0.33)
+valac (>= 0.17.5)
+libkmod-dev (>= 15)
+gdc-6-powerpc64-linux-gnu [ppc64] <cross>
+libghc-ansi-terminal-dev (>= 0.6.2)
+ghc (>= 8)
+libx11-dev (>= 2:1.6)
+libcroco3-dev (>= 0.6.1)
+libghc-pem-dev (>= 0.1)
+intltool (>= 0.35)
+libgirepository1.0-dev (>= 0.10.8)
+libcap-ng-dev [linux-any] <!stage1>
+cdbs (>= 0.4.131~)
+libghc-lifted-base-dev (>= 0.2)
+libglib2.0-dev (>= 2.27.3)
+binutils-hppa64-linux-gnu:native (>= 2.27.90.20170221) [hppa amd64 i386 x32]
+libghc-test-framework-dev (>= 0.3.3)
+libghc-parsec3-dev (>= 2.0)
+libxapian-dev (>= 1.2.21-1.2)
+hurd-dev (>= 1:0.5.git20140320~) [hurd-i386] <!stage1> | libihash-dev [hurd-i386] <!stage1>
+libghc-vector-dev (>= 0.8)
+dirmngr | gnupg (<< 2)
+nettle-dev <!stage1>
+libchicken-dev [!m68k !mips !mipsel]
+g++-6:native
+libghc-unordered-containers-dev (<< 0.3)
+python-all (>= 2.6.6-3)
+gdc-6-aarch64-linux-gnu [arm64] <cross>
+libghc-tasty-quickcheck-dev (>= 0.8)
+libsepol1-dev (>= 2.6)
+libghc-hashable-dev (>= 1.0)
+python-pbr (>= 0.11)
+dpkg-dev (>= 1.18.0~)
+libcairo2-dev (>= 1.12.10)
+libghc-void-dev (>= 0.5.5)
+dpkg-dev (>= 1.17)
+libqt4-dev (>= 4:4.8.0)
+debhelper (>> 8.1.3)
+qtscript5-private-dev (>= 5.7.1~20161021+dfsg~)
+gcc-multilib [i386 powerpc sparc s390]
+python3-lxml:native
+cdbs (>= 0.4.90)
+libghc-ansi-wl-pprint-dev (<< 0.7)
+gtk-doc-tools (>= 1.13)
+libpopt-dev (>= 1.14)
+python-testtools (>= 0.9.35)
+qtbase5-private-dev (>= 5.7.1+dfsg~)
+xutils-dev (>= 1:7.5~1)
+libghc-transformers-compat-dev (>= 0.2)
+libwayland-dev (>= 1.2.0) [linux-any]
+liborc-0.4-dev (>= 1:0.4.24)
+gdc-6-powerpc64le-linux-gnu [ppc64el] <cross>
+cdbs (>= 0.4.106~)
+gcj-6-mips64-linux-gnuabi64 [mips64] <cross>
+gcc-multilib [amd64 i386 kfreebsd-amd64 mips mipsel powerpc ppc64 s390 sparc s390x] <!stage1>
+python-all:any
+libgirepository1.0-dev (>= 1.39.0)
+gccgo-6-mipsel-linux-gnu [mipsel] <cross>
+libbcel-java (>= 5.0)
+gobjc-6-alpha-linux-gnu [alpha] <cross>
+valgrind [amd64 arm64 armhf i386 mips64el mips mipsel powerpc ppc64 ppc64el s390x]
+perl (>= 5.8)
+debhelper (>= 5.0.0)
+python (>= 2.6)
+qttools5-dev (>= 5.4)
+debhelper (>= 9.20160114)
+libfl-dev:native
+gobject-introspection (>= 1.42.0-2~)
+libffi-dev (>= 3.0.5)
+time <!stage1>
+libcap-ng-dev [linux-any]
+python-all-dev (>= 2.7)
+libghc-test-framework-dev (>= 0.7.1)
+dpkg (>= 1.16.1~)
+debhelper (>= 9.20141010)
+texlive-pictures (>= 2013.20140314) | pgf
+pkg-config (>= 0.9.0)
+libghc-base64-bytestring-dev (>= 1.0.0)
+libgdk-pixbuf2.0-dev (>= 2.23.5-2)
+libaio-dev [linux-any]
+libghc-monad-control-dev (>= 0.3)
+python3-all-dev:any (>= 3.5)
+debhelper (>= 9.20120115)
+gobjc-6-sparc64-linux-gnu [sparc64] <cross>
+gnat-6-mips64el-linux-gnuabi64 [mips64el] <cross>
+libghc-test-framework-dev (>= 0.8)
+libassuan-dev (>= 2.4.3)
+x11proto-present-dev (>= 1.0)
+libxfixes-dev (>= 1:4.0.4-2)
+libxmu-dev <!stage1>
+python-setuptools (>= 18.8-1~)
+debhelper (>= 9.20120312)
+libsystemd-dev [linux-any] <!stage1>
+qtbase5-dev (>= 5.7.1~20161021+dfsg~)
+pkg-config (>= 0.16.0)
+libgnutls28-dev (>= 3.3.15-5)
+dpkg-dev (>= 1.18.0)
+dh-exec (>= 0.13)
+gobjc-6-mipsel-linux-gnu [mipsel] <cross>
+libacl1-dev [!hurd-any]
+libsm-dev (>= 1:0.99.1)
+node-yamlish <!stage1>
+shared-desktop-ontologies (>= 0.11)
+debhelper (>= 8.0.0)
+linux-base <!nocheck>
+libghc-containers-dev
+libghc-xml-dev (>= 1.3.5)
+libghc-text-dev (>= 0.11.0.2)
+libghc-cryptonite-dev (>= 0.8)
+python3-nose <!nocheck>
+x11proto-fonts-dev (>= 2.1.3)
+libzita-alsa-pcmi-dev [linux-any]
+libghc-text-dev (>= 0.8)
+gobjc-6-powerpc-linux-gnu [powerpc] <cross>
+libghc-quickcheck2-dev (>= 2.4.0.1)
+at-spi2-core <!nocheck>
+po4a (>= 0.43)
+libc6-dev-s390x [s390]
+autoconf (>= 2.64~)
+python-all (>= 2.6.3-3~)
+x11proto-xext-dev (>= 7.0.99.3)
+gdc-6-mipsel-linux-gnu [mipsel] <cross>
+libxrandr-dev (>= 2:1.5.0)
+python3-gi <!nocheck>
+libattr1-dev (>= 1:2.4.46-8)
+perl (>= 5.8.1)
+libxcb1-dev (>= 1.6)
+libgcrypt-dev
+libepoxy-dev [linux-any kfreebsd-any]
+libghc-blaze-builder-dev (>= 0.3)
+libxml2-dev (>= 2.6.27)
+libasound2-dev [linux-any kfreebsd-any]
+libghc-asn1-types-dev (>= 0.2.0)
+libgpm2 [linux-any]
+debhelper (>= 8.9.0)
+libgamin-dev [!linux-any] | libfam-dev [!linux-any]
+libxfixes-dev (>= 5)
+g++-6-alpha-linux-gnu [alpha] <cross>
+libghc-hslua-dev (<< 0.5)
+g++-6-x86-64-linux-gnux32 [x32] <cross>
+libglib2.0-dev (>= 2.37.6)
+libtheora-dev (>= 1.1)
+node-rimraf (>= 2.5.4)
+libghc-extensible-exceptions-dev (<< 0.2.0)
+adwaita-icon-theme <!nocheck>
+libghc-hunit-dev (>= 1.2.2)
+libgmp-dev (>= 2:6)
+libghc-hspec-dev (>= 1.3) [!mips !mipsel !mips64el]
+dh-autoreconf (>= 4)
+zlib1g-dev (>= 1.2.3)
+po4a (>= 0.34-2)
+libghc-hunit-dev [!mips !mipsel !mips64el]
+default-jdk [!m68k]
+node-mkdirp (>= 0.5)
+libmysqlclient-dev | libmysqlclient15-dev
+python:any
+x11proto-core-dev (>= 6.8.99.15+cvs.20050722)
+libghc-text-dev (>= 0.10)
+libghc-old-time-dev (<< 1.2)
+liblz4-dev (>= 0.0~r126)
+dpkg-dev (>= 1.16.2~)
+xutils-dev (>= 1:7.6+2)
+libjansson-dev (>= 2.5)
+pkg-config (>= 0.18)
+python (>= 2.5)
+libegl1-mesa-dev [linux-any]
+libscalar-list-utils-perl (>= 1:1.45)
+docbook-xsl (>= 1.64.1.0)
+xsltproc (>= 1.1.19)
+python3-all-dev (>= 3.1.2-10~)
+libxt-dev (>= 1:0.99.1)
+binutils [arm64 armel armhf]
+libghc-syb-dev (>= 0.1)
+libxrandr-dev (>= 2:1.2.99)
+gcj-6-arm-linux-gnueabi [armel] <cross>
+libfontconfig1-dev (>= 2.10.91)
+libgtk-3-dev (>= 3.10)
+openssl <!nocheck>
+libxau-dev (>= 1:1.0.5-2)
+libpango1.0-dev (>= 1.16.0)
+python-all-dbg (>= 2.6.6-3)
+libdbus-glib-1-dev (>= 0.74)
+libghc-unordered-containers-dev (>= 0.2)
+libselinux1-dev (>= 2.6-3~) [linux-any]
+libgtk2.0-dev (>= 2.14.0)
+python3-all-dev (>= 3.3)
+libghc-hunit-dev <!nocheck>
+automake (>= 1.11) | automake1.11
+libghc-quickcheck2-dev (>= 2.5)
+locales (>= 0)
+quilt (>= 0.30)
+x11proto-xf86dri-dev (>= 2.1.0)
+libelf-dev [amd64 i386 kfreebsd-amd64 kfreebsd-i386 arm64 armhf ppc64el]
+gfortran-6-mipsel-linux-gnu [mipsel] <cross>
+libghc-mockery-dev [!mips !mipsel !mips64el]
+libgrantlee-dev (>= 0.1.0)
+libglib2.0-dev (>= 2.31.0)
+perl:any
+shared-mime-info <!nocheck>
+libpng-dev (>= 1.6)
+junit [!hurd-i386 !hppa !sparc]
+ruby-sass (<< 3.5)
+libghc-blaze-builder-dev (>= 0.2.1)
+debhelper (>= 7.0.17)
+libreadline-dev | libreadline6-dev
+llvm-3.9-dev [alpha amd64 armel armhf arm64 i386 mips mipsel mips64el powerpc powerpcspe ppc64 ppc64el s390x sparc64]
+libgirepository1.0-dev (>= 0.9.12)
+libghc-asn1-types-dev (>= 0.3)
+docbook-xml (>> 4.4)
+gnome-pkg-tools (>= 0.10)
+gccgo-6-s390x-linux-gnu [s390x] <cross>
+libghc-xml-dev (<< 1.4)
+libghc-yaml-dev (<< 0.9)
+libghc-filemanip-dev (<< 0.4)
+libgd-dev (>= 2.1.0) | libgd2-dev
+libdbus-glib-1-dev (>= 0.71)
+libghc-test-framework-quickcheck2-dev (<< 0.4)
+autopoint (>= 0.19.3)
+libcurl4-gnutls-dev | libcurl-ssl-dev
+libcunit1-dev (>= 2.1) <!nocheck>
+binutils (>= 2.18.1~cvs20080103-2) [mips mipsel]
+libaudit-dev [linux-any]
+gettext (>= 0.12)
+libghc-vector-dev (<< 0.12)
+libghc-pandoc-types-dev (<< 1.18)
+libghc-semigroups-dev (>= 0.16.1)
+libghc-asn1-types-dev (>= 0.3.0)
+gdc-6-s390x-linux-gnu [s390x] <cross>
+python3 (>= 3.1.2-8~)
+libidn11-dev <!stage1>
+libgudev-1.0-dev (>= 143) [linux-any]
+bnd (>= 2.1.0)
+gobjc-6-powerpc64-linux-gnu [ppc64] <cross>
+libilmbase-dev (>= 2.2.0-3)
+gccgo-6-sparc64-linux-gnu [sparc64] <cross>
+cmake (>= 3.4)
+llvm-3.7 [arm64 armel armhf]
+libghc-sha-dev (<< 1.7)
+libglu1-mesa-dev | libglu-dev
+gcj-6-powerpc-linux-gnu [powerpc] <cross>
+pkg-kde-tools (>= 0.14)
+help2man (>= 1.37.1~)
+libunbound-dev (>= 1.5.10-1)
+libpam-dev
+python-cairo-dev (>= 1.2.0)
+libghc-primitive-dev (>= 0.5.0.1)
+perl (>= 5.8.1-2)
+debhelper (>= 8.1.3)
+libghc-x509-dev (<< 1.7)
+python-dev (>= 2.6.6-3~)
+maven-repo-helper (>> 1.0)
+libcap-dev (>= 1:2.24-9~)
+libcrack2-dev (>= 2.8)
+gtk-doc-tools (>= 1.09)
+libqt4-dev (>= 4:4.6.2)
+debhelper (>= 9.20151004)
+x11proto-dri2-dev (>= 2.8)
+libghc-syb-dev (<< 0.7)
+libghc-conduit-dev (<< 1.3)
+python3-all (>= 3.1.2-6~)
+g++-6-sparc64-linux-gnu [sparc64] <cross>
+libghc-resourcet-dev (>= 1.1)
+libxaw7-dev (>= 1:1.0.1)
+qtbase5-dev <!stage1>
+gfortran-6-powerpc64le-linux-gnu [ppc64el] <cross>
+libthai-dev (>= 0.1.22-3~)
+libghc-base64-bytestring-dev (<< 1.1)
+libbsd-dev [kfreebsd-i386 kfreebsd-amd64]
+linux-libc-dev [linux-any]
+libunwind7-dev (>= 0.98.5-6) [ia64]
+gobject-introspection (>= 0.10.8-2)
+dh-exec (>= 0.7)
+libghc-cereal-dev (>= 0.3.1)
+g++-6-aarch64-linux-gnu [arm64] <cross>
+x11proto-render-dev (>= 2:0.11)
+libcolord-dev (>= 0.1.9)
+cmake (>= 2.8.12)
+libghc-regex-base-dev (>= 0.93)
+libghc-resourcet-dev (<< 1.2)
+sgml-base (>= 1.26+nmu2)
+check (>= 0.9.4-2)
+libapr1-dev (>> 1.4.8-2~)
+python3-testtools (>= 0.9.35)
+linux-libc-dev [m68k]
+gfortran-6-aarch64-linux-gnu [arm64] <cross>
+libghc-vector-dev (>= 0.5)
+libgnomecanvas2-dev (>= 2.14.0-2)
+autogen (>= 1:5.16-0)
+python-all-dev (>= 2.6.6-3)
+libqt5xmlpatterns5-dev (>= 5.7.1~20161021~)
+gcj-6-sparc64-linux-gnu [sparc64] <cross>
+dpkg-dev (>= 1.15.1)
+libghc-http-client-tls-dev (<< 0.4)
+libghc-hourglass-dev (>= 0.2.6)
+libgcrypt11-dev (>= 1.2.2)
+libc6.1-dbg [alpha ia64] | libc0.3-dbg [hurd-i386] | libc0.1-dbg [kfreebsd-i386 kfreebsd-amd64] | libc6-dbg
+bison (>= 1:2.3)
+libghc-x509-validation-dev (>= 1.5)
+libmpfr-dev (>= 3.0.0-9~)
+libghc-hashable-dev (>= 1.1.2)
+libghc-http-types-dev (<< 0.10)
+libghc-asn1-encoding-dev (>= 0.9)
+python-nose <!nocheck>
+xutils-dev (>= 1:7.6+4)
+qtbase5-dev (>= 5.5.0~)
+xorg-sgml-doctools (>= 1:1.5)
+libgcrypt20-dev [amd64 i386 arm64 armhf ppc64el x32]
+debhelper (>= 9.0)
+debhelper (>= 9.20160114~)
+libxmuu-dev (>= 1:0.99.1)
+gnumach-dev (>= 2:1.8+git20170102-1~) [hurd-i386]
+libghc-pem-dev (<< 0.3)
+libqt4-opengl-dev (>= 4:4.8.1)
+libdbus-1-dev (>= 1.0.0)
