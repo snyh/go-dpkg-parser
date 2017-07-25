@@ -8,22 +8,11 @@ import (
 	"io"
 	"os"
 	"strings"
-	"unicode"
 )
-
-var Strict = true
 
 type ControlFile map[string]string
 
-func NewControlFile(data []byte) (ControlFile, error) {
-	for i, c := range data {
-		if !unicode.IsSpace(rune(c)) {
-			data = data[i:]
-			break
-		}
-	}
-
-	r := bytes.NewBuffer(data)
+func NewControlFile(r io.Reader) (ControlFile, error) {
 	splitFn := func(data []byte, atEOF bool) (advance int, toke []byte, err error) {
 		l := len(data)
 		for i, c := range data {
@@ -47,11 +36,15 @@ func NewControlFile(data []byte) (ControlFile, error) {
 		return l, data, fmt.Errorf("End of file")
 	}
 
-	f := make(ControlFile)
 	s := bufio.NewScanner(r)
 	s.Split(splitFn)
+
+	f := make(ControlFile)
 	for s.Scan() {
 		line := s.Text()
+		if line == "" {
+			continue
+		}
 		d := strings.SplitN(line, ":", 2)
 		if len(d) != 2 {
 			if Strict {
@@ -66,6 +59,14 @@ func NewControlFile(data []byte) (ControlFile, error) {
 
 func (d ControlFile) GetString(key string) string {
 	return d[strings.ToLower(key)]
+}
+
+func (d ControlFile) Bytes() []byte {
+	buf := bytes.NewBuffer(nil)
+	for k, v := range d {
+		buf.WriteString(fmt.Sprintf("%s : %s\n", k, v))
+	}
+	return buf.Bytes()
 }
 
 func (d ControlFile) GetArrayString(key string, sep string) []string {
@@ -129,7 +130,7 @@ func ParseControlFileGroup(r io.Reader) ([]ControlFile, error) {
 
 	var ts []ControlFile
 	for s.Scan() {
-		cf, err := NewControlFile(s.Bytes())
+		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()))
 		if err != nil {
 			return nil, err
 		}

@@ -1,11 +1,60 @@
 package dpkg
 
 import (
+	"bytes"
+	"crypto/md5"
 	"encoding/gob"
 	"fmt"
+	"io"
 	"os"
+	"path"
 	"sort"
+	"unicode"
 )
+
+func HashFile(fpath string) string {
+	f, err := os.Open(fpath)
+	if err != nil {
+		return ""
+	}
+	defer f.Close()
+
+	hash := md5.New()
+	_, err = io.Copy(hash, f)
+	if err != nil {
+		return ""
+	}
+	var r [16]byte
+	copy(r[:], hash.Sum(nil))
+	return fmt.Sprintf("%x", r)
+}
+
+func TrimLeftSpace(d []byte) []byte {
+	return bytes.TrimFunc(d, unicode.IsSpace)
+}
+
+func EnsureDirectory(t string) error {
+	s, err := os.Stat(t)
+	if err != nil {
+		return os.MkdirAll(t, 0755)
+	} else {
+		if !s.IsDir() {
+			return fmt.Errorf("%q is a regular file", t)
+		}
+	}
+	return nil
+}
+
+func DownloadAndOpen(url string, target string) (*os.File, error) {
+	if err := EnsureDirectory(path.Dir(target)); err != nil {
+		return nil, err
+	}
+	err := download(url, target, false)
+	if err != nil {
+		return nil, err
+	}
+	return os.Open(target)
+}
 
 func sortMapString(d map[string]struct{}) []string {
 	var r = make([]string, 0)

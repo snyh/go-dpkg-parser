@@ -1,10 +1,13 @@
 package dpkg
 
-import C "gopkg.in/check.v1"
-import "strings"
-import "flag"
-import "path"
-import "io/ioutil"
+import (
+	"bytes"
+	"flag"
+	C "gopkg.in/check.v1"
+	"os"
+	"path"
+	"strings"
+)
 
 var network = flag.Bool("network", false, "download test data from network")
 
@@ -20,28 +23,23 @@ func (*netSuite) SetUpSuite(c *C.C) {
 	}
 }
 
-func (*netSuite) TestBuildTestData(c *C.C) {
-	repoURL := "http://10.0.4.226"
-	targetDir := "testdata/packages"
-	codeName := "unstable"
-	rf, err := DownloadReleaseFile(repoURL, codeName, targetDir)
-	c.Check(err, C.Equals, nil)
-	_, err = DownloadRepository(repoURL, rf, targetDir)
-	c.Check(err, C.Equals, nil)
-}
-
 func (*netSuite) TestDumpRepository(c *C.C) {
 	repoURL := "http://pools.corp.deepin.com/deepin"
 	targetDir := "/tmp/dump_repository"
 	codeName := "unstable"
 
-	rf, err := DownloadReleaseFile(repoURL, codeName, targetDir)
+	rPath := path.Join(targetDir, codeName, "Release")
+
+	rf, err := DownloadReleaseFile(repoURL, codeName, rPath)
 	c.Check(err, C.Equals, nil)
 	_, err = DownloadRepository(repoURL, rf, targetDir)
 	c.Check(err, C.Equals, nil)
 
-	bs, _ := ioutil.ReadFile(path.Join(targetDir, "unstable", "Release"))
-	cf, err := NewControlFile(bs)
+	f, err := os.Open(rPath)
+	c.Check(err, C.Equals, nil)
+	cf, err := NewControlFile(f)
+	f.Close()
+
 	c.Check(err, C.Equals, nil)
 	rf, err = cf.ToReleaseFile()
 	c.Check(err, C.Equals, nil)
@@ -52,7 +50,7 @@ func (*netSuite) TestDumpRepository(c *C.C) {
 }
 
 func (*testWrap) TestRelease(c *C.C) {
-	cf, err := NewControlFile([]byte(testRelease))
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(testRelease)))
 
 	rf, err := cf.ToReleaseFile()
 	c.Check(err, C.Equals, nil)
@@ -64,7 +62,7 @@ func (*testWrap) TestRelease(c *C.C) {
 	c.Check(strings.Join(rf.Components, ""), C.Equals, "non-free")
 
 	c.Assert(len(rf.fileInfos), C.Equals, 31)
-	c.Check(len(rf.FileInfos()), C.Equals, 1)
+	c.Check(len(rf.FileInfos()), C.Equals, 2)
 	pf := rf.fileInfos[2]
 	c.Check(pf.Size, C.Equals, uint64(0x8f))
 	c.Check(pf.MD5, C.Equals, "f23e539f4e40f8491b5b5512d1e7aaa9")

@@ -51,7 +51,7 @@ func (m *Suite) UpdateDB() error {
 	}
 	defer os.RemoveAll(targetDir)
 
-	rf, err := DownloadReleaseFile(m.repoURL, m.name, targetDir)
+	rf, err := DownloadReleaseFile(m.repoURL, m.name, path.Join(targetDir, m.name, "Release"))
 	if err != nil {
 		return fmt.Errorf("UpdateDB: failed download release file: %v", err)
 	}
@@ -96,8 +96,11 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 	changed := false
 	for _, f := range rf.FileInfos() {
 		url := repoURL + "/dists/" + rf.CodeName + "/" + f.Path
-		target := path.Join(targetDir, rf.CodeName, "raw", f.Path)
+		target := path.Join(targetDir, f.Path)
 		if HashFile(target) == f.MD5 {
+			if Debug {
+				fmt.Printf("%q to %q is cached\n", url, target)
+			}
 			continue
 		}
 		changed = true
@@ -110,36 +113,19 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 	return changed, nil
 }
 
-func DownloadReleaseFile(repoURL string, codeName string, targetDir string) (ReleaseFile, error) {
-	url := fmt.Sprintf("%s/dists/%s/Release", repoURL, codeName)
-	reps, err := http.Get(url)
-	if err != nil {
-		return ReleaseFile{}, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
+func BuildSuiteCache(rf ReleaseFile, cacheDir string) error {
+	for _, f := range rf.FileInfos() {
+		fmt.Printf("Caching %q to %q\n", f.Path, f.Path)
 	}
-	defer reps.Body.Close()
-	// There is no need check reps.StatusCode, ReadReleaseFile will check the validation.
-
-	// download Release File
-	fpath := path.Join(targetDir, codeName, "Release")
-	os.MkdirAll(path.Dir(fpath), 0755)
-	f, err := os.Create(fpath)
-	if err != nil {
-		return ReleaseFile{}, fmt.Errorf("DownloadReleaseFile(%q) can't create file %q : %v", url, fpath, err)
-	}
-	defer f.Close()
-
-	// build Release File
-	bs, _ := ioutil.ReadAll(io.TeeReader(reps.Body, f))
-	cf, err := NewControlFile(bs)
-	if err != nil {
-		return ReleaseFile{}, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
-	}
-	return cf.ToReleaseFile()
+	return nil
 }
 
-// DownloadTee download the url content to "dest" file
-// and return a io.Reader to read it.
-func download(url string, dest string, gz bool) error {
+// download download the url content to "dest" file.
+// unpack only support gz file now.
+func download(url string, dest string, unpack bool) error {
+	if Debug {
+		fmt.Printf("Downloading %q to %q\n", url, dest)
+	}
 	os.MkdirAll(path.Dir(dest), 0755)
 
 	reps, err := http.Get(url)

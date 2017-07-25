@@ -57,6 +57,9 @@ func BuildCache(rf ReleaseFile, rawDataDir string, targetDir string) error {
 	DBs := make(map[Architecture]PackageDB)
 	for _, f := range rf.FileInfos() {
 		source := path.Join(rawDataDir, rf.CodeName, "raw", f.Path)
+		if f.Architecture == "source" {
+			continue
+		}
 		DBSources[f.Architecture] = append(DBSources[f.Architecture], source)
 	}
 	for arch, sources := range DBSources {

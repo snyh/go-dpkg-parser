@@ -1,11 +1,13 @@
 package dpkg
 
-import "testing"
-import "bytes"
-import C "gopkg.in/check.v1"
-import "fmt"
-import "strings"
-import "bufio"
+import (
+	"bufio"
+	"bytes"
+	"fmt"
+	C "gopkg.in/check.v1"
+	"strings"
+	"testing"
+)
 
 type testWrap struct{}
 
@@ -28,9 +30,6 @@ func (*testWrap) TestBuildCache(c *C.C) {
 	m, err := NewSuite("testdata", "http://pools.corp.deepin.com/deepin/", codeName)
 	c.Check(err, C.Equals, nil)
 
-	mode := Strict
-	Strict = false
-	defer func() { Strict = mode }()
 	err = m.UpdateDB()
 
 	c.Check(err, C.Equals, nil)
@@ -42,8 +41,9 @@ func (*testWrap) TestBuildCache(c *C.C) {
 	rf, err := GetReleaseFile(targetDir, codeName)
 	c.Check(err, C.Equals, nil)
 	err = BuildCache(rf, targetDir, targetDir)
-	c.Check(err, C.Equals, nil)
-
+	if err != nil {
+		c.Fatal(err)
+	}
 }
 
 func TestLarageControlFile(t *testing.T) {
@@ -58,17 +58,25 @@ func TestLarageControlFile(t *testing.T) {
 	}
 }
 
-func (*testWrap) TestBinaryPackage(c *C.C) {
-	cf, err := NewControlFile([]byte(testDSC))
-	t, err := cf.ToBinary()
-	c.Assert(err, C.Equals, nil)
-	c.Check(t.Filename, C.Equals, "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
-	c.Check(t.Size, C.Equals, 666554)
-	//c.Check(t.Description, C.Equals, "Description: Fraunhofer FDK AAC Codec Library - frontend binary test multiline")
+func TestBinaryPackage(t *testing.T) {
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(testDSC)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	p, err := cf.ToBinary()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Filename != "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb" {
+		t.Fatal()
+	}
+	if p.Size != 666554 {
+		t.Fatal()
+	}
 }
 
 func (*testWrap) TestControlFile(c *C.C) {
-	d, err := NewControlFile([]byte(testDSC))
+	d, err := NewControlFile(bytes.NewBuffer([]byte(testDSC)))
 	c.Check(err, C.Equals, nil)
 
 	c.Check(d.GetString("Package"), C.Equals, "aac-enc")

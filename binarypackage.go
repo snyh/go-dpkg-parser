@@ -38,7 +38,7 @@ func (t BinaryPackage) valid() error {
 		return fmt.Errorf("W: pacakge name must be at least two characters long and start with an alphanumeric character: %q", t.Package)
 	}
 	if t.Filename == "" {
-		return fmt.Errorf("W: parsing ControlFile not enough fields: %q %q %q", t.Package, t.Tag, t.Filename)
+		return fmt.Errorf("W: BinaryPackage %q hasn't a filename field", t.Package)
 	}
 	return nil
 }

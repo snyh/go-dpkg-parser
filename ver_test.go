@@ -7,6 +7,7 @@ import (
 )
 
 func TestBuildDepends(t *testing.T) {
+	t.Skip()
 	vs := []string{
 		"python:native",
 		"debhelper (>= 3.10), gcc (<< 7.0)",
@@ -29,6 +30,7 @@ func TestBuildDepends(t *testing.T) {
 }
 
 func TestAllVersions(t *testing.T) {
+	t.Skip()
 	bs, err := ioutil.ReadFile("testdata/ver.list")
 	if err != nil {
 		t.Fatal("Can't load deps.list", err)
@@ -43,6 +45,7 @@ func TestAllVersions(t *testing.T) {
 }
 
 func TestAllDepends(t *testing.T) {
+	t.Skip()
 	bs, err := ioutil.ReadFile("testdata/deps.list")
 	if err != nil {
 		t.Fatal("Can't load deps.list", err)

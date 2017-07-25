@@ -2,9 +2,63 @@ package dpkg
 
 import (
 	"fmt"
+	"path"
 	"strings"
 	"sync"
 )
+
+func DownloadReleaseFile(repoURL string, codeName string, fpath string) (ReleaseFile, error) {
+	var r ReleaseFile
+	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
+
+	// download Release File
+	f, err := DownloadAndOpen(url, fpath)
+	if err != nil {
+		return r, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
+	}
+	defer f.Close()
+
+	// build Release File
+	cf, err := NewControlFile(f)
+	if err != nil {
+		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
+	}
+	return cf.ToReleaseFile()
+}
+
+type Suite1 struct {
+	BinaryPackage map[Architecture]map[string]ControlFile
+	SourcePackage map[string]ControlFile
+	Sections      []string
+	CodeName      string
+	Architecutres []Architecture
+
+	dataDir string
+	host    string
+}
+
+func NewSuite1(url string, codename string, dataDir string) (*Suite1, error) {
+	s := &Suite1{
+		host:     url,
+		CodeName: codename,
+		dataDir:  dataDir,
+	}
+	return s, s.build()
+}
+
+func (s *Suite1) build() error {
+	rf, err := DownloadReleaseFile(s.host, s.CodeName, path.Join(s.dataDir, ReleaseFileName))
+	if err != nil {
+		return err
+	}
+	_, err = DownloadRepository(s.host, rf, s.dataDir)
+
+	// TODO: Build the Caches..
+	return err
+}
+
+func (s *Suite1) ListSource() {
+}
 
 type Suite struct {
 	cacheDir string
