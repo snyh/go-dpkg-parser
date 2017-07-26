@@ -36,8 +36,8 @@ func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
 }
 
 // GetReleaseFile load ReleaseFile from dataDir with codeName
-func GetReleaseFile(dataDir string, codeName string) (ReleaseFile, error) {
-	f, err := os.Open(buildDBPath(dataDir, codeName, ReleaseFileName))
+func GetReleaseFile(path string) (ReleaseFile, error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return ReleaseFile{}, fmt.Errorf("GetReleaseFile open file error: %v", err)
 	}

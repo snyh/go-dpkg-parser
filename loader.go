@@ -20,24 +20,6 @@ func loadPackageDB(fpath string) (PackageDB, error) {
 	return obj, err
 }
 
-func (m *Suite) DataHash() string {
-	rf, err := GetReleaseFile(m.cacheDir, m.name)
-	if err != nil {
-		return ""
-	}
-	return rf.Hash()
-}
-
-func (m *Suite) loadIndex(targetDir string) error {
-	index, err := loadPackagesaDBIndex(buildDBPath(targetDir, m.name, DBIndexName))
-	if err != nil {
-		return fmt.Errorf("UpdateDB: failed load db index: %v", err)
-	}
-	m.index = index
-	m.dbs = make(map[Architecture]PackageDB)
-	return nil
-}
-
 // DownloadRepository download files from rf.FileInfos()
 // it ignoring unchanged file by checking MD5 value.
 // return whether changed and error if any.
