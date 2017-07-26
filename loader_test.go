@@ -3,27 +3,15 @@ package dpkg
 import (
 	"bytes"
 	"flag"
-	C "gopkg.in/check.v1"
 	"os"
 	"path"
 	"strings"
+	"testing"
 )
 
 var network = flag.Bool("network", false, "download test data from network")
 
-type netSuite struct{}
-
-func init() {
-	C.Suite(&netSuite{})
-}
-
-func (*netSuite) SetUpSuite(c *C.C) {
-	if !*network {
-		c.Skip("no network support")
-	}
-}
-
-func (*netSuite) TestDumpRepository(c *C.C) {
+func TestDumpRepository(t *testing.T) {
 	repoURL := "http://pools.corp.deepin.com/deepin"
 	targetDir := "/tmp/dump_repository"
 	codeName := "unstable"
@@ -31,38 +19,38 @@ func (*netSuite) TestDumpRepository(c *C.C) {
 	rPath := path.Join(targetDir, codeName, "Release")
 
 	rf, err := DownloadReleaseFile(repoURL, codeName, rPath)
-	c.Check(err, C.Equals, nil)
+	Assert(t, err, nil)
 	_, err = DownloadRepository(repoURL, rf, targetDir)
-	c.Check(err, C.Equals, nil)
+	Assert(t, err, nil)
 
 	f, err := os.Open(rPath)
-	c.Check(err, C.Equals, nil)
+	Assert(t, err, nil)
 	cf, err := NewControlFile(f)
 	f.Close()
+	Assert(t, err, nil)
 
-	c.Check(err, C.Equals, nil)
 	rf, err = cf.ToReleaseFile()
-	c.Check(err, C.Equals, nil)
+	Assert(t, err, nil)
 }
 
-func (*testWrap) TestRelease(c *C.C) {
+func TestRelease(t *testing.T) {
 	cf, err := NewControlFile(bytes.NewBuffer([]byte(testRelease)))
 
 	rf, err := cf.ToReleaseFile()
-	c.Check(err, C.Equals, nil)
+	Assert(t, err, nil)
 
-	c.Check(rf.CodeName, C.Equals, "experimental")
+	Assert(t, rf.CodeName, "experimental")
 
-	c.Check(len(rf.Architectures), C.Equals, 1)
-	c.Check(rf.Architectures[0], C.Equals, Architecture("amd64"))
-	c.Check(strings.Join(rf.Components, ""), C.Equals, "non-free")
+	Assert(t, len(rf.Architectures), 1)
+	Assert(t, rf.Architectures[0], Architecture("amd64"))
+	Assert(t, strings.Join(rf.Components, ""), "non-free")
 
-	c.Assert(len(rf.fileInfos), C.Equals, 31)
-	c.Check(len(rf.FileInfos()), C.Equals, 2)
+	Assert(t, len(rf.fileInfos), 31)
+	Assert(t, len(rf.FileInfos()), 2)
 	pf := rf.fileInfos[2]
-	c.Check(pf.Size, C.Equals, uint64(0x8f))
-	c.Check(pf.MD5, C.Equals, "f23e539f4e40f8491b5b5512d1e7aaa9")
-	c.Check(pf.Path, C.Equals, "main/binary-i386/Release")
+	Assert(t, pf.Size, uint64(0x8f))
+	Assert(t, pf.MD5, "f23e539f4e40f8491b5b5512d1e7aaa9")
+	Assert(t, pf.Path, "main/binary-i386/Release")
 }
 
 const testRelease = `

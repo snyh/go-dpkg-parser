@@ -18,6 +18,25 @@ type BinaryPackage struct {
 	Homepage      string        `json:"homepage"`
 }
 
+type PackageListItem struct {
+	Name     string
+	Ptype    string
+	Section  string
+	Priority string
+	Arch     string
+}
+
+type SourcePackage struct {
+	Package     string `json:"package"`
+	Version     string `json:"version"`
+	Description string `json:"description"`
+	Homepage    string `json:"homepage"`
+
+	Format     string            `json:"format"`
+	Binary     []string          `json:"binary"`
+	PackgeList []PackageListItem `json:"package_list"`
+}
+
 type Architecture string
 
 type Architectures []Architecture
@@ -61,18 +80,14 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	return t, t.valid()
 }
 
-func LoadBinaryPackages(path string) ([]BinaryPackage, error) {
-	cfs, err := LoadControlFileGroup(path)
-	if err != nil {
-		return nil, err
-	}
-	var ret []BinaryPackage
-	for _, cf := range cfs {
-		bcf, err := cf.ToBinary()
-		if err != nil {
-			return nil, err
-		}
-		ret = append(ret, bcf)
-	}
-	return ret, nil
+func (cf SourcePackage) valid() error { return nil }
+func (cf ControlFile) ToSource() (SourcePackage, error) {
+	t := SourcePackage{}
+	t.Package = cf.GetString("package")
+	t.Version = cf.GetString("version")
+	t.Description = cf.GetString("description")
+	t.Homepage = cf.GetString("homepage")
+	t.Format = cf.GetString("format")
+	t.Binary = cf.GetArrayString("binary", ",")
+	return t, t.valid()
 }

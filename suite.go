@@ -25,7 +25,7 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 }
 
 type Suite struct {
-	BinaryPackage map[Architecture]map[string]ControlFile
+	Packages map[Architecture]map[string]ControlFile
 
 	Architecutres []Architecture
 
@@ -43,14 +43,17 @@ func NewSuite(url string, codename string, dataDir string) (*Suite, error) {
 	return s, s.build()
 }
 
-func (s *Suite) FindBinary(name string) (BinaryPackage, error) {
-	for arch, db := range s.BinaryPackage {
+func (s *Suite) FindBinary(name string, arch Architecture) (BinaryPackage, error) {
+	if arch == "all" {
+		arch = s.Architecutres[0]
+	}
+	for arch, db := range s.Packages {
 		if arch == "source" {
 			continue
 		}
 		return db[name].ToBinary()
 	}
-	return BinaryPackage{}, nil
+	return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
 }
 
 func (s *Suite) tryDownload() (ReleaseFile, error) {
@@ -83,9 +86,9 @@ func (s *Suite) build() error {
 		fs[f.Architecture] = append(fs[f.Architecture], path.Join(s.dataDir, f.Path))
 	}
 
-	s.BinaryPackage = make(map[Architecture]map[string]ControlFile)
+	s.Packages = make(map[Architecture]map[string]ControlFile)
 	for arch, cs := range fs {
-		s.BinaryPackage[arch], err = buildCache(path.Join(s.dataDir, "cache-"+string(arch)+".db"), cs...)
+		s.Packages[arch], err = buildCache(path.Join(s.dataDir, "cache-"+string(arch)+".db"), cs...)
 		if err != nil {
 			return err
 		}
@@ -111,10 +114,36 @@ func buildCache(cacheFile string, files ...string) (map[string]ControlFile, erro
 	return r, storeGOB(cacheFile, r)
 }
 
-func (s *Suite) ListSource() []string {
-	var re []string
-	for p := range s.BinaryPackage["source"] {
-		re = append(re, p)
+func (s *Suite) FindBinaryBySource(sp SourcePackage, arch Architecture) []BinaryPackage {
+	var ret []BinaryPackage
+	for _, name := range sp.Binary {
+		b, err := s.FindBinary(name, arch)
+		if err != nil {
+			continue
+		}
+		ret = append(ret, b)
+	}
+	return ret
+}
+
+func (s *Suite) FindSource(name string) (SourcePackage, error) {
+	srcs, ok := s.Packages["source"]
+	if !ok {
+		return SourcePackage{}, NotFoundError{name}
+	}
+	r, ok := srcs[name]
+	return r.ToSource()
+}
+
+func (s *Suite) ListSource() map[string]SourcePackage {
+	var re = make(map[string]SourcePackage)
+	for p, cf := range s.Packages["source"] {
+		s, err := cf.ToSource()
+		if err != nil {
+			fmt.Println("W:", err)
+			continue
+		}
+		re[p] = s
 	}
 	return re
 }
