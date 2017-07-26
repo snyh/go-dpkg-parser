@@ -43,10 +43,6 @@ func (*netSuite) TestDumpRepository(c *C.C) {
 	c.Check(err, C.Equals, nil)
 	rf, err = cf.ToReleaseFile()
 	c.Check(err, C.Equals, nil)
-
-	err = BuildCache(rf, targetDir, targetDir)
-	c.Check(err, C.Equals, nil)
-
 }
 
 func (*testWrap) TestRelease(c *C.C) {

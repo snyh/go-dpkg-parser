@@ -28,13 +28,12 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 
 type Suite1 struct {
 	BinaryPackage map[Architecture]map[string]ControlFile
-	SourcePackage map[string]ControlFile
-	Sections      []string
-	CodeName      string
+
 	Architecutres []Architecture
 
-	dataDir string
-	host    string
+	CodeName string
+	dataDir  string
+	host     string
 }
 
 func NewSuite1(url string, codename string, dataDir string) (*Suite1, error) {
@@ -46,6 +45,16 @@ func NewSuite1(url string, codename string, dataDir string) (*Suite1, error) {
 	return s, s.build()
 }
 
+func (s *Suite1) FindBinary(name string) (BinaryPackage, error) {
+	for arch, db := range s.BinaryPackage {
+		if arch == "source" {
+			continue
+		}
+		return db[name].ToBinary()
+	}
+	return BinaryPackage{}, nil
+}
+
 func (s *Suite1) build() error {
 	rf, err := DownloadReleaseFile(s.host, s.CodeName, path.Join(s.dataDir, ReleaseFileName))
 	if err != nil {
@@ -53,11 +62,47 @@ func (s *Suite1) build() error {
 	}
 	_, err = DownloadRepository(s.host, rf, s.dataDir)
 
-	// TODO: Build the Caches..
+	s.Architecutres = rf.Architectures
+
+	fs := make(map[Architecture][]string)
+	for _, f := range rf.FileInfos() {
+		fs[f.Architecture] = append(fs[f.Architecture], path.Join(s.dataDir, f.Path))
+	}
+
+	s.BinaryPackage = make(map[Architecture]map[string]ControlFile)
+	for arch, cs := range fs {
+		s.BinaryPackage[arch], err = buildCache(path.Join(s.dataDir, "cache-"+string(arch)+".db"), cs...)
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
-func (s *Suite1) ListSource() {
+func buildCache(cacheFile string, files ...string) (map[string]ControlFile, error) {
+	r := make(map[string]ControlFile)
+	if err := loadGOB(cacheFile, &r); err == nil {
+		return r, nil
+	}
+
+	for _, f := range files {
+		cfs, err := LoadControlFileGroup(f)
+		if err != nil {
+			return nil, err
+		}
+		for _, cf := range cfs {
+			r[cf.GetString("Package")] = cf
+		}
+	}
+	return r, storeGOB(cacheFile, r)
+}
+
+func (s *Suite1) ListSource() []string {
+	var re []string
+	for p := range s.BinaryPackage["source"] {
+		re = append(re, p)
+	}
+	return re
 }
 
 type Suite struct {

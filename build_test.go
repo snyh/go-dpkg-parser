@@ -27,23 +27,12 @@ func (*testWrap) TestBuildCache(c *C.C) {
 	targetDir := "testdata"
 	codeName := "unstable"
 
-	m, err := NewSuite("testdata", "http://pools.corp.deepin.com/deepin/", codeName)
+	m, err := NewSuite1("http://pools.corp.deepin.com/deepin/", codeName, targetDir)
 	c.Check(err, C.Equals, nil)
 
-	err = m.UpdateDB()
-
+	t, err := m.FindBinary("lastore-daemon")
 	c.Check(err, C.Equals, nil)
-
-	t, ok := m.Get("lastore-daemon")
-	c.Check(ok, C.Equals, true)
 	c.Check(t.Homepage, C.Equals, "http://github.com/linuxdeepin/lastore-daemon")
-
-	rf, err := GetReleaseFile(targetDir, codeName)
-	c.Check(err, C.Equals, nil)
-	err = BuildCache(rf, targetDir, targetDir)
-	if err != nil {
-		c.Fatal(err)
-	}
 }
 
 func TestLarageControlFile(t *testing.T) {

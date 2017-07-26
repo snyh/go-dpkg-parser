@@ -3,7 +3,6 @@ package dpkg
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -37,56 +36,6 @@ func (m *Suite) loadIndex(targetDir string) error {
 	m.index = index
 	m.dbs = make(map[Architecture]PackageDB)
 	return nil
-}
-
-func (m *Suite) UpdateDB() error {
-	// always trying load index file at the end, no matter the result.
-	defer m.loadIndex(m.cacheDir)
-
-	// 1. comparing ReleaseFile.Hash to check whether need update
-	os.MkdirAll(m.cacheDir, 0755)
-	targetDir, err := ioutil.TempDir(m.cacheDir, "lastore.packages.partition")
-	if err != nil {
-		return fmt.Errorf("UpdateDB: failed create temp directory: %v", err)
-	}
-	defer os.RemoveAll(targetDir)
-
-	rf, err := DownloadReleaseFile(m.repoURL, m.name, path.Join(targetDir, m.name, "Release"))
-	if err != nil {
-		return fmt.Errorf("UpdateDB: failed download release file: %v", err)
-	}
-
-	h := m.DataHash()
-	if h == rf.Hash() {
-		changed, err := DownloadRepository(m.repoURL, rf, m.cacheDir)
-		if err != nil {
-			return err
-		}
-		if changed {
-			BuildCache(rf, m.cacheDir, m.cacheDir)
-		}
-		m.loadIndex(m.cacheDir)
-		return nil
-	}
-
-	// 2. download data and build DBs to tmp/${xx} directory
-	_, err = DownloadRepository(m.repoURL, rf, targetDir)
-	if err != nil {
-		return fmt.Errorf("UpdateDB: failed download repository files: %v", err)
-	}
-	err = BuildCache(rf, targetDir, targetDir)
-	if err != nil {
-		return fmt.Errorf("UpdateDB: failed build dbs: %v", err)
-	}
-
-	// 3. unload index
-	m.index = nil
-
-	// 4. removing old data on filesystem.
-	os.RemoveAll(buildDBPath(m.cacheDir, m.name))
-
-	// 5. moving tmp/${xx} to $cacheDir on filesystem.
-	return os.Rename(buildDBPath(targetDir, m.name), buildDBPath(m.cacheDir, m.name))
 }
 
 // DownloadRepository download files from rf.FileInfos()
