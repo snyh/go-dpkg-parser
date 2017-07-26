@@ -41,16 +41,16 @@ func TestLarageControlFile(t *testing.T) {
 }
 
 func TestBinaryPackage(t *testing.T) {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(testBinary)))
-	if err != nil {
-		t.Fatal(err)
-	}
-	p, err := cf.ToBinary()
-	if err != nil {
-		t.Fatal(err)
-	}
+	p := buildTestPackageBinary(t, testBinary)
 	Assert(t, p.Filename, "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
 	Assert(t, p.Size, 666554)
+
+	p = buildTestPackageBinary(t, testBinary2)
+	Assert(t, p.Package, "apps.com.txsp")
+
+	p = buildTestPackageBinary(t, testMultline)
+	Assert(t, p.Package, "lib32gcc-4.9-dev")
+
 }
 
 func Assert(t *testing.T, left interface{}, right interface{}) {
@@ -59,8 +59,8 @@ func Assert(t *testing.T, left interface{}, right interface{}) {
 	}
 }
 
-func TestDSC(t *testing.T) {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(testDSC)))
+func buildTestPackageSource(t *testing.T, v string) SourcePackage {
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,8 +68,27 @@ func TestDSC(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	return p
+}
+func buildTestPackageBinary(t *testing.T, v string) BinaryPackage {
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	p, err := cf.ToBinary()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return p
+}
+
+func TestDSC(t *testing.T) {
+	p := buildTestPackageSource(t, testDSC)
 	Assert(t, p.Binary, []string{"aften", "libaften0", "libaften-dev"})
 	Assert(t, p.Format, "1.0")
+
+	p = buildTestPackageSource(t, testNonePackList)
+	Assert(t, p.PackageList[0], PackageListItem{Name: p.Package, Archs: []string{"abc"}})
 }
 
 func TestControlFile(t *testing.T) {
@@ -118,6 +137,55 @@ Filename: pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb
 Test: %s
 `
 
+var testMultline = `
+Package: lib32gcc-4.9-dev
+Source: gcc-4.9
+Version: 4.9.4-2
+Installed-Size: 6211
+Maintainer: Debian GCC Maintainers <debian-gcc@lists.debian.org>
+Architecture: amd64
+Depends: gcc-4.9-base (= 4.9.4-2), lib32gcc1 (>= 1:4.9.4-2), libx32gcc1 (>= 1:4.9.4-2), lib32gomp1 (>= 4.9.4-2), libx32gomp1 (>= 4.9.4-2\
+), lib32itm1 (>= 4.9.4-2), libx32itm1 (>= 4.9.4-2), lib32atomic1 (>= 4.9.4-2), libx32atomic1 (>= 4.9.4-2), lib32asan1 (>= 4.9.4-2), libx\
+32asan1 (>= 4.9.4-2), lib32ubsan0 (>= 4.9.4-2), libx32ubsan0 (>= 4.9.4-2), lib32cilkrts5 (>= 4.9.4-2), libx32cilkrts5 (>= 4.9.4-2), lib3\
+2quadmath0 (>= 4.9.4-2), libx32quadmath0 (>= 4.9.4-2)
+Recommends: libc6-dev (>= 2.13-5)
+Size: 1903246
+SHA256: fa82adbc224d01541594bd1b11996288cf5fe73b930d4850d795a75bda4d170a
+SHA1: 019b774f9db5db7812dac08189cd744b84a01631
+MD5sum: bb3f9843fa97cc5fdc30ca934cada406
+Description: GCC support library (32 bit development files)
+ This package contains the headers and static library files necessary for
+ building C programs which use libgcc, libgomp, libquadmath, libssp or libitm.
+Homepage: http://gcc.gnu.org/
+Tag: devel::library, role::devel-lib
+Section: libdevel
+Priority: optional
+Filename: pool/main/g/gcc-4.9/lib32gcc-4.9-dev_4.9.4-2_amd64.deb
+`
+
+const testNonePackList = `
+Package: tmpreaper
+Binary: tmpreaper
+Version: 1.6.13+nmu1
+Maintainer: Paul Slootman <paul@debian.org>
+Build-Depends: debhelper (>= 5), e2fslibs-dev, po-debconf
+Architecture: abc
+Standards-Version: 3.8.3.0
+Format: 1.0
+Files:
+ 2e628b122fae3896cafb9ea31887021c 748 tmpreaper_1.6.13+nmu1.dsc
+ 36bffb38fbdd28b9de8af229faabf5fe 141080 tmpreaper_1.6.13+nmu1.tar.gz
+Checksums-Sha1:
+ ea9c60662bb8998e9486204c0a41e7bb003155c4 748 tmpreaper_1.6.13+nmu1.dsc
+ 96a490a9c2df6d3726af8df299e5aedd7d49fbfe 141080 tmpreaper_1.6.13+nmu1.tar.gz
+Checksums-Sha256:
+ 8782f6fcdf98ba2f77ee278d13806d3e4f7e0c991a8940473fa0afe1b7e466f9 748 tmpreaper_1.6.13+nmu1.dsc
+ c88f05b5d995b9544edb7aaf36ac5ce55c6fac2a4c21444e5dba655ad310b738 141080 tmpreaper_1.6.13+nmu1.tar.gz
+Directory: pool/main/t/tmpreaper
+Priority: source
+Section: admin
+`
+
 var testDSC = `Package: aften
 Format: 1.0
 Binary: aften, libaften0, libaften-dev
@@ -146,4 +214,23 @@ Checksums-Sha256:
  204b23580d54928073c76453ace942ee0731d90214062e48236ac2ebf1ba46c4 964 aften_0.0.8svn20100103-0.0.dsc
  372643b7b62258504f80c73d75a59e3cbfc5dec6f9e8bda626a9b5816f269c8f 125272 aften_0.0.8svn20100103.orig.tar.gz
  2e78c5eb9dd74cd1f6e08a76fdd3c1633fd8f43ecfafe36783b0b0ed47f784f6 2313 aften_0.0.8svn20100103-0.0.diff.gz
+`
+
+const testBinary2 = `
+Package: apps.com.txsp
+Version: 1.1
+Architecture: amd64
+Maintainer: Deepin Packages Builder <packages@deepin.com>
+Installed-Size: 23347
+Depends: deepin-chrome-arc
+Homepage: http://www.deepin.org
+Priority: optional
+Section: utils
+Filename: pool/main/a/apps.com.txsp/apps.com.txsp_1.1_amd64.deb
+Size: 22282694
+SHA256: 91be41232545b999bd1a5805618f19b1853a333df7a3db4cee797789f9aa49c2
+SHA1: abdffc72f4b91fba2b791c8f87a9e2b7cbae4a08
+MD5sum: a50d7c5f974586f25ae7474aa103a571
+Description: Tengxun Video for Chrome ARC
+Description-md5: 1cc503533ab128384dee9c0dc7f5a689
 `

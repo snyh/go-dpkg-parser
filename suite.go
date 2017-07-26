@@ -116,9 +116,12 @@ func buildCache(cacheFile string, files ...string) (map[string]ControlFile, erro
 
 func (s *Suite) FindBinaryBySource(sp SourcePackage, arch Architecture) []BinaryPackage {
 	var ret []BinaryPackage
-	for _, name := range sp.Binary {
+	for _, name := range sp.GetBinary(arch) {
 		b, err := s.FindBinary(name, arch)
 		if err != nil {
+			if Debug {
+				fmt.Printf("W: FindBinaryBySource(%s,%s)->%q: %v\n", sp.Package, arch, name, err)
+			}
 			continue
 		}
 		ret = append(ret, b)

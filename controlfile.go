@@ -12,32 +12,47 @@ import (
 
 type ControlFile map[string]string
 
-func NewControlFile(r io.Reader) (ControlFile, error) {
-	splitFn := func(data []byte, atEOF bool) (advance int, toke []byte, err error) {
-		l := len(data)
-		for i, c := range data {
-			if c == '\n' {
-				if i+1 < l && (data[i+1] != ' ' && data[i+1] != '\t') {
-					return i + 1, data[:i], nil
-				}
+func splitControlFileLine(data []byte, noMoreData bool) (int, []byte, error) {
+	l := len(data)
+	maybeWrap := 0
 
-				if i+1 == l && atEOF {
-					return i + 1, data[:i], nil
-				}
+	EndOfChunk := func(i int) bool { return i+1 == l }
+	NextIsNotSpace := func(i int) bool { c := data[i+1]; return c != ' ' && c != '\t' }
+
+	for i, c := range data {
+		if EndOfChunk(i) {
+			continue
+		}
+		switch c {
+		case '\n':
+			if maybeWrap != 0 {
+				continue
+			} else if NextIsNotSpace(i) {
+				return i + 1, data[:i], nil
+			}
+		case '\\':
+			//TODO: strip the wrap characters before returning
+			maybeWrap = i
+		default:
+			if NextIsNotSpace(i) {
+				maybeWrap = 0
 			}
 		}
-		if !atEOF {
-			return 0, nil, nil
-		}
-		if atEOF && l != 0 {
-			return l, data, nil
-		}
-
-		return l, data, fmt.Errorf("End of file")
 	}
 
+	if !noMoreData {
+		return 0, nil, nil
+	} else if l != 0 {
+		return l, data, nil
+	}
+
+	return 0, nil, fmt.Errorf("End of file")
+
+}
+
+func NewControlFile(r io.Reader) (ControlFile, error) {
 	s := bufio.NewScanner(r)
-	s.Split(splitFn)
+	s.Split(splitControlFileLine)
 
 	f := make(ControlFile)
 	for s.Scan() {
@@ -58,7 +73,7 @@ func NewControlFile(r io.Reader) (ControlFile, error) {
 }
 
 func (d ControlFile) GetString(key string) string {
-	return d[strings.ToLower(key)]
+	return strings.TrimSpace(d[strings.ToLower(key)])
 }
 
 func (d ControlFile) Bytes() []byte {
@@ -70,15 +85,12 @@ func (d ControlFile) Bytes() []byte {
 }
 
 func (d ControlFile) GetArrayString(key string, sep string) []string {
-	var r []string
-	for _, c := range strings.Split(d.GetString(key), sep) {
-		r = append(r, strings.TrimSpace(c))
-	}
-	return r
+	s := d.GetString(key)
+	return getArrayString(s, sep)
 }
 
 func (d ControlFile) GetMultiline(key string) []string {
-	return strings.Split(d[strings.ToLower(key)], "\n")
+	return getMultiline(d.GetString(key))
 }
 
 func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
@@ -137,4 +149,25 @@ func ParseControlFileGroup(r io.Reader) ([]ControlFile, error) {
 		ts = append(ts, cf)
 	}
 	return ts, nil
+}
+
+func getArrayString(s string, sep string) []string {
+	var r []string
+	for _, c := range strings.Split(s, sep) {
+		r = append(r, strings.TrimSpace(c))
+	}
+	return r
+}
+
+func getMultiline(s string) []string {
+	if s == "" {
+		return nil
+	}
+	var ret []string
+
+	for _, f := range strings.Split(s, "\n") {
+		ret = append(ret, strings.TrimSpace(f))
+	}
+	return ret
+
 }
