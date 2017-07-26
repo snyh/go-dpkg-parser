@@ -8,18 +8,6 @@ import (
 	"path"
 )
 
-func loadPackagesaDBIndex(fpath string) (*PackageDBIndex, error) {
-	index := &PackageDBIndex{}
-	err := loadGOB(fpath, &index)
-	return index, err
-}
-
-func loadPackageDB(fpath string) (PackageDB, error) {
-	var obj = make(PackageDB)
-	err := loadGOB(fpath, &obj)
-	return obj, err
-}
-
 // DownloadRepository download files from rf.FileInfos()
 // it ignoring unchanged file by checking MD5 value.
 // return whether changed and error if any.
@@ -42,13 +30,6 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 		}
 	}
 	return changed, nil
-}
-
-func BuildSuiteCache(rf ReleaseFile, cacheDir string) error {
-	for _, f := range rf.FileInfos() {
-		fmt.Printf("Caching %q to %q\n", f.Path, f.Path)
-	}
-	return nil
 }
 
 // download download the url content to "dest" file.

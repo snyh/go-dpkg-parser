@@ -7,7 +7,6 @@ import (
 )
 
 func TestBuildDepends(t *testing.T) {
-	t.Skip()
 	vs := []string{
 		"python:native",
 		"debhelper (>= 3.10), gcc (<< 7.0)",

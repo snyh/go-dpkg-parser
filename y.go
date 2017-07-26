@@ -87,7 +87,6 @@ func saveResult(l verLexer, r []Depend) {
 func (l *myLexer) Lex(lval *verSymType) int {
 	t, s := l.slex.Token()
 	lval.val = s
-	__yyfmt__.Println("HH:", t, s)
 	return int(t)
 }
 

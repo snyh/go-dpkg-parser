@@ -24,7 +24,7 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 	return cf.ToReleaseFile()
 }
 
-type Suite1 struct {
+type Suite struct {
 	BinaryPackage map[Architecture]map[string]ControlFile
 
 	Architecutres []Architecture
@@ -34,8 +34,8 @@ type Suite1 struct {
 	host     string
 }
 
-func NewSuite1(url string, codename string, dataDir string) (*Suite1, error) {
-	s := &Suite1{
+func NewSuite(url string, codename string, dataDir string) (*Suite, error) {
+	s := &Suite{
 		host:     url,
 		CodeName: codename,
 		dataDir:  dataDir,
@@ -43,7 +43,7 @@ func NewSuite1(url string, codename string, dataDir string) (*Suite1, error) {
 	return s, s.build()
 }
 
-func (s *Suite1) FindBinary(name string) (BinaryPackage, error) {
+func (s *Suite) FindBinary(name string) (BinaryPackage, error) {
 	for arch, db := range s.BinaryPackage {
 		if arch == "source" {
 			continue
@@ -53,20 +53,28 @@ func (s *Suite1) FindBinary(name string) (BinaryPackage, error) {
 	return BinaryPackage{}, nil
 }
 
-func (s *Suite1) build() error {
+func (s *Suite) tryDownload() (ReleaseFile, error) {
 	rfPath := path.Join(s.dataDir, ReleaseFileName)
 	oldRF, _ := GetReleaseFile(rfPath)
 
 	rf, err := DownloadReleaseFile(s.host, s.CodeName, rfPath)
 	if err != nil {
-		return err
+		return rf, err
 	}
 
 	if oldRF.Hash() == rf.Hash() {
-		return nil
+		return rf, nil
 	}
 
 	_, err = DownloadRepository(s.host, rf, s.dataDir)
+	return rf, err
+}
+
+func (s *Suite) build() error {
+	rf, err := s.tryDownload()
+	if err != nil {
+		return err
+	}
 
 	s.Architecutres = rf.Architectures
 
@@ -103,7 +111,7 @@ func buildCache(cacheFile string, files ...string) (map[string]ControlFile, erro
 	return r, storeGOB(cacheFile, r)
 }
 
-func (s *Suite1) ListSource() []string {
+func (s *Suite) ListSource() []string {
 	var re []string
 	for p := range s.BinaryPackage["source"] {
 		re = append(re, p)

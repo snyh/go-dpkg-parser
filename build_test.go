@@ -27,7 +27,7 @@ func (*testWrap) TestBuildCache(c *C.C) {
 	targetDir := "testdata"
 	codeName := "unstable"
 
-	m, err := NewSuite1("http://pools.corp.deepin.com/deepin/", codeName, targetDir)
+	m, err := NewSuite("http://pools.corp.deepin.com/deepin/", codeName, targetDir)
 	c.Check(err, C.Equals, nil)
 
 	t, err := m.FindBinary("lastore-daemon")
