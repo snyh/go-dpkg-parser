@@ -2,9 +2,22 @@ package dpkg
 
 import (
 	"fmt"
+	"os"
 )
 
 var Debug = false
+
+func DebugPrintf(fmtStr string, args ...interface{}) {
+	if Debug {
+		fmt.Fprintf(os.Stderr, fmtStr, args...)
+	}
+}
+func DebugPrintln(args ...interface{}) {
+	if Debug {
+		fmt.Fprintln(os.Stderr, args...)
+	}
+}
+
 var Strict = true
 
 const ScanBufferSize = 512 * 1024

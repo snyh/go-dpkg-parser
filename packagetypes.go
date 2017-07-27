@@ -17,6 +17,7 @@ type BinaryPackage struct {
 	Tag           string        `json:"tag"`
 	Homepage      string        `json:"homepage"`
 	SHA256        string        `json:"sha256"`
+	Maintainer    string        `json:"maintainer"`
 }
 
 type PackageListItem struct {
@@ -47,6 +48,7 @@ type SourcePackage struct {
 	Description  string `json:"description"`
 	Homepage     string `json:"homepage"`
 	Architecture string `json:"architecture"`
+	Maintainer   string `json:"maintainer"`
 
 	Format      string            `json:"format"`
 	Binary      []string          `json:"binary"`
@@ -96,6 +98,7 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.Tag = cf.GetString("tag")
 	t.Homepage = cf.GetString("homepage")
 	t.SHA256 = cf.GetString("sha256")
+	t.Maintainer = cf.GetString("maintainer")
 
 	return t, t.valid()
 }
@@ -110,6 +113,7 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t.Format = cf.GetString("format")
 	t.Binary = cf.GetArrayString("binary", ",")
 	t.Architecture = cf.GetString("architecture")
+	t.Maintainer = cf.GetString("maintainer")
 
 	plist := cf.GetMultiline("package-list")
 	if len(plist) > 0 {

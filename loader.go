@@ -37,9 +37,7 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 		url := repoURL + "/dists/" + rf.CodeName + "/" + f.Path
 		target := path.Join(targetDir, f.Path)
 		if HashFile(target) == f.MD5 {
-			if Debug {
-				fmt.Printf("%q to %q is cached\n", url, target)
-			}
+			DebugPrintf("%q to %q is cached\n", url, target)
 			continue
 		}
 		changed = true
@@ -55,9 +53,8 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 // download download the url content to "dest" file.
 // unpack only support gz file now.
 func download(url string, dest string, unpack bool) error {
-	if Debug {
-		fmt.Printf("Downloading %q to %q\n", url, dest)
-	}
+	DebugPrintf("Downloading %q to %q\n", url, dest)
+
 	os.MkdirAll(path.Dir(dest), 0755)
 
 	reps, err := http.Get(url)

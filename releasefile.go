@@ -67,16 +67,12 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	for _, v := range cf.GetMultiline("md5sum") {
 		fs := getArrayString(v, " ")
 		if len(fs) != 3 {
-			if Debug {
-				fmt.Printf("Ignore:%q %+v (%d)\n", v, fs, len(fs))
-			}
+			DebugPrintf("Ignore:%q %+v (%d)\n", v, fs, len(fs))
 			continue
 		}
 		size, err := strconv.Atoi(fs[1])
 		if err != nil {
-			if Debug {
-				fmt.Printf("Components size field invalid %q\n", v)
-			}
+			DebugPrintf("Components size field invalid %q\n", v)
 			continue
 		}
 
