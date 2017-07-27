@@ -135,7 +135,7 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 
 func buildPackageListItem(line string, format string) (PackageListItem, error) {
 	var r PackageListItem
-	fields := strings.Split(strings.TrimSpace(line), " ")
+	fields := getArrayString(line, " ")
 
 	n := len(fields)
 	if n < 4 || n > 7 {

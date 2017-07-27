@@ -30,14 +30,18 @@ func TestBuildCache(t *testing.T) {
 
 func TestLarageControlFile(t *testing.T) {
 	largeControlFile := fmt.Sprintf(testBinary, strings.Repeat("t", bufio.MaxScanTokenSize))
+
 	b := bytes.NewBufferString(largeControlFile)
-	ts, err := ParseControlFileGroup(b)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(ts) != 1 {
-		t.Fatal("Parsing failed, token size is too long")
-	}
+	ts, err := NewControlFiles(b)
+	Assert(t, err, nil)
+	Assert(t, len(ts), 1)
+
+	b = bytes.NewBufferString(largeControlFile)
+	c, err := NewControlFile(b)
+	Assert(t, err, nil)
+	p, err := c.ToBinary()
+	Assert(t, err, nil)
+	Assert(t, p.Package, "aac-enc")
 }
 
 func TestBinaryPackage(t *testing.T) {

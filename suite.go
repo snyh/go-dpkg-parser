@@ -47,13 +47,11 @@ func (s *Suite) FindBinary(name string, arch Architecture) (BinaryPackage, error
 	if arch == "all" {
 		arch = s.Architecutres[0]
 	}
-	for arch, db := range s.Packages {
-		if arch == "source" {
-			continue
-		}
-		return db[name].ToBinary()
+	db, ok := s.Packages[arch]
+	if !ok {
+		return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
 	}
-	return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
+	return db[name].ToBinary()
 }
 
 func (s *Suite) tryDownload() (ReleaseFile, error) {

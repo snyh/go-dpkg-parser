@@ -2,21 +2,14 @@ package dpkg
 
 import (
 	"fmt"
-	"path"
 )
 
 var Debug = false
 var Strict = true
 
+const ScanBufferSize = 512 * 1024
+
 const ReleaseFileName = "Release"
-
-const DBIndexName = "index.dat"
-
-func DBName(arch Architecture) string { return string(arch) + ".dat" }
-
-func buildDBPath(dataDir string, codeName string, name ...string) string {
-	return path.Join(append([]string{dataDir, codeName}, name...)...)
-}
 
 type NotFoundError struct {
 	resource string

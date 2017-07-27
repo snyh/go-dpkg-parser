@@ -3,51 +3,28 @@ package dpkg
 import (
 	"bufio"
 	"bytes"
-	"compress/gzip"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 )
 
 type ControlFile map[string]string
 
-func splitControlFileLine(data []byte, noMoreData bool) (int, []byte, error) {
-	l := len(data)
-	maybeWrap := 0
+func NewControlFiles(r io.Reader) ([]ControlFile, error) {
+	s := bufio.NewScanner(r)
+	s.Buffer(nil, ScanBufferSize)
 
-	EndOfChunk := func(i int) bool { return i+1 == l }
-	NextIsNotSpace := func(i int) bool { c := data[i+1]; return c != ' ' && c != '\t' }
+	s.Split(splitControlFile)
 
-	for i, c := range data {
-		if EndOfChunk(i) {
-			continue
+	var ts []ControlFile
+	for s.Scan() {
+		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()))
+		if err != nil {
+			return nil, err
 		}
-		switch c {
-		case '\n':
-			if maybeWrap != 0 {
-				continue
-			} else if NextIsNotSpace(i) {
-				return i + 1, data[:i], nil
-			}
-		case '\\':
-			//TODO: strip the wrap characters before returning
-			maybeWrap = i
-		default:
-			if NextIsNotSpace(i) {
-				maybeWrap = 0
-			}
-		}
+		ts = append(ts, cf)
 	}
-
-	if !noMoreData {
-		return 0, nil, nil
-	} else if l != 0 {
-		return l, data, nil
-	}
-
-	return 0, nil, fmt.Errorf("End of file")
-
+	return ts, nil
 }
 
 func NewControlFile(r io.Reader) (ControlFile, error) {
@@ -60,14 +37,17 @@ func NewControlFile(r io.Reader) (ControlFile, error) {
 		if line == "" {
 			continue
 		}
-		d := strings.SplitN(line, ":", 2)
-		if len(d) != 2 {
+		kv := strings.SplitN(line, ":", 2)
+		if len(kv) != 2 {
 			if Strict {
-				return nil, fmt.Errorf("NewControlFile there has %d separators at:%q", len(d), line)
+				return nil, FormatError{"ConrolfileField", line, nil}
 			}
 			continue
 		}
-		f[strings.ToLower(d[0])] = strings.Trim(d[1], " \n")
+		f[strings.ToLower(kv[0])] = strings.TrimRight(kv[1], " \n")
+	}
+	if len(f) == 0 {
+		return nil, NotFoundError{"Empty result"}
 	}
 	return f, nil
 }
@@ -93,64 +73,6 @@ func (d ControlFile) GetMultiline(key string) []string {
 	return getMultiline(d.GetString(key))
 }
 
-func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
-	f, err := os.Open(fPath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	if strings.HasSuffix(strings.ToLower(fPath), ".gz") {
-		gr, err := gzip.NewReader(f)
-		if err != nil {
-			return nil, fmt.Errorf("parsePackageDBComponent handle zip file(%v) error:%v", fPath, err)
-		}
-		defer gr.Close()
-		return ParseControlFileGroup(gr)
-	}
-
-	return ParseControlFileGroup(f)
-}
-
-func ParseControlFileGroup(r io.Reader) ([]ControlFile, error) {
-	s := bufio.NewScanner(r)
-	s.Buffer(nil, 512*1024)
-	splitFn := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-		l := len(data)
-		for i, c := range data {
-			if c == '\n' {
-				if i+1 < l && data[i+1] == '\n' {
-					return i + 2, data[:i], nil
-				}
-				if i+1 == l && atEOF {
-					return i + 1, data[:i], nil
-				}
-			}
-		}
-		if !atEOF {
-			return 0, nil, nil
-		}
-
-		if atEOF && l != 0 {
-			return l, data, nil
-		}
-
-		return l, data, fmt.Errorf("end of file")
-	}
-
-	s.Split(splitFn)
-
-	var ts []ControlFile
-	for s.Scan() {
-		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()))
-		if err != nil {
-			return nil, err
-		}
-		ts = append(ts, cf)
-	}
-	return ts, nil
-}
-
 func getArrayString(s string, sep string) []string {
 	var r []string
 	for _, c := range strings.Split(s, sep) {
@@ -169,5 +91,67 @@ func getMultiline(s string) []string {
 		ret = append(ret, strings.TrimSpace(f))
 	}
 	return ret
+}
 
+func splitControlFileLine(chunk []byte, noMoreChunk bool) (int, []byte, error) {
+	chunkSize := len(chunk)
+	maybeWrap := 0
+
+	EndOfChunk := func(i int) bool { return i+1 == chunkSize }
+	NextIsNotSpace := func(i int) bool { c := chunk[i+1]; return c != ' ' && c != '\t' }
+
+	for i, c := range chunk {
+		if EndOfChunk(i) {
+			continue
+		}
+		switch c {
+		case '\n':
+			if maybeWrap != 0 {
+				continue
+			} else if NextIsNotSpace(i) {
+				return i + 1, chunk[:i], nil
+			}
+		case '\\':
+			//TODO: strip the wrap characters before returning
+			maybeWrap = i
+		default:
+			if NextIsNotSpace(i) {
+				maybeWrap = 0
+			}
+		}
+	}
+
+	if !noMoreChunk {
+		return 0, nil, nil
+	} else if chunkSize > 0 {
+		return chunkSize, chunk, nil
+	}
+
+	return 0, nil, fmt.Errorf("End of file")
+
+}
+func splitControlFile(chunk []byte, noMoreChunk bool) (int, []byte, error) {
+	chunkSize := len(chunk)
+
+	EndOfChunk := func(i int) bool { return i+1 == chunkSize }
+
+	for i, c := range chunk {
+		if c != '\n' {
+			continue
+		}
+
+		if !EndOfChunk(i) && chunk[i+1] == '\n' {
+			return i + 2, chunk[:i], nil
+		}
+		if EndOfChunk(i) && noMoreChunk {
+			return i + 1, chunk[:i], nil
+		}
+	}
+
+	if !noMoreChunk {
+		return 0, nil, nil
+	} else if chunkSize > 0 {
+		return chunkSize, chunk, nil
+	}
+	return 0, nil, fmt.Errorf("end of file")
 }

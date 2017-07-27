@@ -1,12 +1,32 @@
 package dpkg
 
 import (
+	"compress/gzip"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path"
+	"strings"
 )
+
+func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
+	f, err := os.Open(fPath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	if strings.HasSuffix(strings.ToLower(fPath), ".gz") {
+		gr, err := gzip.NewReader(f)
+		if err != nil {
+			return nil, FormatError{"LoadControlFileGroup", fPath, err}
+		}
+		defer gr.Close()
+		return NewControlFiles(gr)
+	}
+	return NewControlFiles(f)
+}
 
 // DownloadRepository download files from rf.FileInfos()
 // it ignoring unchanged file by checking MD5 value.
