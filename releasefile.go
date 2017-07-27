@@ -28,7 +28,7 @@ type ReleaseFile struct {
 }
 
 func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
-	cf, err := NewControlFile(r)
+	cf, err := NewControlFile(r, ScanBufferSize)
 	if err != nil {
 		return ReleaseFile{}, err
 	}
@@ -41,7 +41,7 @@ func GetReleaseFile(path string) (ReleaseFile, error) {
 	if err != nil {
 		return ReleaseFile{}, fmt.Errorf("GetReleaseFile open file error: %v", err)
 	}
-	cf, err := NewControlFile(f)
+	cf, err := NewControlFile(f, ScanBufferSize)
 	if err != nil {
 		return ReleaseFile{}, err
 	}
@@ -71,6 +71,9 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 		}
 		size, err := strconv.Atoi(fs[1])
 		if err != nil {
+			if Debug {
+				fmt.Printf("Components size field invalid %q\n", v)
+			}
 			continue
 		}
 
@@ -93,7 +96,7 @@ func (rf ReleaseFile) valid() error {
 	}
 
 	if len(rf.FileInfos()) == 0 {
-		return fmt.Errorf("NewReleaseFile input data is invalid. Without any valid file")
+		return fmt.Errorf("NewReleaseFile input data is invalid. Without any valid fileinfos")
 	}
 	return nil
 }

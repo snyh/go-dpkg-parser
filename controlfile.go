@@ -10,7 +10,7 @@ import (
 
 type ControlFile map[string]string
 
-func NewControlFiles(r io.Reader) ([]ControlFile, error) {
+func NewControlFiles(r io.Reader, bufSize int) ([]ControlFile, error) {
 	s := bufio.NewScanner(r)
 	s.Buffer(nil, ScanBufferSize)
 
@@ -18,7 +18,7 @@ func NewControlFiles(r io.Reader) ([]ControlFile, error) {
 
 	var ts []ControlFile
 	for s.Scan() {
-		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()))
+		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()), bufSize)
 		if err != nil {
 			return nil, err
 		}
@@ -27,8 +27,9 @@ func NewControlFiles(r io.Reader) ([]ControlFile, error) {
 	return ts, nil
 }
 
-func NewControlFile(r io.Reader) (ControlFile, error) {
+func NewControlFile(r io.Reader, bufSize int) (ControlFile, error) {
 	s := bufio.NewScanner(r)
+	s.Buffer(nil, bufSize)
 	s.Split(splitControlFileLine)
 
 	f := make(ControlFile)

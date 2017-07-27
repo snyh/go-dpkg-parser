@@ -17,7 +17,7 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 	defer f.Close()
 
 	// build Release File
-	cf, err := NewControlFile(f)
+	cf, err := NewControlFile(f, ScanBufferSize)
 	if err != nil {
 		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
 	}
@@ -41,17 +41,6 @@ func NewSuite(url string, codename string, dataDir string) (*Suite, error) {
 		dataDir:  dataDir,
 	}
 	return s, s.build()
-}
-
-func (s *Suite) FindBinary(name string, arch Architecture) (BinaryPackage, error) {
-	if arch == "all" {
-		arch = s.Architecutres[0]
-	}
-	db, ok := s.Packages[arch]
-	if !ok {
-		return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
-	}
-	return db[name].ToBinary()
 }
 
 func (s *Suite) tryDownload() (ReleaseFile, error) {
@@ -127,6 +116,17 @@ func (s *Suite) FindBinaryBySource(sp SourcePackage, arch Architecture) []Binary
 	return ret
 }
 
+func (s *Suite) FindBinary(name string, arch Architecture) (BinaryPackage, error) {
+	if arch == "all" {
+		arch = s.Architecutres[0]
+	}
+	db, ok := s.Packages[arch]
+	if !ok {
+		return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
+	}
+	return db[name].ToBinary()
+}
+
 func (s *Suite) FindSource(name string) (SourcePackage, error) {
 	srcs, ok := s.Packages["source"]
 	if !ok {
@@ -136,15 +136,13 @@ func (s *Suite) FindSource(name string) (SourcePackage, error) {
 	return r.ToSource()
 }
 
-func (s *Suite) ListSource() map[string]SourcePackage {
-	var re = make(map[string]SourcePackage)
-	for p, cf := range s.Packages["source"] {
-		s, err := cf.ToSource()
-		if err != nil {
-			fmt.Println("W:", err)
-			continue
-		}
-		re[p] = s
+func (s *Suite) ListSource() []string {
+	return s.ListBinary("source")
+}
+func (s *Suite) ListBinary(arch Architecture) []string {
+	var ret []string
+	for name := range s.Packages[arch] {
+		ret = append(ret, name)
 	}
-	return re
+	return ret
 }

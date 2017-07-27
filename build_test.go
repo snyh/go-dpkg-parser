@@ -32,15 +32,16 @@ func TestLarageControlFile(t *testing.T) {
 	largeControlFile := fmt.Sprintf(testBinary, strings.Repeat("t", bufio.MaxScanTokenSize))
 
 	b := bytes.NewBufferString(largeControlFile)
-	ts, err := NewControlFiles(b)
+	ts, err := NewControlFiles(b, ScanBufferSize)
 	Assert(t, err, nil)
 	Assert(t, len(ts), 1)
 
 	b = bytes.NewBufferString(largeControlFile)
-	c, err := NewControlFile(b)
+	c, err := NewControlFile(b, ScanBufferSize)
 	Assert(t, err, nil)
 	p, err := c.ToBinary()
 	Assert(t, err, nil)
+	Assert(t, len(c.GetString("Test")), bufio.MaxScanTokenSize)
 	Assert(t, p.Package, "aac-enc")
 }
 
@@ -64,7 +65,7 @@ func Assert(t *testing.T, left interface{}, right interface{}) {
 }
 
 func buildTestPackageSource(t *testing.T, v string) SourcePackage {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)))
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)), ScanBufferSize)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +76,7 @@ func buildTestPackageSource(t *testing.T, v string) SourcePackage {
 	return p
 }
 func buildTestPackageBinary(t *testing.T, v string) BinaryPackage {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)))
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)), ScanBufferSize)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,7 +97,7 @@ func TestDSC(t *testing.T) {
 }
 
 func TestControlFile(t *testing.T) {
-	d, err := NewControlFile(bytes.NewBuffer([]byte(testBinary)))
+	d, err := NewControlFile(bytes.NewBuffer([]byte(testBinary)), ScanBufferSize)
 	Assert(t, err, nil)
 
 	Assert(t, d.GetString("Package"), "aac-enc")

@@ -23,9 +23,9 @@ func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
 			return nil, FormatError{"LoadControlFileGroup", fPath, err}
 		}
 		defer gr.Close()
-		return NewControlFiles(gr)
+		return NewControlFiles(gr, ScanBufferSize)
 	}
-	return NewControlFiles(f)
+	return NewControlFiles(f, ScanBufferSize)
 }
 
 // DownloadRepository download files from rf.FileInfos()

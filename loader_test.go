@@ -25,7 +25,7 @@ func TestDumpRepository(t *testing.T) {
 
 	f, err := os.Open(rPath)
 	Assert(t, err, nil)
-	cf, err := NewControlFile(f)
+	cf, err := NewControlFile(f, ScanBufferSize)
 	f.Close()
 	Assert(t, err, nil)
 
@@ -34,7 +34,7 @@ func TestDumpRepository(t *testing.T) {
 }
 
 func TestRelease(t *testing.T) {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(testRelease)))
+	cf, err := NewControlFile(bytes.NewBuffer([]byte(testRelease)), ScanBufferSize)
 
 	rf, err := cf.ToReleaseFile()
 	Assert(t, err, nil)
