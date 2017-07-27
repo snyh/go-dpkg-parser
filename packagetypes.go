@@ -29,7 +29,7 @@ type PackageListItem struct {
 	Essional bool
 }
 
-func (item PackageListItem) Support(arch Architecture) bool {
+func (item PackageListItem) Support(arch string) bool {
 	for _, i := range item.Archs {
 		if i == "any" || i == "all" {
 			return true
@@ -55,7 +55,7 @@ type SourcePackage struct {
 
 type Architecture string
 
-type Architectures []Architecture
+type Architectures []string
 
 func (as Architectures) Len() int {
 	return len(as)
@@ -89,7 +89,7 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.Size, _ = strconv.Atoi(cf.GetString("size"))
 
 	for _, arch := range cf.GetArrayString("architecture", " ") {
-		t.Architectures = append(t.Architectures, Architecture(arch))
+		t.Architectures = append(t.Architectures, arch)
 	}
 	t.Description = cf.GetString("description")
 	t.Filename = cf.GetString("filename")
@@ -166,7 +166,7 @@ func buildPackageListItem(line string, format string) (PackageListItem, error) {
 	return r, nil
 }
 
-func (cf SourcePackage) GetBinary(arch Architecture) []string {
+func (cf SourcePackage) GetBinary(arch string) []string {
 	var ret []string
 	// arch <- [ "amd64", "i386" ]
 	for _, bp := range cf.PackageList {

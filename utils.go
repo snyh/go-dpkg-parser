@@ -12,6 +12,19 @@ import (
 	"unicode"
 )
 
+func UnionSet(s1, s2 []string) []string {
+	var ret []string
+	for _, i := range s1 {
+		for _, j := range s2 {
+			if i == j {
+				ret = append(ret, i)
+				break
+			}
+		}
+	}
+	return ret
+}
+
 func HashFile(fpath string) string {
 	f, err := os.Open(fpath)
 	if err != nil {

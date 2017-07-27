@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -58,9 +59,19 @@ func TestBinaryPackage(t *testing.T) {
 
 }
 
+func TestGetArrayString(t *testing.T) {
+	Assert(t, getArrayString("a  b", " "), []string{"a", "b"})
+}
+
 func Assert(t *testing.T, left interface{}, right interface{}) {
 	if !reflect.DeepEqual(left, right) {
-		t.Fatalf("%v(%T) != %v(%T)", left, left, right, right)
+		pc, file, line, ok := runtime.Caller(1)
+		if ok {
+			f := runtime.FuncForPC(pc)
+			t.Fatalf("%v(%T) != %v(%T) at %s:%d:%s", left, left, right, right, file, line, f.Name())
+		} else {
+			t.Fatalf("%v(%T) != %v(%T)", left, left, right, right)
+		}
 	}
 }
 

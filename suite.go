@@ -25,20 +25,22 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 }
 
 type Suite struct {
-	Packages map[Architecture]map[string]ControlFile
+	Packages map[string]map[string]ControlFile
 
-	Architecutres []Architecture
+	Architecutres []string
 
-	CodeName string
-	dataDir  string
-	host     string
+	CodeName   string
+	dataDir    string
+	host       string
+	limitArchs []string
 }
 
-func NewSuite(url string, codename string, dataDir string) (*Suite, error) {
+func NewSuite(url string, codename string, dataDir string, archs ...string) (*Suite, error) {
 	s := &Suite{
-		host:     url,
-		CodeName: codename,
-		dataDir:  dataDir,
+		limitArchs: archs,
+		host:       url,
+		CodeName:   codename,
+		dataDir:    dataDir,
 	}
 	return s, s.build()
 }
@@ -50,6 +52,9 @@ func (s *Suite) tryDownload() (ReleaseFile, error) {
 	rf, err := DownloadReleaseFile(s.host, s.CodeName, rfPath)
 	if err != nil {
 		return rf, err
+	}
+	if len(s.limitArchs) != 0 {
+		rf.Architectures = (UnionSet(rf.Architectures, s.limitArchs))
 	}
 
 	if oldRF.Hash() == rf.Hash() {
@@ -68,12 +73,12 @@ func (s *Suite) build() error {
 
 	s.Architecutres = rf.Architectures
 
-	fs := make(map[Architecture][]string)
+	fs := make(map[string][]string)
 	for _, f := range rf.FileInfos() {
 		fs[f.Architecture] = append(fs[f.Architecture], path.Join(s.dataDir, f.Path))
 	}
 
-	s.Packages = make(map[Architecture]map[string]ControlFile)
+	s.Packages = make(map[string]map[string]ControlFile)
 	for arch, cs := range fs {
 		s.Packages[arch], err = buildCache(path.Join(s.dataDir, "cache-"+string(arch)+".db"), cs...)
 		if err != nil {
@@ -101,7 +106,7 @@ func buildCache(cacheFile string, files ...string) (map[string]ControlFile, erro
 	return r, storeGOB(cacheFile, r)
 }
 
-func (s *Suite) FindBinaryBySource(sp SourcePackage, arch Architecture) []BinaryPackage {
+func (s *Suite) FindBinaryBySource(sp SourcePackage, arch string) []BinaryPackage {
 	var ret []BinaryPackage
 	for _, name := range sp.GetBinary(arch) {
 		b, err := s.FindBinary(name, arch)
@@ -116,7 +121,7 @@ func (s *Suite) FindBinaryBySource(sp SourcePackage, arch Architecture) []Binary
 	return ret
 }
 
-func (s *Suite) FindBinary(name string, arch Architecture) (BinaryPackage, error) {
+func (s *Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
 	if arch == "all" {
 		arch = s.Architecutres[0]
 	}
@@ -139,7 +144,7 @@ func (s *Suite) FindSource(name string) (SourcePackage, error) {
 func (s *Suite) ListSource() []string {
 	return s.ListBinary("source")
 }
-func (s *Suite) ListBinary(arch Architecture) []string {
+func (s *Suite) ListBinary(arch string) []string {
 	var ret []string
 	for name := range s.Packages[arch] {
 		ret = append(ret, name)

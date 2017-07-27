@@ -15,7 +15,7 @@ type PackagesFileInfo struct {
 	Path         string
 	Gzip         bool
 	MD5          string
-	Architecture Architecture
+	Architecture string
 }
 
 type ReleaseFile struct {
@@ -53,7 +53,7 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf := ReleaseFile{}
 
 	for _, arch := range cf.GetArrayString("architectures", " ") {
-		rf.Architectures = append(rf.Architectures, Architecture(arch))
+		rf.Architectures = append(rf.Architectures, arch)
 	}
 	rf.Date = cf.GetString("date")
 
@@ -65,8 +65,11 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 
 	var ps []PackagesFileInfo
 	for _, v := range cf.GetMultiline("md5sum") {
-		fs := strings.Split(strings.TrimSpace(v), " ")
+		fs := getArrayString(v, " ")
 		if len(fs) != 3 {
+			if Debug {
+				fmt.Printf("Ignore:%q %+v (%d)\n", v, fs, len(fs))
+			}
 			continue
 		}
 		size, err := strconv.Atoi(fs[1])
@@ -122,20 +125,18 @@ func (infos PackagesFileInfos) Swap(i, j int) {
 }
 
 func (rf ReleaseFile) findComponent(raw string) (PackagesFileInfo, bool) {
-	zip := raw + ".gz"
 	found := false
-	var b PackagesFileInfo
+	var fallback PackagesFileInfo
 	for _, f := range rf.fileInfos {
-		if f.Path != raw && f.Path != zip {
+		if f.Path != raw && f.Path != raw+".gz" {
 			continue
 		}
-		found = true
-		b = f
+		found, fallback = true, f
 		if f.Gzip {
 			return f, found
 		}
 	}
-	return b, found
+	return fallback, found
 }
 func (rf ReleaseFile) FileInfos() []PackagesFileInfo {
 	var set = make(map[string]PackagesFileInfo)

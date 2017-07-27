@@ -42,7 +42,7 @@ func TestRelease(t *testing.T) {
 	Assert(t, rf.CodeName, "experimental")
 
 	Assert(t, len(rf.Architectures), 1)
-	Assert(t, rf.Architectures[0], Architecture("amd64"))
+	Assert(t, rf.Architectures[0], "amd64")
 	Assert(t, strings.Join(rf.Components, ""), "non-free")
 
 	Assert(t, len(rf.fileInfos), 31)

@@ -77,7 +77,10 @@ func (d ControlFile) GetMultiline(key string) []string {
 func getArrayString(s string, sep string) []string {
 	var r []string
 	for _, c := range strings.Split(s, sep) {
-		r = append(r, strings.TrimSpace(c))
+		f := strings.TrimSpace(c)
+		if f != "" {
+			r = append(r, f)
+		}
 	}
 	return r
 }
