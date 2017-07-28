@@ -47,7 +47,6 @@ func NewSuite(url string, codename string, dataDir string, archs ...string) (*Su
 
 func (s *Suite) tryDownload() (ReleaseFile, error) {
 	rfPath := path.Join(s.dataDir, ReleaseFileName)
-	oldRF, _ := GetReleaseFile(rfPath)
 
 	rf, err := DownloadReleaseFile(s.host, s.CodeName, rfPath)
 	if err != nil {
@@ -55,10 +54,6 @@ func (s *Suite) tryDownload() (ReleaseFile, error) {
 	}
 	if len(s.limitArchs) != 0 {
 		rf.Architectures = (UnionSet(rf.Architectures, s.limitArchs))
-	}
-
-	if oldRF.Hash() == rf.Hash() {
-		return rf, nil
 	}
 
 	_, err = DownloadRepository(s.host, rf, s.dataDir)
