@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path"
 	"sort"
 	"unicode"
 )
@@ -56,17 +55,6 @@ func EnsureDirectory(t string) error {
 		}
 	}
 	return nil
-}
-
-func DownloadAndOpen(url string, target string) (*os.File, error) {
-	if err := EnsureDirectory(path.Dir(target)); err != nil {
-		return nil, err
-	}
-	err := download(url, target, false)
-	if err != nil {
-		return nil, err
-	}
-	return os.Open(target)
 }
 
 func sortMapString(d map[string]struct{}) []string {

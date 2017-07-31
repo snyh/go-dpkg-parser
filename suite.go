@@ -2,6 +2,7 @@ package dpkg
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path"
 )
 
@@ -10,14 +11,18 @@ func DownloadReleaseFile(repoURL string, codeName string, fpath string) (Release
 	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
 
 	// download Release File
-	f, err := DownloadAndOpen(url, fpath)
+	err := download(url, fpath, false)
 	if err != nil {
 		return r, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
 	}
-	defer f.Close()
+
+	bs, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		return r, err
+	}
 
 	// build Release File
-	cf, err := NewControlFile(f, ScanBufferSize)
+	cf, err := NewControlFile(string(bs))
 	if err != nil {
 		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
 	}

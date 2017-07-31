@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
-	"os"
+	"io/ioutil"
 	"sort"
 	"strconv"
 	"strings"
@@ -28,7 +28,11 @@ type ReleaseFile struct {
 }
 
 func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
-	cf, err := NewControlFile(r, ScanBufferSize)
+	bs, err := ioutil.ReadAll(r)
+	if err != nil {
+		return ReleaseFile{}, err
+	}
+	cf, err := NewControlFile(string(bs))
 	if err != nil {
 		return ReleaseFile{}, err
 	}
@@ -37,11 +41,12 @@ func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
 
 // GetReleaseFile load ReleaseFile from dataDir with codeName
 func GetReleaseFile(path string) (ReleaseFile, error) {
-	f, err := os.Open(path)
+	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return ReleaseFile{}, fmt.Errorf("GetReleaseFile open file error: %v", err)
 	}
-	cf, err := NewControlFile(f, ScanBufferSize)
+
+	cf, err := NewControlFile(string(bs))
 	if err != nil {
 		return ReleaseFile{}, err
 	}

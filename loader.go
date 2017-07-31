@@ -55,7 +55,9 @@ func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool,
 func download(url string, dest string, unpack bool) error {
 	DebugPrintf("Downloading %q to %q\n", url, dest)
 
-	os.MkdirAll(path.Dir(dest), 0755)
+	if err := EnsureDirectory(path.Dir(dest)); err != nil {
+		return err
+	}
 
 	reps, err := http.Get(url)
 	if err != nil {

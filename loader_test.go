@@ -1,9 +1,8 @@
 package dpkg
 
 import (
-	"bytes"
 	"flag"
-	"os"
+	"io/ioutil"
 	"path"
 	"strings"
 	"testing"
@@ -23,10 +22,9 @@ func TestDumpRepository(t *testing.T) {
 	_, err = DownloadRepository(repoURL, rf, targetDir)
 	Assert(t, err, nil)
 
-	f, err := os.Open(rPath)
+	bs, err := ioutil.ReadFile(rPath)
 	Assert(t, err, nil)
-	cf, err := NewControlFile(f, ScanBufferSize)
-	f.Close()
+	cf, err := NewControlFile(string(bs))
 	Assert(t, err, nil)
 
 	rf, err = cf.ToReleaseFile()
@@ -34,7 +32,7 @@ func TestDumpRepository(t *testing.T) {
 }
 
 func TestRelease(t *testing.T) {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(testRelease)), ScanBufferSize)
+	cf, err := NewControlFile(testRelease)
 
 	rf, err := cf.ToReleaseFile()
 	Assert(t, err, nil)

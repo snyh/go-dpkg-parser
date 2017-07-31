@@ -8,7 +8,10 @@ import (
 	"strings"
 )
 
-type ControlFile map[string]string
+type ControlFile struct {
+	cache *map[string]string
+	Raw   string
+}
 
 func NewControlFiles(r io.Reader, bufSize int) ([]ControlFile, error) {
 	s := bufio.NewScanner(r)
@@ -18,21 +21,36 @@ func NewControlFiles(r io.Reader, bufSize int) ([]ControlFile, error) {
 
 	var ts []ControlFile
 	for s.Scan() {
-		cf, err := NewControlFile(bytes.NewBuffer(s.Bytes()), bufSize)
+		raw := string(s.Bytes())
+		cf, err := ParseControlFile(string(s.Bytes()))
 		if err != nil {
 			return nil, err
 		}
-		ts = append(ts, cf)
+		ts = append(ts, ControlFile{
+			cache: &cf,
+			Raw:   raw,
+		})
 	}
 	return ts, nil
 }
 
-func NewControlFile(r io.Reader, bufSize int) (ControlFile, error) {
-	s := bufio.NewScanner(r)
-	s.Buffer(nil, bufSize)
+func NewControlFile(raw string) (ControlFile, error) {
+	cache, err := ParseControlFile(raw)
+	if err != nil {
+		return ControlFile{}, err
+	}
+	return ControlFile{
+		Raw:   raw,
+		cache: &cache,
+	}, nil
+}
+
+func ParseControlFile(raw string) (map[string]string, error) {
+	s := bufio.NewScanner(bytes.NewBufferString(raw))
+	s.Buffer(nil, len(raw))
 	s.Split(splitControlFileLine)
 
-	f := make(ControlFile)
+	f := make(map[string]string)
 	for s.Scan() {
 		line := s.Text()
 		if line == "" {
@@ -53,16 +71,21 @@ func NewControlFile(r io.Reader, bufSize int) (ControlFile, error) {
 	return f, nil
 }
 
-func (d ControlFile) GetString(key string) string {
-	return strings.TrimSpace(d[strings.ToLower(key)])
+func (d ControlFile) String() string {
+	return d.Raw
 }
 
-func (d ControlFile) Bytes() []byte {
-	buf := bytes.NewBuffer(nil)
-	for k, v := range d {
-		buf.WriteString(fmt.Sprintf("%s : %s\n", k, v))
+func (d ControlFile) GetString(key string) string {
+	if d.cache == nil {
+		cache, err := ParseControlFile(d.Raw)
+		if err != nil {
+			DebugPrintln("ControlFile.GetString E:", err)
+			return ""
+		}
+		d.cache = &cache
 	}
-	return buf.Bytes()
+	cache := *d.cache
+	return strings.TrimSpace(cache[strings.ToLower(key)])
 }
 
 func (d ControlFile) GetArrayString(key string, sep string) []string {

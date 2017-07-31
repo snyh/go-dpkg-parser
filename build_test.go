@@ -37,8 +37,7 @@ func TestLarageControlFile(t *testing.T) {
 	Assert(t, err, nil)
 	Assert(t, len(ts), 1)
 
-	b = bytes.NewBufferString(largeControlFile)
-	c, err := NewControlFile(b, ScanBufferSize)
+	c, err := NewControlFile(largeControlFile)
 	Assert(t, err, nil)
 	p, err := c.ToBinary()
 	Assert(t, err, nil)
@@ -76,7 +75,7 @@ func Assert(t *testing.T, left interface{}, right interface{}) {
 }
 
 func buildTestPackageSource(t *testing.T, v string) SourcePackage {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)), ScanBufferSize)
+	cf, err := NewControlFile(v)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +86,7 @@ func buildTestPackageSource(t *testing.T, v string) SourcePackage {
 	return p
 }
 func buildTestPackageBinary(t *testing.T, v string) BinaryPackage {
-	cf, err := NewControlFile(bytes.NewBuffer([]byte(v)), ScanBufferSize)
+	cf, err := NewControlFile(v)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +107,7 @@ func TestDSC(t *testing.T) {
 }
 
 func TestControlFile(t *testing.T) {
-	d, err := NewControlFile(bytes.NewBuffer([]byte(testBinary)), ScanBufferSize)
+	d, err := NewControlFile(testBinary)
 	Assert(t, err, nil)
 
 	Assert(t, d.GetString("Package"), "aac-enc")
