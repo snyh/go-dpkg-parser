@@ -8,6 +8,8 @@ import (
 
 type BinaryPackage struct {
 	Package       string        `json:"package"`
+	Source        string        `json:"source"`
+	SourceVersion string        `json:"source_version"`
 	Version       string        `json:"version"`
 	InstalledSize int           `json:"installed_size"`
 	Size          int           `json:"size"`
@@ -83,10 +85,25 @@ func (t BinaryPackage) valid() error {
 	return nil
 }
 
+func parseSourceLine(str string, defSource, defVer string) (string, string) {
+	fs := getArrayString(str, " ")
+	switch len(fs) {
+	case 2:
+		return fs[0], strings.Trim(fs[1], "()")
+	case 1:
+		return fs[0], defVer
+	default:
+		DebugPrintln("Invalid source line %q", str)
+		return defSource, defVer
+	}
+}
+
 func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t := BinaryPackage{}
 	t.Package = cf.GetString("package")
 	t.Version = cf.GetString("version")
+	t.Source, t.SourceVersion = parseSourceLine(cf.GetString("source"), t.Package, t.Version)
+
 	t.InstalledSize, _ = strconv.Atoi(cf.GetString("installed-size"))
 	t.Size, _ = strconv.Atoi(cf.GetString("size"))
 

@@ -4,11 +4,35 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 )
+
+func DownloadReleaseFile(repoURL string, codeName string, fpath string) (ReleaseFile, error) {
+	var r ReleaseFile
+	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
+
+	// download Release File
+	err := download(url, fpath, false)
+	if err != nil {
+		return r, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
+	}
+
+	bs, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		return r, err
+	}
+
+	// build Release File
+	cf, err := NewControlFile(string(bs))
+	if err != nil {
+		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
+	}
+	return cf.ToReleaseFile()
+}
 
 func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
 	f, err := os.Open(fPath)

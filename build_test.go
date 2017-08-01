@@ -16,6 +16,12 @@ func TestParsingDBComponent(t *testing.T) {
 	Assert(t, len(cs), 523)
 }
 
+func TestParseLine(t *testing.T) {
+	fs := getArrayString("haskell-mbox (0.3.3-3)", " ")
+	Assert(t, len(fs), 2)
+	Assert(t, fs[0], "haskell-mbox")
+}
+
 func TestBuildCache(t *testing.T) {
 	targetDir := "testdata"
 	codeName := "unstable"
@@ -50,12 +56,15 @@ func TestBinaryPackage(t *testing.T) {
 	Assert(t, p.Filename, "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
 	Assert(t, p.Size, 666554)
 
+	Assert(t, p.Source, "fdk-aac")
+	Assert(t, p.SourceVersion, "30")
+
 	p = buildTestPackageBinary(t, testBinary2)
 	Assert(t, p.Package, "apps.com.txsp")
+	Assert(t, p.Source, p.Package)
 
 	p = buildTestPackageBinary(t, testMultline)
 	Assert(t, p.Package, "lib32gcc-4.9-dev")
-
 }
 
 func TestGetArrayString(t *testing.T) {
@@ -112,7 +121,7 @@ func TestControlFile(t *testing.T) {
 
 	Assert(t, d.GetString("Package"), "aac-enc")
 
-	Assert(t, d.GetString("Source"), "fdk-aac")
+	Assert(t, d.GetString("Source"), "fdk-aac   (30)")
 
 	Assert(t, d.GetString("Version"), "0.1.3+20140816-2")
 
@@ -132,7 +141,7 @@ func TestControlFile(t *testing.T) {
 
 var testBinary = `
 Package: aac-enc
-Source: fdk-aac
+Source: fdk-aac   (30)
 Version: 0.1.3+20140816-2
 Installed-Size: 705
 Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>

@@ -1,33 +1,8 @@
 package dpkg
 
 import (
-	"fmt"
-	"io/ioutil"
 	"path"
 )
-
-func DownloadReleaseFile(repoURL string, codeName string, fpath string) (ReleaseFile, error) {
-	var r ReleaseFile
-	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
-
-	// download Release File
-	err := download(url, fpath, false)
-	if err != nil {
-		return r, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
-	}
-
-	bs, err := ioutil.ReadFile(fpath)
-	if err != nil {
-		return r, err
-	}
-
-	// build Release File
-	cf, err := NewControlFile(string(bs))
-	if err != nil {
-		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
-	}
-	return cf.ToReleaseFile()
-}
 
 type Suite struct {
 	Packages map[string]map[string]ControlFile
@@ -48,6 +23,50 @@ func NewSuite(url string, codename string, dataDir string, archs ...string) (*Su
 		dataDir:    dataDir,
 	}
 	return s, s.build()
+}
+
+func (s Suite) FindBinaryBySource(sp SourcePackage, arch string) []BinaryPackage {
+	var ret []BinaryPackage
+	for _, name := range sp.GetBinary(arch) {
+		b, err := s.FindBinary(name, arch)
+		if err != nil {
+			DebugPrintf("W: FindBinaryBySource(%s,%s)->%q: %v\n", sp.Package, arch, name, err)
+			continue
+		}
+		ret = append(ret, b)
+	}
+	return ret
+}
+
+func (s Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
+	if arch == "all" {
+		arch = s.limitArchs[0]
+		if arch == "" {
+			arch = s.Architecutres[0]
+		}
+	}
+	r, ok := s.FindControl(name, arch)
+	if !ok {
+		return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
+	}
+	return r.ToBinary()
+}
+
+func (s Suite) FindControl(name string, arch string) (ControlFile, bool) {
+	db, ok := s.Packages[arch]
+	if !ok {
+		return ControlFile{}, false
+	}
+	r, ok := db[name]
+	return r, ok
+}
+
+func (s Suite) FindSource(name string) (SourcePackage, error) {
+	r, ok := s.FindControl(name, "source")
+	if !ok {
+		return SourcePackage{}, NotFoundError{name}
+	}
+	return r.ToSource()
 }
 
 func (s *Suite) tryDownload() (ReleaseFile, error) {
@@ -104,48 +123,4 @@ func buildCache(cacheFile string, files ...string) (map[string]ControlFile, erro
 		}
 	}
 	return r, storeGOB(cacheFile, r)
-}
-
-func (s *Suite) FindBinaryBySource(sp SourcePackage, arch string) []BinaryPackage {
-	var ret []BinaryPackage
-	for _, name := range sp.GetBinary(arch) {
-		b, err := s.FindBinary(name, arch)
-		if err != nil {
-			DebugPrintf("W: FindBinaryBySource(%s,%s)->%q: %v\n", sp.Package, arch, name, err)
-			continue
-		}
-		ret = append(ret, b)
-	}
-	return ret
-}
-
-func (s *Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
-	if arch == "all" {
-		arch = s.Architecutres[0]
-	}
-	db, ok := s.Packages[arch]
-	if !ok {
-		return BinaryPackage{}, NotFoundError{"Architecutre of " + string(arch)}
-	}
-	return db[name].ToBinary()
-}
-
-func (s *Suite) FindSource(name string) (SourcePackage, error) {
-	srcs, ok := s.Packages["source"]
-	if !ok {
-		return SourcePackage{}, NotFoundError{name}
-	}
-	r, ok := srcs[name]
-	return r.ToSource()
-}
-
-func (s *Suite) ListSource() []string {
-	return s.ListBinary("source")
-}
-func (s *Suite) ListBinary(arch string) []string {
-	var ret []string
-	for name := range s.Packages[arch] {
-		ret = append(ret, name)
-	}
-	return ret
 }
