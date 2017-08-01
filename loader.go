@@ -11,19 +11,22 @@ import (
 	"strings"
 )
 
-func DownloadReleaseFile(repoURL string, codeName string, fpath string) (ReleaseFile, error) {
+func DownloadReleaseFile(repoURL string, codeName string) (ReleaseFile, error) {
 	var r ReleaseFile
 	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
 
-	// download Release File
-	err := download(url, fpath, false)
+	reps, err := http.Get(url)
 	if err != nil {
-		return r, fmt.Errorf("DownloadReleaseFile  http.Get(%q) failed:(%v)", url, err)
+		return r, fmt.Errorf("can't download %q : %v", url, err)
 	}
+	defer reps.Body.Close()
 
-	bs, err := ioutil.ReadFile(fpath)
+	if reps.StatusCode != 200 {
+		return r, fmt.Errorf("can't download %q : %v", url, reps.Status)
+	}
+	bs, err := ioutil.ReadAll(reps.Body)
 	if err != nil {
-		return r, err
+		return r, fmt.Errorf("can't read content %q : %v", url, err)
 	}
 
 	// build Release File
@@ -55,12 +58,13 @@ func LoadControlFileGroup(fPath string) ([]ControlFile, error) {
 // DownloadRepository download files from rf.FileInfos()
 // it ignoring unchanged file by checking MD5 value.
 // return whether changed and error if any.
-func DownloadRepository(repoURL string, rf ReleaseFile, targetDir string) (bool, error) {
+func DownloadRepository(repoURL string, rf ReleaseFile, rootDir string) (bool, error) {
 	changed := false
 	for _, f := range rf.FileInfos() {
 		url := repoURL + "/dists/" + rf.CodeName + "/" + f.Path
-		target := path.Join(targetDir, f.Path)
-		if HashFile(target) == f.MD5 {
+		target := path.Join(rootDir, f.Path)
+		hash, _ := HashFile(target)
+		if hash == f.MD5 {
 			DebugPrintf("%q to %q is cached\n", url, target)
 			continue
 		}

@@ -5,7 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/gob"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"sort"
 	"unicode"
@@ -24,21 +24,40 @@ func UnionSet(s1, s2 []string) []string {
 	return ret
 }
 
-func HashFile(fpath string) string {
-	f, err := os.Open(fpath)
-	if err != nil {
-		return ""
+func HashFiles(fpaths ...string) (string, error) {
+	var hashs []string
+	for _, f := range fpaths {
+		v, err := HashFile(f)
+		if err != nil {
+			return "", err
+		}
+		hashs = append(hashs, v)
 	}
-	defer f.Close()
+	return HashArrayString(hashs), nil
+}
+func HashArrayString(s []string) string {
+	sort.Strings(s)
+	var r string
+	for _, h := range s {
+		r += h
+	}
+	return HashBytes([]byte(r))
+}
 
+func HashBytes(bs []byte) string {
 	hash := md5.New()
-	_, err = io.Copy(hash, f)
-	if err != nil {
-		return ""
-	}
+	hash.Write(bs)
 	var r [16]byte
 	copy(r[:], hash.Sum(nil))
 	return fmt.Sprintf("%x", r)
+}
+
+func HashFile(fpath string) (string, error) {
+	bs, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		return "", err
+	}
+	return HashBytes(bs), nil
 }
 
 func TrimLeftSpace(d []byte) []byte {
@@ -48,7 +67,11 @@ func TrimLeftSpace(d []byte) []byte {
 func EnsureDirectory(t string) error {
 	s, err := os.Stat(t)
 	if err != nil {
-		return os.MkdirAll(t, 0755)
+		err := os.MkdirAll(t, 0755)
+		if err != nil {
+			DebugPrintf("EnsureDirectory failed: %v", err)
+		}
+		return err
 	} else {
 		if !s.IsDir() {
 			return fmt.Errorf("%q is a regular file", t)

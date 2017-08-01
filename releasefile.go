@@ -1,7 +1,6 @@
 package dpkg
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -106,11 +105,11 @@ func (rf ReleaseFile) valid() error {
 }
 
 func (rf ReleaseFile) Hash() string {
-	var data []byte
+	var hashs []string
 	for _, finfo := range rf.FileInfos() {
-		data = append(data, ([]byte)(finfo.MD5)...)
+		hashs = append(hashs, finfo.MD5)
 	}
-	return fmt.Sprintf("%x", md5.Sum(data))
+	return HashArrayString(hashs)
 }
 
 type PackagesFileInfos []PackagesFileInfo

@@ -86,6 +86,9 @@ func (t BinaryPackage) valid() error {
 }
 
 func parseSourceLine(str string, defSource, defVer string) (string, string) {
+	if str == "" {
+		return defSource, defVer
+	}
 	fs := getArrayString(str, " ")
 	switch len(fs) {
 	case 2:
@@ -93,7 +96,7 @@ func parseSourceLine(str string, defSource, defVer string) (string, string) {
 	case 1:
 		return fs[0], defVer
 	default:
-		DebugPrintln("Invalid source line %q", str)
+		DebugPrintf("Invalid source line %q (%d)\n", str, len(fs))
 		return defSource, defVer
 	}
 }

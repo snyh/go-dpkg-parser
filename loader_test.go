@@ -17,7 +17,7 @@ func TestDumpRepository(t *testing.T) {
 
 	rPath := path.Join(targetDir, codeName, "Release")
 
-	rf, err := DownloadReleaseFile(repoURL, codeName, rPath)
+	rf, err := DownloadReleaseFile(repoURL, codeName)
 	Assert(t, err, nil)
 	_, err = DownloadRepository(repoURL, rf, targetDir)
 	Assert(t, err, nil)
@@ -29,6 +29,11 @@ func TestDumpRepository(t *testing.T) {
 
 	rf, err = cf.ToReleaseFile()
 	Assert(t, err, nil)
+}
+
+func TestHash(t *testing.T) {
+	v := HashBytes([]byte("hello"))
+	Assert(t, v, "5d41402abc4b2a76b9719d911017c592")
 }
 
 func TestRelease(t *testing.T) {
