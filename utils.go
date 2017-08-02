@@ -2,15 +2,83 @@ package dpkg
 
 import (
 	"bytes"
+	"compress/gzip"
 	"crypto/md5"
 	"encoding/gob"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"sort"
+	"strings"
 	"unicode"
 )
+
+func WriteToFile(content []byte, target string, mode os.FileMode) error {
+	err := EnsureDirectory(path.Dir(target))
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(target, content, mode)
+}
+
+func IsGzip(fpath string) bool {
+	return strings.HasSuffix(strings.ToLower(fpath), ".gz")
+}
+
+type readCloserWrap struct {
+	*gzip.Reader
+	a io.ReadWriteCloser
+}
+
+func (w readCloserWrap) Close() error {
+	w.a.Close()
+	return w.Reader.Close()
+}
+
+func ReadFile(fpath string, unzip bool) (io.ReadCloser, error) {
+	f, err := os.Open(fpath)
+	if err != nil {
+		return nil, err
+	}
+	if !unzip {
+		return f, err
+	}
+	gr, err := gzip.NewReader(f)
+	if err != nil {
+		return nil, FormatError{"LoadControlFileGroup", fpath, err}
+	}
+	return readCloserWrap{gr, f}, nil
+}
+
+func DownloadTo(url string, w io.Writer) error {
+	reps, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("can't download %q : %v", url, err)
+	}
+	defer reps.Body.Close()
+	if reps.StatusCode != 200 {
+		return fmt.Errorf("can't download %q : %v", url, reps.Status)
+	}
+	_, err = io.Copy(w, reps.Body)
+	return err
+}
+
+// download download the url content to "dest" file.
+func DownloadToFile(url string, dest string) error {
+	DebugPrintf("Downloading %q to %q\n", url, dest)
+	if err := EnsureDirectory(path.Dir(dest)); err != nil {
+		return err
+	}
+	f, err := os.Create(dest)
+	if err != nil {
+		return fmt.Errorf("Can't create file %s", url)
+	}
+	defer f.Close()
+	return DownloadTo(url, f)
+}
 
 func UnionSet(s1, s2 []string) []string {
 	var ret []string
@@ -59,14 +127,6 @@ func HashFile(fpath string) (string, error) {
 		return "", err
 	}
 	return HashBytes(bs), nil
-}
-
-func WriteContent(target string, content []byte, mode os.FileMode) error {
-	err := EnsureDirectory(path.Dir(target))
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(target, content, mode)
 }
 
 func TrimLeftSpace(d []byte) []byte {

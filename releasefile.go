@@ -57,16 +57,16 @@ func LoadReleaseFile(path string) (ReleaseFile, error) {
 func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf := ReleaseFile{}
 
-	for _, arch := range cf.GetArrayString("architectures", " ") {
+	for _, arch := range cf.GetArray("architectures", " ") {
 		rf.Architectures = append(rf.Architectures, arch)
 	}
-	rf.Date = cf.GetString("date")
+	rf.Date = cf.Get("date")
 
-	rf.Date = cf.GetString("date")
-	rf.CodeName = cf.GetString("codename")
-	rf.Description = cf.GetString("description")
-	rf.Date = cf.GetString("date")
-	rf.Components = cf.GetArrayString("components", " ")
+	rf.Date = cf.Get("date")
+	rf.CodeName = cf.Get("codename")
+	rf.Description = cf.Get("description")
+	rf.Date = cf.Get("date")
+	rf.Components = cf.GetArray("components", " ")
 	rf.Hash = HashBytes([]byte(cf.Raw))
 
 	var ps []PackagesFileInfo

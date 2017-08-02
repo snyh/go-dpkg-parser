@@ -20,6 +20,7 @@ type BinaryPackage struct {
 	Homepage      string        `json:"homepage"`
 	SHA256        string        `json:"sha256"`
 	Maintainer    string        `json:"maintainer"`
+	Provides      []string      `json:"provides"`
 }
 
 type PackageListItem struct {
@@ -107,22 +108,25 @@ func parseSourceLine(str string, defSource, defVer string) (string, string) {
 
 func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t := BinaryPackage{}
-	t.Package = cf.GetString("package")
-	t.Version = cf.GetString("version")
-	t.Source, t.SourceVersion = parseSourceLine(cf.GetString("source"), t.Package, t.Version)
+	t.Package = cf.Get("package")
+	t.Version = cf.Get("version")
+	t.Source, t.SourceVersion = parseSourceLine(cf.Get("source"), t.Package, t.Version)
 
-	t.InstalledSize, _ = strconv.Atoi(cf.GetString("installed-size"))
-	t.Size, _ = strconv.Atoi(cf.GetString("size"))
+	t.InstalledSize, _ = strconv.Atoi(cf.Get("installed-size"))
+	t.Size, _ = strconv.Atoi(cf.Get("size"))
 
-	for _, arch := range cf.GetArrayString("architecture", " ") {
+	for _, arch := range cf.GetArray("architecture", " ") {
 		t.Architectures = append(t.Architectures, arch)
 	}
-	t.Description = cf.GetString("description")
-	t.Filename = cf.GetString("filename")
-	t.Tag = cf.GetString("tag")
-	t.Homepage = cf.GetString("homepage")
-	t.SHA256 = cf.GetString("sha256")
-	t.Maintainer = cf.GetString("maintainer")
+	t.Description = cf.Get("description")
+	t.Filename = cf.Get("filename")
+	t.Tag = cf.Get("tag")
+	t.Homepage = cf.Get("homepage")
+	t.SHA256 = cf.Get("sha256")
+	t.Maintainer = cf.Get("maintainer")
+
+	//TODO: parse architecture qualifier
+	t.Provides = cf.GetArray("provides", ",")
 
 	return t, t.valid()
 }
@@ -130,17 +134,17 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 func (cf SourcePackage) valid() error { return nil }
 func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t := SourcePackage{}
-	t.Package = cf.GetString("package")
-	t.Version = cf.GetString("version")
-	t.Description = cf.GetString("description")
-	t.Homepage = cf.GetString("homepage")
-	t.Format = cf.GetString("format")
-	t.Binary = cf.GetArrayString("binary", ",")
-	t.Architecture = cf.GetString("architecture")
-	t.Maintainer = cf.GetString("maintainer")
-	t.Section = cf.GetString("section")
-	t.Priority = cf.GetString("priority")
-	t.buildDepends = cf.GetArrayString("build-depends", ",")
+	t.Package = cf.Get("package")
+	t.Version = cf.Get("version")
+	t.Description = cf.Get("description")
+	t.Homepage = cf.Get("homepage")
+	t.Format = cf.Get("format")
+	t.Binary = cf.GetArray("binary", ",")
+	t.Architecture = cf.Get("architecture")
+	t.Maintainer = cf.Get("maintainer")
+	t.Section = cf.Get("section")
+	t.Priority = cf.Get("priority")
+	t.buildDepends = cf.GetArray("build-depends", ",")
 
 	plist := cf.GetMultiline("package-list")
 	if len(plist) > 0 {
@@ -215,7 +219,7 @@ func (cf SourcePackage) GetBinary(arch string) []string {
 func (cf SourcePackage) BuildDepends(arch string, profile string) ([]DepInfo, error) {
 	var ret []DepInfo
 	for _, raw := range cf.buildDepends {
-		info, err := ParseDepInfo(raw)
+		info, err := parseDepInfo(raw)
 		if err != nil {
 			return nil, err
 		}

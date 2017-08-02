@@ -75,7 +75,7 @@ func (d ControlFile) String() string {
 	return d.Raw
 }
 
-func (d ControlFile) GetString(key string) string {
+func (d ControlFile) Get(key string) string {
 	if d.cache == nil {
 		cache, err := ParseControlFile(d.Raw)
 		if err != nil {
@@ -88,13 +88,13 @@ func (d ControlFile) GetString(key string) string {
 	return strings.TrimSpace(cache[strings.ToLower(key)])
 }
 
-func (d ControlFile) GetArrayString(key string, sep string) []string {
-	s := d.GetString(key)
+func (d ControlFile) GetArray(key string, sep string) []string {
+	s := d.Get(key)
 	return getArrayString(s, sep)
 }
 
 func (d ControlFile) GetMultiline(key string) []string {
-	return getMultiline(d.GetString(key))
+	return getMultiline(d.Get(key))
 }
 
 func getArrayString(s string, sep string) []string {

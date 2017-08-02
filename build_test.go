@@ -11,7 +11,7 @@ import (
 )
 
 func TestParsingDBComponent(t *testing.T) {
-	cs, err := LoadControlFileGroup("testdata/Packages")
+	cs, err := LoadPackages("testdata/Packages")
 	Assert(t, err, nil)
 	Assert(t, len(cs), 523)
 }
@@ -47,7 +47,7 @@ func TestLarageControlFile(t *testing.T) {
 	Assert(t, err, nil)
 	p, err := c.ToBinary()
 	Assert(t, err, nil)
-	Assert(t, len(c.GetString("Test")), bufio.MaxScanTokenSize)
+	Assert(t, len(c.Get("Test")), bufio.MaxScanTokenSize)
 	Assert(t, p.Package, "aac-enc")
 }
 
@@ -119,24 +119,24 @@ func TestControlFile(t *testing.T) {
 	d, err := NewControlFile(testBinary)
 	Assert(t, err, nil)
 
-	Assert(t, d.GetString("Package"), "aac-enc")
+	Assert(t, d.Get("Package"), "aac-enc")
 
-	Assert(t, d.GetString("Source"), "fdk-aac   (30)")
+	Assert(t, d.Get("Source"), "fdk-aac   (30)")
 
-	Assert(t, d.GetString("Version"), "0.1.3+20140816-2")
+	Assert(t, d.Get("Version"), "0.1.3+20140816-2")
 
-	Assert(t, d.GetString("installed-size"), "705")
+	Assert(t, d.Get("installed-size"), "705")
 
-	Assert(t, d.GetString("archiTecTure"), "amd64")
+	Assert(t, d.Get("archiTecTure"), "amd64")
 
-	Assert(t, d.GetString("depends"), "libfdk-aac0 (= 0.1.3+20140816-2), libc6 (>= 2.4)")
+	Assert(t, d.Get("depends"), "libfdk-aac0 (= 0.1.3+20140816-2), libc6 (>= 2.4)")
 
-	Assert(t, d.GetString("description"), `Fraunhofer FDK AAC Codec Library - frontend binary
+	Assert(t, d.Get("description"), `Fraunhofer FDK AAC Codec Library - frontend binary
  test multiline`)
 
-	Assert(t, d.GetString("priority"), "optional")
+	Assert(t, d.Get("priority"), "optional")
 
-	Assert(t, d.GetString("Filename"), "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
+	Assert(t, d.Get("Filename"), "pool/non-free/f/fdk-aac/aac-enc_0.1.3+20140816-2_amd64.deb")
 }
 
 var testBinary = `

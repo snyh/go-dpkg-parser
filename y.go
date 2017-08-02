@@ -4,9 +4,7 @@ package dpkg
 import __yyfmt__ "fmt"
 
 //line ver.go.y:2
-import "./lexer"
-
-//line ver.go.y:22
+//line ver.go.y:19
 type verSymType struct {
 	yys int
 	val string
@@ -17,9 +15,8 @@ type verSymType struct {
 const ANY = 57346
 const NATIVE = 57347
 const ALPHA_NUMERIC = 57348
-const PKG_NAME = 57349
-const PROFILE = 57350
-const ARCH_NAME = 57351
+const PROFILE = 57349
+const ARCH_NAME = 57350
 
 var verToknames = [...]string{
 	"$end",
@@ -36,14 +33,13 @@ var verToknames = [...]string{
 	"'<'",
 	"'>'",
 	"ALPHA_NUMERIC",
-	"PKG_NAME",
 	"PROFILE",
 	"ARCH_NAME",
 	"'.'",
 	"'+'",
 	"'~'",
-	"'-'",
 	"'|'",
+	"'-'",
 	"':'",
 	"'='",
 }
@@ -53,155 +49,87 @@ const verEofCode = 1
 const verErrCode = 2
 const verInitialStackSize = 16
 
-//line ver.go.y:143
-
-type myLexer struct {
-	e    string
-	slex *lexer.SimpleLexer
-	r    []Depend
-}
-
-func NewMyLexer(raw string, archList, profileList []string) *myLexer {
-	sl := lexer.NewSimpleLexer("dsc-version")
-	sl.SetInputString(raw)
-
-	sl.AddIgnores(" ")
-
-	sl.Add(ANY, []string{"any"})
-	sl.Add(NATIVE, []string{"native"})
-
-	sl.SetBasicToken("()[]<>=!,:+-~.")
-
-	sl.AddI(ARCH_NAME, archList)
-	sl.AddI(PROFILE, profileList)
-	sl.AddR(ALPHA_NUMERIC, []string{`^[0-9a-zA-Z]+`})
-	return &myLexer{
-		slex: sl,
-	}
-}
-
-func saveResult(l verLexer, r []Depend) {
-	l.(*myLexer).r = r
-}
-
-func (l *myLexer) Lex(lval *verSymType) int {
-	t, s := l.slex.Token()
-	lval.val = s
-	return int(t)
-}
-
-func (l *myLexer) Error(err string) {
-	l.e = err
-}
-
-type Depend struct {
-	Name      string
-	Version   string
-	Operation string
-}
-
-func ParseDepends(v string) ([]Depend, error) {
-	archList := []string{"amd64", "i386", "ia64",
-		"mips", "mipsel", "mips64el", "mips64", "mipsn32", "mipsn32el",
-		"kfreebsd-amd64", "kfreebsd-i386",
-		"s390", "s390x", "sparc",
-		"arm", "armel", "armhf", "arm64",
-		"powerpc", "powerpcspe",
-		"ppc64el", "ppc64", "ppc64el",
-		"linux-any", "hurd-any", "kfreebsd-any", "any-i386", "any-amd64",
-		"hurd-i386", "x32", "sparc64",
-		"m68k", "sh4", "alpha", "hppa", "avr32",
-		"or1k",
-	}
-	profileList := []string{"cross", "stage1", "nocheck", "stage2", "nodoc", "profile.nobluetooth", "nobiarch"}
-	l := NewMyLexer(v, archList, profileList)
-	verNewParser().Parse(l)
-	if l.e != "" {
-		return nil, __yyfmt__.Errorf("Parsing %q failed: %v", v, l.e)
-	}
-	return l.r, nil
-}
+//line ver.go.y:135
 
 //line yacctab:1
 var verExca = [...]int{
 	-1, 1,
 	1, -1,
 	-2, 0,
-	-1, 25,
-	21, 28,
-	-2, 22,
-	-1, 60,
-	21, 24,
-	-2, 30,
+	-1, 23,
+	21, 27,
+	-2, 21,
+	-1, 58,
+	21, 23,
+	-2, 29,
 }
 
-const verNprod = 39
+const verNprod = 38
 const verPrivate = 57344
 
 var verTokenNames []string
 var verStates []string
 
-const verLast = 72
+const verLast = 70
 
 var verAct = [...]int{
 
-	58, 22, 28, 40, 25, 26, 9, 38, 10, 11,
-	12, 14, 50, 13, 62, 41, 45, 30, 39, 7,
-	8, 64, 63, 65, 43, 42, 44, 29, 33, 24,
-	23, 27, 47, 48, 67, 37, 27, 32, 60, 36,
-	51, 52, 53, 54, 18, 19, 35, 55, 56, 57,
-	61, 59, 34, 5, 49, 46, 1, 20, 6, 31,
-	21, 2, 17, 15, 66, 68, 69, 61, 59, 16,
-	4, 3,
+	56, 20, 26, 38, 23, 24, 8, 60, 9, 10,
+	43, 36, 11, 13, 39, 48, 12, 6, 65, 7,
+	28, 37, 62, 61, 63, 41, 40, 42, 31, 27,
+	45, 46, 16, 17, 25, 47, 30, 58, 49, 50,
+	51, 52, 44, 34, 18, 53, 54, 55, 59, 57,
+	22, 21, 25, 33, 32, 5, 35, 29, 19, 15,
+	2, 4, 64, 66, 67, 59, 57, 14, 3, 1,
 }
 var verPact = [...]int{
 
-	39, -1000, 52, -3, -8, -1000, 39, 39, 40, 17,
-	10, 21, 38, 32, 25, -1000, -1000, -1000, -1000, -1000,
-	-1000, 27, -1000, -6, -9, 6, -5, -1000, 45, 10,
-	10, 41, -1000, -4, -1000, -1000, -1000, -1000, 22, 22,
-	22, 22, 22, 22, 22, 24, -1000, -1000, -1000, -1000,
-	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -7,
-	3, 6, 22, 20, 20, 20, -1000, 3, -1000, -1000,
+	41, -1000, -1000, -3, -5, -1000, 41, 28, 38, 13,
+	21, 40, 39, 29, -1000, -1000, -1000, -1000, -1000, 48,
+	-1000, -2, -9, 8, -11, -1000, 32, 13, 13, 22,
+	-1000, 0, -1000, -1000, -1000, -1000, 20, 20, 20, 20,
+	20, 20, 20, 23, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -14, 5, 8,
+	20, 4, 4, 4, -1000, 5, -1000, -1000,
 }
 var verPgo = [...]int{
 
-	0, 56, 61, 71, 70, 62, 60, 2, 59, 1,
+	0, 69, 60, 68, 61, 59, 58, 2, 57, 1,
 	4, 5, 0,
 }
 var verR1 = [...]int{
 
-	0, 1, 1, 2, 2, 4, 4, 4, 4, 3,
-	3, 3, 3, 3, 5, 5, 5, 6, 6, 6,
-	6, 6, 9, 9, 10, 10, 10, 10, 11, 11,
-	12, 12, 12, 12, 7, 7, 7, 8, 8,
+	0, 1, 2, 2, 4, 4, 4, 4, 3, 3,
+	3, 3, 3, 5, 5, 5, 6, 6, 6, 6,
+	6, 9, 9, 10, 10, 10, 10, 11, 11, 12,
+	12, 12, 12, 7, 7, 7, 8, 8,
 }
 var verR2 = [...]int{
 
-	0, 3, 1, 3, 1, 1, 3, 3, 3, 1,
-	3, 4, 4, 4, 1, 1, 1, 1, 3, 3,
-	3, 3, 1, 3, 1, 3, 3, 3, 1, 3,
-	1, 3, 3, 3, 1, 2, 2, 1, 2,
+	0, 1, 3, 1, 1, 3, 3, 3, 1, 3,
+	4, 4, 4, 1, 1, 1, 1, 3, 3, 3,
+	3, 1, 3, 1, 3, 3, 3, 1, 3, 1,
+	3, 3, 3, 1, 2, 2, 1, 2,
 }
 var verChk = [...]int{
 
-	-1000, -1, -2, -3, -4, 14, 6, 22, 23, 9,
-	11, 12, 18, 21, 19, -1, -2, -5, 4, 5,
-	17, -6, -9, 13, 12, -10, -11, 14, -7, 17,
-	7, -8, 16, 7, 14, 14, 14, 8, 13, 24,
-	12, 24, 19, 18, 20, 21, 10, -7, -7, 13,
-	16, -9, -9, -9, -9, -10, -10, -10, -12, -11,
-	14, -10, 21, 19, 18, 20, -12, 14, -12, -12,
+	-1000, -1, -2, -3, -4, 14, 20, 22, 9, 11,
+	12, 17, 21, 18, -2, -5, 4, 5, 16, -6,
+	-9, 13, 12, -10, -11, 14, -7, 16, 7, -8,
+	15, 7, 14, 14, 14, 8, 13, 23, 12, 23,
+	18, 17, 19, 21, 10, -7, -7, 13, 15, -9,
+	-9, -9, -9, -10, -10, -10, -12, -11, 14, -10,
+	21, 18, 17, 19, -12, 14, -12, -12,
 }
 var verDef = [...]int{
 
-	0, -2, 2, 4, 9, 5, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 1, 3, 10, 14, 15,
-	16, 0, 17, 0, 0, -2, 0, 24, 0, 34,
-	0, 0, 37, 0, 6, 7, 8, 11, 0, 0,
-	0, 0, 0, 0, 0, 0, 12, 36, 35, 13,
-	38, 18, 19, 20, 21, 25, 26, 27, 23, 0,
-	-2, 28, 0, 0, 0, 0, 31, 30, 32, 33,
+	0, -2, 1, 3, 8, 4, 0, 0, 0, 0,
+	0, 0, 0, 0, 2, 9, 13, 14, 15, 0,
+	16, 0, 0, -2, 0, 23, 0, 33, 0, 0,
+	36, 0, 5, 6, 7, 10, 0, 0, 0, 0,
+	0, 0, 0, 0, 11, 35, 34, 12, 37, 17,
+	18, 19, 20, 24, 25, 26, 22, 0, -2, 27,
+	0, 0, 0, 0, 30, 29, 31, 32,
 }
 var verTok1 = [...]int{
 
@@ -209,19 +137,19 @@ var verTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 7, 3, 3, 3, 3, 3, 3,
-	9, 8, 3, 19, 6, 21, 18, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 23, 3,
-	12, 24, 13, 3, 3, 3, 3, 3, 3, 3,
+	9, 8, 3, 18, 6, 21, 17, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 22, 3,
+	12, 23, 13, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 11, 3, 10, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 22, 3, 20,
+	3, 3, 3, 3, 20, 3, 19,
 }
 var verTok2 = [...]int{
 
-	2, 3, 4, 5, 14, 15, 16, 17,
+	2, 3, 4, 5, 14, 15, 16,
 }
 var verTok3 = [...]int{
 	0,
@@ -565,77 +493,70 @@ verdefault:
 	switch vernt {
 
 	case 1:
-		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:34
+		verDollar = verS[verpt-1 : verpt+1]
+		//line ver.go.y:31
 		{
-			verVAL.r = append([]Depend{verDollar[1].tmp}, verDollar[3].r...)
+			verVAL.r = []Depend{verDollar[1].tmp}
 			saveResult(verlex, verVAL.r)
 		}
 	case 2:
-		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:39
-		{
-			verVAL.r = []Depend{verDollar[1].tmp}
-			saveResult(verlex, verVAL.r)
-		}
-	case 3:
 		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:47
+		//line ver.go.y:39
 		{
 			verVAL.r = append([]Depend{verDollar[1].tmp}, verDollar[3].r...)
 		}
-	case 4:
+	case 3:
 		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:51
+		//line ver.go.y:43
 		{
 			verVAL.r = []Depend{verDollar[1].tmp}
 		}
-	case 9:
+	case 8:
 		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:63
+		//line ver.go.y:55
 		{
 			verVAL.tmp.Name = verDollar[1].val
 			verVAL.tmp.Version = ""
 			verVAL.tmp.Operation = ""
 		}
-	case 11:
+	case 10:
 		verDollar = verS[verpt-4 : verpt+1]
-		//line ver.go.y:70
+		//line ver.go.y:62
 		{
 			verVAL.tmp.Name = verDollar[1].val
 			verVAL.tmp.Version = verDollar[3].tmp.Version
 			verVAL.tmp.Operation = verDollar[3].tmp.Operation
 		}
-	case 17:
+	case 16:
 		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:85
+		//line ver.go.y:77
 		{
 			verVAL.tmp.Version = verDollar[1].val
 		}
-	case 18:
+	case 17:
 		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:89
+		//line ver.go.y:81
 		{
 			verVAL.tmp.Version = verDollar[3].val
 			verVAL.tmp.Operation = "GT"
 		}
-	case 19:
+	case 18:
 		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:94
+		//line ver.go.y:86
 		{
 			verVAL.tmp.Version = verDollar[3].val
 			verVAL.tmp.Operation = "GTE"
 		}
-	case 20:
+	case 19:
 		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:99
+		//line ver.go.y:91
 		{
 			verVAL.tmp.Version = verDollar[3].val
 			verVAL.tmp.Operation = "ST"
 		}
-	case 21:
+	case 20:
 		verDollar = verS[verpt-3 : verpt+1]
-		//line ver.go.y:104
+		//line ver.go.y:96
 		{
 			verVAL.tmp.Version = verDollar[3].val
 			verVAL.tmp.Operation = "STE"

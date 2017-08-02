@@ -6,25 +6,25 @@ import (
 	"testing"
 )
 
-func TestBuildDepends(t *testing.T) {
-	vs := []string{
-		"python:native",
-		"debhelper (>= 3.10), gcc (<< 7.0)",
-		"debhelper (>= 3.10)",
-		"gcc,wget",
-		"gcc",
-		"gcc|clang",
-		"python-gdbm (>= 2.4.3)",
-		"abc-dev [amd64]",
-		"libbabeltrace-dev [amd64 armel armhf i386 kfreebsd-amd64 kfreebsd-i386 mips mipsel mips64el powerpc s390x]",
-		"libghc-aeson-qq-dev [!mips !i386]",
+func TestParseDepends(t *testing.T) {
+	vs := map[string]string{
+		"valac":                                                   "valac",
+		"libgtk-3-dev":                                            "libgtk-3-dev",
+		"libgee-0.8-dev":                                          "libgee-0.8-dev",
+		"libvte-2.91-dev":                                         "libvte-2.91-dev",
+		"libjson-glib-dev":                                        "libjson-glib-dev",
+		"libsecret-1-dev":                                         "libsecret-1-dev",
+		"libwnck-3-dev":                                           "libwnck-3-dev",
+		"cmake":                                                   "cmake",
+		"debhelper (>= 3.10)":                                     "debhelper",
+		"libbabeltrace-dev [amd64 mipsel mips64el powerpc s390x]": "libbabeltrace-dev",
+		"libghc-aeson-qq-dev [!mips !i386]":                       "libghc-aeson-qq-dev",
 	}
-	for _, v := range vs {
-		r, err := ParseDepends(v)
-		if err != nil {
-			t.Fatal(err)
-		}
-		t.Logf("%q --> %+v", v, r)
+
+	for str, rightName := range vs {
+		info, err := parseDepInfo(str)
+		Assert(t, err, nil)
+		Assert(t, info.Name, rightName)
 	}
 }
 
@@ -36,7 +36,7 @@ func TestAllVersions(t *testing.T) {
 	}
 
 	for _, v := range strings.Split(string(bs), "\n") {
-		_, err := ParseDepends("dump (>=" + v + ")")
+		_, err := parseDepends("dump (>=" + v + ")")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -51,7 +51,7 @@ func TestAllDepends(t *testing.T) {
 	}
 
 	for _, v := range strings.Split(string(bs), "\n") {
-		_, err := ParseDepends(v)
+		_, err := parseDepends(v)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -20,7 +20,7 @@ func TestDumpRepository(t *testing.T) {
 	rf, err := cf.ToReleaseFile()
 	Assert(t, err, nil)
 
-	_, err = DownloadRepository(repoURL, rf, path.Join(rootDir, rf.Hash))
+	err = DownloadRepository(repoURL, rf, path.Join(rootDir, rf.Hash))
 	Assert(t, err, nil)
 }
 
