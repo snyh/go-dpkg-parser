@@ -26,7 +26,7 @@ func TestBuildCache(t *testing.T) {
 	targetDir := "testdata"
 	codeName := "unstable"
 
-	m, err := NewSuite("http://pools.corp.deepin.com/deepin/", codeName, targetDir)
+	m, err := NewSuite("http://pools.corp.deepin.com/deepin/", codeName, targetDir, "")
 	Assert(t, err, nil)
 
 	p, err := m.FindBinary("lastore-daemon", "all")

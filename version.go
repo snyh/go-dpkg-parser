@@ -8,13 +8,19 @@ type Version struct {
 	Arch    string
 }
 
-func FindPkg(name string, verS string, verE string, arch string) {
+type DepInfo struct {
+	Name    string
+	VerMini string
+	VerMax  string
+
+	Arch    string
+	Profile string
 }
 
-func (db *PackageDatabase) ListAllVersion() []string {
-	var ret []string
-	for _, cf := range db.SourcePackages {
-		ret = append(ret, cf.GetString("version"))
-	}
-	return ret
+func (DepInfo) Match(arch string, profile string) bool {
+	return false
+}
+
+func ParseDepInfo(str string) (DepInfo, error) {
+	panic("Not Implement")
 }

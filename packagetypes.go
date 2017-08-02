@@ -45,16 +45,20 @@ func (item PackageListItem) Support(arch string) bool {
 }
 
 type SourcePackage struct {
-	Package      string `json:"package"`
-	Version      string `json:"version"`
-	Description  string `json:"description"`
-	Homepage     string `json:"homepage"`
-	Architecture string `json:"architecture"`
-	Maintainer   string `json:"maintainer"`
+	Package      string            `json:"package"`
+	Version      string            `json:"version"`
+	Description  string            `json:"description"`
+	Homepage     string            `json:"homepage"`
+	Architecture string            `json:"architecture"`
+	Maintainer   string            `json:"maintainer"`
+	Format       string            `json:"format"`
+	Binary       []string          `json:"binary"`
+	PackageList  []PackageListItem `json:"package_list"`
 
-	Format      string            `json:"format"`
-	Binary      []string          `json:"binary"`
-	PackageList []PackageListItem `json:"package_list"`
+	Section  string `json:"section"`
+	Priority string `json:"priority"`
+
+	buildDepends []string
 }
 
 type Architecture string
@@ -134,6 +138,9 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t.Binary = cf.GetArrayString("binary", ",")
 	t.Architecture = cf.GetString("architecture")
 	t.Maintainer = cf.GetString("maintainer")
+	t.Section = cf.GetString("section")
+	t.Priority = cf.GetString("priority")
+	t.buildDepends = cf.GetArrayString("build-depends", ",")
 
 	plist := cf.GetMultiline("package-list")
 	if len(plist) > 0 {
@@ -203,4 +210,18 @@ func (cf SourcePackage) GetBinary(arch string) []string {
 		ret = append(ret, bp.Name)
 	}
 	return ret
+}
+
+func (cf SourcePackage) BuildDepends(arch string, profile string) ([]DepInfo, error) {
+	var ret []DepInfo
+	for _, raw := range cf.buildDepends {
+		info, err := ParseDepInfo(raw)
+		if err != nil {
+			return nil, err
+		}
+		if info.Match(arch, profile) {
+			ret = append(ret, info)
+		}
+	}
+	return ret, nil
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"sort"
 	"unicode"
 )
@@ -58,6 +59,14 @@ func HashFile(fpath string) (string, error) {
 		return "", err
 	}
 	return HashBytes(bs), nil
+}
+
+func WriteContent(target string, content []byte, mode os.FileMode) error {
+	err := EnsureDirectory(path.Dir(target))
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(target, content, mode)
 }
 
 func TrimLeftSpace(d []byte) []byte {

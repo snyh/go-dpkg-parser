@@ -2,7 +2,6 @@ package dpkg
 
 import (
 	"flag"
-	"io/ioutil"
 	"path"
 	"strings"
 	"testing"
@@ -12,22 +11,16 @@ var network = flag.Bool("network", false, "download test data from network")
 
 func TestDumpRepository(t *testing.T) {
 	repoURL := "http://pools.corp.deepin.com/deepin"
-	targetDir := "/tmp/dump_repository"
+	rootDir := "/tmp/dump_repository"
 	codeName := "unstable"
 
-	rPath := path.Join(targetDir, codeName, "Release")
-
-	rf, err := DownloadReleaseFile(repoURL, codeName)
-	Assert(t, err, nil)
-	_, err = DownloadRepository(repoURL, rf, targetDir)
+	cf, err := DownloadReleaseFile(repoURL, codeName)
 	Assert(t, err, nil)
 
-	bs, err := ioutil.ReadFile(rPath)
-	Assert(t, err, nil)
-	cf, err := NewControlFile(string(bs))
+	rf, err := cf.ToReleaseFile()
 	Assert(t, err, nil)
 
-	rf, err = cf.ToReleaseFile()
+	_, err = DownloadRepository(repoURL, rf, path.Join(rootDir, rf.Hash))
 	Assert(t, err, nil)
 }
 

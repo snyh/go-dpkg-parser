@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-func DownloadReleaseFile(repoURL string, codeName string) (ReleaseFile, error) {
-	var r ReleaseFile
+func DownloadReleaseFile(repoURL string, codeName string) (ControlFile, error) {
+	var r ControlFile
 	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
 
 	reps, err := http.Get(url)
@@ -28,13 +28,7 @@ func DownloadReleaseFile(repoURL string, codeName string) (ReleaseFile, error) {
 	if err != nil {
 		return r, fmt.Errorf("can't read content %q : %v", url, err)
 	}
-
-	// build Release File
-	cf, err := NewControlFile(string(bs))
-	if err != nil {
-		return r, fmt.Errorf("DownloadReleaseFile invalid Release file(%q) : %v", url, err)
-	}
-	return cf.ToReleaseFile()
+	return NewControlFile(string(bs))
 }
 
 func LoadControlFileGroup(fPath string) ([]ControlFile, error) {

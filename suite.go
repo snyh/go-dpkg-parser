@@ -13,14 +13,17 @@ type Suite struct {
 	dataDir    string
 	host       string
 	limitArchs []string
+
+	hash string
 }
 
-func NewSuite(url string, codename string, dataDir string, archs ...string) (*Suite, error) {
+func NewSuite(url string, codename string, dataDir string, hash string, archs ...string) (*Suite, error) {
 	s := &Suite{
 		limitArchs: archs,
 		host:       url,
 		CodeName:   codename,
 		dataDir:    dataDir,
+		hash:       hash,
 	}
 	return s, s.build()
 }
@@ -70,25 +73,65 @@ func (s Suite) FindSource(name string) (SourcePackage, error) {
 	return r.ToSource()
 }
 
-func (s *Suite) tryDownload() (ReleaseFile, error) {
-	rf, err := DownloadReleaseFile(s.host, s.CodeName)
+func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
+	var rf ReleaseFile
+	raw, err := DownloadReleaseFile(s.host, s.CodeName)
+	if err != nil {
+		return rf, err
+	}
+	rf, err = raw.ToReleaseFile()
+	if err != nil {
+		return rf, err
+	}
+
+	// Update Suite Hash
+	s.hash = rf.Hash
+
+	rPath := s.rootDir(ReleaseFileName)
+
+	err = WriteContent(rPath, []byte(raw.Raw), 0644)
+	if err != nil {
+		return rf, err
+	}
+	return rf, err
+}
+
+func (s *Suite) loadReleaseFile() (ReleaseFile, error) {
+	if s.hash == "" {
+		return s.downloadReleaseFile()
+	}
+	rPath := s.rootDir(ReleaseFileName)
+	rf, err := LoadReleaseFile(rPath)
+	if rf.Hash != s.hash {
+		DebugPrintf("Invalid cache release file %q. Redownload it\n", rPath)
+		return s.downloadReleaseFile()
+	}
+	DebugPrintf("Loaded releae file %q from cache", rPath)
+	return rf, err
+}
+
+func (s *Suite) prepareDownload() (ReleaseFile, error) {
+	rf, err := s.loadReleaseFile()
 	if err != nil {
 		return rf, err
 	}
 	if len(s.limitArchs) != 0 {
 		rf.Architectures = (UnionSet(rf.Architectures, s.limitArchs))
 	}
-	_, err = DownloadRepository(s.host, rf, s.rootDir(rf))
+	_, err = DownloadRepository(s.host, rf, s.rootDir())
 	return rf, err
 }
 
-func (s *Suite) rootDir(rf ReleaseFile, subPath ...string) string {
-	root := path.Join(s.dataDir, rf.Hash())
+func (s *Suite) rootDir(subPath ...string) string {
+	if s.hash == "" {
+		panic("Empty　Hash")
+	}
+	root := path.Join(s.dataDir, s.hash)
 	return path.Join(append([]string{root}, subPath...)...)
 }
 
 func (s *Suite) build() error {
-	rf, err := s.tryDownload()
+	rf, err := s.prepareDownload()
 	if err != nil {
 		return err
 	}
@@ -98,7 +141,7 @@ func (s *Suite) build() error {
 	fs := make(map[string][]string)
 	hashs := make(map[string][]string)
 	for _, f := range rf.FileInfos() {
-		fs[f.Architecture] = append(fs[f.Architecture], s.rootDir(rf, f.Path))
+		fs[f.Architecture] = append(fs[f.Architecture], s.rootDir(f.Path))
 		hashs[f.Architecture] = append(hashs[f.Architecture], f.MD5)
 	}
 

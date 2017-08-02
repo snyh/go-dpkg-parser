@@ -24,6 +24,7 @@ type ReleaseFile struct {
 	Components    []string
 	Architectures Architectures
 	fileInfos     []PackagesFileInfo
+	Hash          string
 }
 
 func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
@@ -39,7 +40,7 @@ func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
 }
 
 // GetReleaseFile load ReleaseFile from dataDir with codeName
-func GetReleaseFile(path string) (ReleaseFile, error) {
+func LoadReleaseFile(path string) (ReleaseFile, error) {
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return ReleaseFile{}, fmt.Errorf("GetReleaseFile open file error: %v", err)
@@ -66,6 +67,7 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf.Description = cf.GetString("description")
 	rf.Date = cf.GetString("date")
 	rf.Components = cf.GetArrayString("components", " ")
+	rf.Hash = HashBytes([]byte(cf.Raw))
 
 	var ps []PackagesFileInfo
 	for _, v := range cf.GetMultiline("md5sum") {
@@ -102,14 +104,6 @@ func (rf ReleaseFile) valid() error {
 		return fmt.Errorf("NewReleaseFile input data is invalid. Without any valid fileinfos")
 	}
 	return nil
-}
-
-func (rf ReleaseFile) Hash() string {
-	var hashs []string
-	for _, finfo := range rf.FileInfos() {
-		hashs = append(hashs, finfo.MD5)
-	}
-	return HashArrayString(hashs)
 }
 
 type PackagesFileInfos []PackagesFileInfo
