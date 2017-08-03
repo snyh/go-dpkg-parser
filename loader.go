@@ -69,7 +69,7 @@ func (s *Suite) prepareDownload() (ReleaseFile, error) {
 		return rf, err
 	}
 	if len(s.limitArchs) != 0 {
-		rf.Architectures = (UnionSet(rf.Architectures, s.limitArchs))
+		rf.Architectures = (IntersectionSet(rf.Architectures, s.limitArchs))
 	}
 	return rf, DownloadRepository(s.host, rf, s.rootDir())
 }

@@ -80,7 +80,7 @@ func DownloadToFile(url string, dest string) error {
 	return DownloadTo(url, f)
 }
 
-func UnionSet(s1, s2 []string) []string {
+func IntersectionSet(s1, s2 []string) []string {
 	var ret []string
 	for _, i := range s1 {
 		for _, j := range s2 {
@@ -89,6 +89,17 @@ func UnionSet(s1, s2 []string) []string {
 				break
 			}
 		}
+	}
+	return ret
+}
+func UnionSet(s1, s2 []string) []string {
+	var cache = make(map[string]struct{})
+	for _, i := range append(s1, s2...) {
+		cache[i] = struct{}{}
+	}
+	var ret []string
+	for i := range cache {
+		ret = append(ret, i)
 	}
 	return ret
 }

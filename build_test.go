@@ -29,7 +29,7 @@ func TestBuildCache(t *testing.T) {
 	m, err := NewSuite("http://pools.corp.deepin.com/deepin/", codeName, targetDir, "")
 	Assert(t, err, nil)
 
-	p, err := m.FindBinary("lastore-daemon", "all")
+	p, err := m.FindBinary("lastore-daemon", "amd64")
 	Assert(t, err, nil)
 
 	Assert(t, p.Homepage, "http://github.com/linuxdeepin/lastore-daemon")
@@ -112,7 +112,7 @@ func TestDSC(t *testing.T) {
 	Assert(t, p.Format, "1.0")
 
 	p = buildTestPackageSource(t, testNonePackList)
-	Assert(t, p.PackageList[0], PackageListItem{Name: p.Package, Archs: []string{"abc"}})
+	Assert(t, p.PackageList[0], PackageListItem{Name: p.Package, Ptype: "deb", Archs: []string{"abc"}})
 }
 
 func TestControlFile(t *testing.T) {

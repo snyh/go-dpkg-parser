@@ -34,11 +34,14 @@ type PackageListItem struct {
 }
 
 func (item PackageListItem) Support(arch string) bool {
+	if arch == "any" {
+		panic("It's wrong to query package by architecture of any.")
+	}
 	for _, i := range item.Archs {
-		if i == "any" || i == "all" {
+		switch i {
+		case "any", "linux-any", "all":
 			return true
-		}
-		if i == string(arch) {
+		case arch, "any-" + arch:
 			return true
 		}
 	}
@@ -50,7 +53,7 @@ type SourcePackage struct {
 	Version      string            `json:"version"`
 	Description  string            `json:"description"`
 	Homepage     string            `json:"homepage"`
-	Architecture string            `json:"architecture"`
+	Architecture []string          `json:"architecture"`
 	Maintainer   string            `json:"maintainer"`
 	Format       string            `json:"format"`
 	Binary       []string          `json:"binary"`
@@ -59,7 +62,9 @@ type SourcePackage struct {
 	Section  string `json:"section"`
 	Priority string `json:"priority"`
 
-	buildDepends []string
+	buildDepends      []string
+	buildDependsArch  []string
+	buildDependsIndep []string
 }
 
 type Architecture string
@@ -140,11 +145,13 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t.Homepage = cf.Get("homepage")
 	t.Format = cf.Get("format")
 	t.Binary = cf.GetArray("binary", ",")
-	t.Architecture = cf.Get("architecture")
+	t.Architecture = cf.GetArray("architecture", " ")
 	t.Maintainer = cf.Get("maintainer")
 	t.Section = cf.Get("section")
 	t.Priority = cf.Get("priority")
 	t.buildDepends = cf.GetArray("build-depends", ",")
+	t.buildDependsArch = cf.GetArray("build-depends-arch", ",")
+	t.buildDependsIndep = cf.GetArray("build-depends-indep", ",")
 
 	plist := cf.GetMultiline("package-list")
 	if len(plist) > 0 {
@@ -153,6 +160,9 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 			if err != nil {
 				return t, FormatError{"SourcePackage", t.Package + t.Format, err}
 			}
+			if len(i.Archs) == 0 {
+				i.Archs = t.Architecture
+			}
 			t.PackageList = append(t.PackageList, i)
 		}
 	} else {
@@ -160,7 +170,8 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 		for _, b := range t.Binary {
 			t.PackageList = append(t.PackageList, PackageListItem{
 				Name:  b,
-				Archs: []string{t.Architecture},
+				Ptype: "deb",
+				Archs: t.Architecture,
 			})
 		}
 	}
@@ -203,7 +214,6 @@ func buildPackageListItem(line string, format string) (PackageListItem, error) {
 
 func (cf SourcePackage) GetBinary(arch string) []string {
 	var ret []string
-	// arch <- [ "amd64", "i386" ]
 	for _, bp := range cf.PackageList {
 		if bp.Ptype != "deb" {
 			continue
@@ -213,12 +223,33 @@ func (cf SourcePackage) GetBinary(arch string) []string {
 		}
 		ret = append(ret, bp.Name)
 	}
+	if len(ret) == 0 {
+		panic(fmt.Sprintf("GetBinary(%q) of %q failed. %d %+v\n", arch, cf.Package, len(cf.PackageList), cf.PackageList))
+	}
 	return ret
 }
 
 func (cf SourcePackage) BuildDepends(arch string, profile string) ([]DepInfo, error) {
+	if arch == "any" {
+		panic("It's wrong to query depends by architecture of any.")
+	}
+	var rawDeps []string
+	switch arch {
+	case "linux-all", "all":
+		if len(cf.buildDependsIndep) > 0 {
+			rawDeps = cf.buildDependsIndep
+		}
+	default:
+		if len(cf.buildDependsArch) > 0 {
+			rawDeps = cf.buildDependsArch
+		}
+	}
+	if len(rawDeps) == 0 {
+		rawDeps = UnionSet(cf.buildDepends, UnionSet(cf.buildDependsArch, cf.buildDependsIndep))
+	}
+
 	var ret []DepInfo
-	for _, raw := range cf.buildDepends {
+	for _, raw := range rawDeps {
 		info, err := parseDepInfo(raw)
 		if err != nil {
 			return nil, err

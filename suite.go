@@ -47,28 +47,14 @@ func (s Suite) FindSource(name string) (SourcePackage, error) {
 	return r.ToSource()
 }
 
-func (s Suite) FindBinaryAny(name string, archs []string) (BinaryPackage, error) {
-	for _, arch := range archs {
-		if refs, ok := s.Virtuals[arch][name]; ok && len(refs) != 0 {
-			// TODO: Design properly API for handling multiple virtual packages
-			name = refs[0]
-		}
-		r, ok := s.FindControl(name, arch)
-		if ok {
-			return r.ToBinary()
-		}
-	}
-	return BinaryPackage{}, NotFoundError{fmt.Sprintf("Architecutre of %v(%d) for %q", archs, len(archs), name)}
-}
-
 func (s Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
-	var archs = []string{arch}
-	if arch == "all" {
-		if len(s.limitArchs) != 0 {
-			archs = UnionSet(s.limitArchs, s.Architecutres)
-		} else {
-			archs = s.Architecutres
-		}
+	if refs, ok := s.Virtuals[arch][name]; ok && len(refs) != 0 {
+		// TODO: Design properly API for handling multiple virtual packages
+		name = refs[0]
 	}
-	return s.FindBinaryAny(name, archs)
+	r, ok := s.FindControl(name, arch)
+	if ok {
+		return r.ToBinary()
+	}
+	return BinaryPackage{}, NotFoundError{fmt.Sprintf("Binary %q with architecutre %q", name, arch)}
 }
