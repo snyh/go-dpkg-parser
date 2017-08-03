@@ -76,7 +76,7 @@ func Assert(t *testing.T, left interface{}, right interface{}) {
 		pc, file, line, ok := runtime.Caller(1)
 		if ok {
 			f := runtime.FuncForPC(pc)
-			t.Fatalf("%v(%T) != %v(%T) at %s:%d:%s", left, left, right, right, file, line, f.Name())
+			t.Fatalf("%v(%T) != %v(%T) \n\tat %s:%d:%s", left, left, right, right, file, line, f.Name())
 		} else {
 			t.Fatalf("%v(%T) != %v(%T)", left, left, right, right)
 		}

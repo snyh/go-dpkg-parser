@@ -58,13 +58,17 @@ func (s Suite) FindBinaryAny(name string, archs []string) (BinaryPackage, error)
 			return r.ToBinary()
 		}
 	}
-	return BinaryPackage{}, NotFoundError{fmt.Sprintf("Architecutre of %v", archs)}
+	return BinaryPackage{}, NotFoundError{fmt.Sprintf("Architecutre of %v(%d) for %q", archs, len(archs), name)}
 }
 
 func (s Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
 	var archs = []string{arch}
 	if arch == "all" {
-		archs = UnionSet(s.limitArchs, s.Architecutres)
+		if len(s.limitArchs) != 0 {
+			archs = UnionSet(s.limitArchs, s.Architecutres)
+		} else {
+			archs = s.Architecutres
+		}
 	}
 	return s.FindBinaryAny(name, archs)
 }

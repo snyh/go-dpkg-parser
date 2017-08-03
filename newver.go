@@ -1,3 +1,5 @@
+//go:generate go tool yacc -p ver ver.go.y
+//
 package dpkg
 
 import (
@@ -9,30 +11,49 @@ import (
 type MM struct {
 	*lexer.L
 	info DepInfo
+	str  string
 }
 
-func lexDot(l *lexer.L) lexer.StateFunc {
-	switch c := l.Peek(); c {
-	case '!', '(', ')',
-		'[', ']', '|':
-		l.Emit(lexer.TokenType(c))
-		return lexString
-	default:
+const (
+	_DIGIT        = "0123456789"
+	_ALPHA        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	_ALPHANUM     = _DIGIT + _ALPHA
+	_PKGNAMESPECS = "+-~."
+	_PKGNAME      = _ALPHANUM + _PKGNAMESPECS
+)
+
+func lexPkgName(l *lexer.L) lexer.StateFunc {
+	if !takeAny(l, _PKGNAME) {
 		return nil
 	}
+	l.Emit(lexer.TokenType(PKGNAME))
+	return lexPkgOthers
 }
 
-func lexString(l *lexer.L) lexer.StateFunc {
-	digits := "0123456789-."
-	alpha := "abcdefghijklmnopqrstuvwxyz"
-	alpha2 := strings.ToUpper(alpha)
-	l.Take(digits + alpha + alpha2)
-	l.Emit(lexer.TokenType(ALPHA_NUMERIC))
+func lexPkgOthers(l *lexer.L) lexer.StateFunc {
+	ignoreSpaces(l)
+	switch l.Peek() {
+	case '[':
+		if takeMatch(l, ARCH_QUALIFIER, '[', ']') {
+			return lexPkgOthers
+		}
+	case '(':
+		if takeMatch(l, VERSION, '(', ')') {
+			return lexPkgOthers
+		}
+	case '<':
+		if takeMatch(l, PROFILE, '<', '>') {
+			return lexPkgOthers
+		}
+	}
 	return nil
 }
 
 func parseDepInfo(str string) (DepInfo, error) {
-	m := &MM{L: lexer.New(str, lexString)}
+	m := &MM{
+		L:   lexer.New(str, lexPkgName),
+		str: str,
+	}
 	m.Start()
 
 	verNewParser().Parse(m)
@@ -41,11 +62,10 @@ func parseDepInfo(str string) (DepInfo, error) {
 	}
 	return m.info, nil
 }
-func saveResult(l verLexer, r []Depend) {
+
+func saveResult(l verLexer, info DepInfo) {
 	m := l.(*MM)
-	m.info = DepInfo{
-		Name: r[0].Name,
-	}
+	m.info = info
 }
 
 func (m MM) Error(err string) {
@@ -54,6 +74,7 @@ func (m MM) Error(err string) {
 
 func (m MM) Lex(lval *verSymType) int {
 	tok, done := m.NextToken()
+	//fmt.Printf("%q TOKEN: %v %v\n", m.str, tok, done)
 	if done {
 		return 0
 	} else {
@@ -63,21 +84,76 @@ func (m MM) Lex(lval *verSymType) int {
 }
 
 type DepInfo struct {
-	Name    string
-	VerMini string
-	VerMax  string
+	Name   string
+	VerMin string
+	VerMax string
 
-	Arch    string
-	Profile string
+	Archs    []string
+	Profiles []string
 }
 
 func (info DepInfo) String() string {
 	return info.Name
 }
 
-func (info DepInfo) Match(arch string, profile string) bool {
-	if info.Name != "" {
+func (info DepInfo) matchProfile(profile string) bool {
+	if len(info.Profiles) == 0 {
 		return true
+	}
+	for _, i := range info.Profiles {
+		if i == profile {
+			return true
+		}
+	}
+	return false
+}
+func (info DepInfo) matchArch(arch string) bool {
+	if len(info.Archs) == 0 {
+		return true
+	}
+	for _, i := range info.Archs {
+		if i == arch {
+			return true
+		}
+	}
+	return false
+}
+
+func (info DepInfo) Match(arch string, profile string) bool {
+	return info.Name != "" && info.matchArch(arch) && info.matchProfile(profile)
+}
+
+func ignoreSpaces(l *lexer.L) {
+	l.Take(" ")
+	l.Ignore()
+}
+
+func takeAny(l *lexer.L, strs string) bool {
+	r := l.Next()
+	found := false
+	for strings.ContainsRune(strs, r) {
+		r = l.Next()
+		found = true
+	}
+	l.Rewind()
+	return found
+}
+
+func takeMatch(l *lexer.L, tok int, left rune, right rune) bool {
+	c := l.Peek()
+	if c != left {
+		return false
+	}
+	l.Next()
+	l.Ignore()
+	for i := 0; i < 1000; i++ {
+		if l.Peek() == right {
+			l.Emit(lexer.TokenType(tok))
+			l.Next()
+			l.Ignore()
+			return true
+		}
+		l.Next()
 	}
 	return false
 }
