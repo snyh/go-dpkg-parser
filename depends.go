@@ -4,6 +4,21 @@ import (
 	"strings"
 )
 
+type DependStatus struct {
+	satisfy bool
+	err     error
+	chain   *DependStatus
+
+	result []struct {
+		Name    string
+		Version string
+	}
+}
+
+func (a Archive) parseDepend(name string) error {
+	return nil
+}
+
 func AssertNoUseAny(arch string) {
 	if arch == "any" {
 		panic("It's wrong to query depends by architecture of any.")

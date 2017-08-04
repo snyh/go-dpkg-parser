@@ -29,7 +29,7 @@ func TestBuildCache(t *testing.T) {
 	m, err := NewSuite("http://pools.corp.deepin.com/deepin/", codeName, targetDir, "")
 	Assert(t, err, nil)
 
-	p, err := m.FindBinary("lastore-daemon", "amd64")
+	p, err := m.Archives["amd64"].FindBinary("lastore-daemon")
 	Assert(t, err, nil)
 
 	Assert(t, p.Homepage, "http://github.com/linuxdeepin/lastore-daemon")
