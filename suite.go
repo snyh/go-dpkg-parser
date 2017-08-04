@@ -47,8 +47,12 @@ func (s Suite) FindSource(name string) (SourcePackage, error) {
 	return r.ToSource()
 }
 
+func (s Suite) FindProvider(name string, arch string) []string {
+	return s.Virtuals[arch][name]
+}
+
 func (s Suite) FindBinary(name string, arch string) (BinaryPackage, error) {
-	if refs, ok := s.Virtuals[arch][name]; ok && len(refs) != 0 {
+	if refs := s.FindProvider(name, arch); len(refs) != 0 {
 		// TODO: Design properly API for handling multiple virtual packages
 		name = refs[0]
 	}

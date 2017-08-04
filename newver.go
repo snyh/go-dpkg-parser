@@ -83,46 +83,6 @@ func (m MM) Lex(lval *verSymType) int {
 	}
 }
 
-type DepInfo struct {
-	Name   string
-	VerMin string
-	VerMax string
-
-	Archs    []string
-	Profiles []string
-}
-
-func (info DepInfo) String() string {
-	return info.Name
-}
-
-func (info DepInfo) matchProfile(profile string) bool {
-	if len(info.Profiles) == 0 {
-		return true
-	}
-	for _, i := range info.Profiles {
-		if i == profile {
-			return true
-		}
-	}
-	return false
-}
-func (info DepInfo) matchArch(arch string) bool {
-	if len(info.Archs) == 0 {
-		return true
-	}
-	for _, i := range info.Archs {
-		if i == arch {
-			return true
-		}
-	}
-	return false
-}
-
-func (info DepInfo) Match(arch string, profile string) bool {
-	return info.Name != "" && info.matchArch(arch) && info.matchProfile(profile)
-}
-
 func ignoreSpaces(l *lexer.L) {
 	l.Take(" ")
 	l.Ignore()
