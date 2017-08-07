@@ -63,12 +63,17 @@ type DepInfo struct {
 
 	Archs    []string
 	Profiles []string
+
+	Or *DepInfo
 }
 
 func (info DepInfo) String() string {
-	return info.Name
+	r := info.Name
+	if info.Or != nil {
+		r += " Or " + info.Or.String()
+	}
+	return r
 }
-
 func (info DepInfo) matchProfile(profile string) bool {
 	if len(info.Profiles) == 0 {
 		return true

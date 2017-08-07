@@ -7,12 +7,13 @@ import (
 )
 
 func TestDepMatch(t *testing.T) {
-	str := "libc6.1-dev   (>= 2.13-5)    [  alpha ia64]"
+	str := "libc6.1-dev   (>= 2.13-5)    [  alpha ia64] | ulibc"
 	info, err := parseDepInfo(str)
 	Assert(t, err, nil)
 	Assert(t, info.Name, "libc6.1-dev")
 	Assert(t, info.Archs, []string{"alpha", "ia64"})
 	Assert(t, info.Match("amd64", ""), false)
+	Assert(t, info.Or.Name, "ulibc")
 
 	str = "libbabeltrace-dev [amd64]"
 	info, err = parseDepInfo(str)

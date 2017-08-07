@@ -8,14 +8,26 @@ package dpkg
 }
 
 %token PKGNAME VERSION ARCH_QUALIFIER PROFILE
+%token '|'
 
 %start all
 
 %%
 
-all:  pkg
+all:            group
                 {
                     saveResult(verlex, $1.info);
+                }
+        ;
+
+group:          pkg
+                {
+                    $$.info = $1.info
+                }
+        |       pkg '|' group
+                {
+                    $$.info = $1.info;
+                    $$.info.Or = &($3.info);
                 }
 
 pkg:

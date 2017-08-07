@@ -1,4 +1,4 @@
-//go:generate go tool yacc -p ver ver.go.y
+//go:generate go tool yacc -p ver -o verparser.go ver.go.y
 //
 package dpkg
 
@@ -23,6 +23,7 @@ const (
 )
 
 func lexPkgName(l *lexer.L) lexer.StateFunc {
+	ignoreSpaces(l)
 	if !takeAny(l, _PKGNAME) {
 		return nil
 	}
@@ -45,6 +46,10 @@ func lexPkgOthers(l *lexer.L) lexer.StateFunc {
 		if takeMatch(l, PROFILE, '<', '>') {
 			return lexPkgOthers
 		}
+	case '|':
+		l.Next()
+		l.Emit(lexer.TokenType('|'))
+		return lexPkgName
 	}
 	return nil
 }
@@ -74,7 +79,7 @@ func (m MM) Error(err string) {
 
 func (m MM) Lex(lval *verSymType) int {
 	tok, done := m.NextToken()
-	//fmt.Printf("%q TOKEN: %v %v\n", m.str, tok, done)
+	//	fmt.Printf("%q TOKEN: %v %v\n", m.str, tok, done)
 	if done {
 		return 0
 	} else {

@@ -24,6 +24,7 @@ var verToknames = [...]string{
 	"VERSION",
 	"ARCH_QUALIFIER",
 	"PROFILE",
+	"'|'",
 }
 var verStatenames = [...]string{}
 
@@ -31,7 +32,7 @@ const verEofCode = 1
 const verErrCode = 2
 const verInitialStackSize = 16
 
-//line ver.go.y:39
+//line ver.go.y:51
 
 //line yacctab:1
 var verExca = [...]int{
@@ -40,45 +41,58 @@ var verExca = [...]int{
 	-2, 0,
 }
 
-const verNprod = 6
+const verNprod = 8
 const verPrivate = 57344
 
 var verTokenNames []string
 var verStates []string
 
-const verLast = 6
+const verLast = 11
 
 var verAct = [...]int{
 
-	4, 5, 6, 3, 2, 1,
+	6, 7, 8, 5, 2, 4, 3, 1, 0, 0,
+	9,
 }
 var verPact = [...]int{
 
-	-1, -1000, -5, -1000, -1000, -1000, -1000,
+	1, -1000, -1000, -5, -1000, 1, -1000, -1000, -1000, -1000,
 }
 var verPgo = [...]int{
 
-	0, 5, 4,
+	0, 7, 4, 6,
 }
 var verR1 = [...]int{
 
-	0, 1, 2, 2, 2, 2,
+	0, 1, 2, 2, 3, 3, 3, 3,
 }
 var verR2 = [...]int{
 
-	0, 1, 1, 2, 2, 2,
+	0, 1, 1, 3, 1, 2, 2, 2,
 }
 var verChk = [...]int{
 
-	-1000, -1, -2, 4, 5, 6, 7,
+	-1000, -1, -2, -3, 4, 8, 5, 6, 7, -2,
 }
 var verDef = [...]int{
 
-	0, -2, 1, 2, 3, 4, 5,
+	0, -2, 1, 2, 4, 0, 5, 6, 7, 3,
 }
 var verTok1 = [...]int{
 
-	1,
+	1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 8,
 }
 var verTok2 = [...]int{
 
@@ -427,31 +441,44 @@ verdefault:
 
 	case 1:
 		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:17
+		//line ver.go.y:18
 		{
 			saveResult(verlex, verDollar[1].info)
 		}
 	case 2:
 		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:23
+		//line ver.go.y:24
+		{
+			verVAL.info = verDollar[1].info
+		}
+	case 3:
+		verDollar = verS[verpt-3 : verpt+1]
+		//line ver.go.y:28
+		{
+			verVAL.info = verDollar[1].info
+			verVAL.info.Or = &(verDollar[3].info)
+		}
+	case 4:
+		verDollar = verS[verpt-1 : verpt+1]
+		//line ver.go.y:35
 		{
 			verVAL.info.Name = verDollar[1].val
 		}
-	case 3:
+	case 5:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:27
+		//line ver.go.y:39
 		{
 			verVAL.info.VerMin = verDollar[2].val
 		}
-	case 4:
+	case 6:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:31
+		//line ver.go.y:43
 		{
 			verVAL.info.Archs = getArrayString(verDollar[2].val, " ")
 		}
-	case 5:
+	case 7:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:35
+		//line ver.go.y:47
 		{
 			verVAL.info.Profiles = getArrayString(verDollar[2].val, " ")
 		}
