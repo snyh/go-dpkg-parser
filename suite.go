@@ -155,7 +155,7 @@ func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive
 		for _, cf := range cfs {
 			name := cf.Get("Package")
 			cache.Packages[name] = cf
-			for _, p := range cf.GetArray("provides", ",") {
+			for _, p := range parseProvides(cf.Get("provides")) {
 				cache.Virtuals[p] = append(cache.Virtuals[p], name)
 			}
 		}

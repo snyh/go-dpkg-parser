@@ -74,7 +74,10 @@ func lexPkgOthers(l *lexer.L) lexer.StateFunc {
 	return nil
 }
 
-func ParseDepInfo(str string) (DepInfo, error) {
+func ParseDepInfo(str string) (*DepInfo, error) {
+	if str == "" {
+		return nil, nil
+	}
 	m := &MM{
 		L:   lexer.New(str, lexPkgName),
 		str: str,
@@ -83,9 +86,9 @@ func ParseDepInfo(str string) (DepInfo, error) {
 
 	verNewParser().Parse(m)
 	if m.Err != nil {
-		return m.info, fmt.Errorf("Parsing %q failed: %v", str, m.Err)
+		return nil, fmt.Errorf("Parsing %q failed: %v", str, m.Err)
 	}
-	return m.info, nil
+	return &m.info, nil
 }
 
 func saveResult(l verLexer, info DepInfo) {

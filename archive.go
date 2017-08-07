@@ -20,7 +20,7 @@ func (a Archive) FindControl(name string) (ControlFile, bool) {
 	return cf, ok
 }
 
-func (a Archive) FindProvider(name string, arch string) []string {
+func (a Archive) FindProvider(name string) []string {
 	return a.Virtuals[name]
 }
 

@@ -20,7 +20,6 @@ type BinaryPackage struct {
 	Homepage      string        `json:"homepage"`
 	SHA256        string        `json:"sha256"`
 	Maintainer    string        `json:"maintainer"`
-	Provides      []string      `json:"provides"`
 
 	depends    string
 	preDepends string
@@ -119,11 +118,24 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 
 	t.depends = cf.Get("depends")
 	t.preDepends = cf.Get("pre-depends")
-
-	//TODO: parse architecture qualifier
-	t.Provides = cf.GetArray("provides", ",")
-
 	return t, t.valid()
+}
+func parseProvides(str string) []string {
+	if str == "" {
+		return nil
+	}
+
+	depInfo, err := ParseDepInfo(str)
+	if err != nil {
+		panic(err)
+	}
+	var ret []string
+	for depInfo.And != nil {
+		ret = append(ret, depInfo.Name)
+		depInfo = depInfo.And
+	}
+	ret = append(ret, depInfo.Name)
+	return ret
 }
 
 func (cf SourcePackage) valid() error { return nil }
@@ -185,9 +197,8 @@ func (cf SourcePackage) GetBinary(arch string) []string {
 	return ret
 }
 
-func (cf SourcePackage) BuildDepends(arch string, profile string) (DepInfo, error) {
+func (cf SourcePackage) BuildDepends(arch string, profile string) (*DepInfo, error) {
 	AssertNoUseAny(arch)
-
 	var deps []string
 	switch arch {
 	case "linux-all", "all":
@@ -199,20 +210,18 @@ func (cf SourcePackage) BuildDepends(arch string, profile string) (DepInfo, erro
 			deps = append(deps, cf.buildDependsArch)
 		}
 	}
-
-	info, err := ParseDepInfo(strings.Join(deps, ","))
-	if err != nil {
-		return DepInfo{}, err
-	}
-	return info.Filter(arch, profile)
+	return ParseDepInfo(strings.Join(deps, ","))
 }
 
-func (cf BinaryPackage) Depends(arch string, profile string) (DepInfo, error) {
-	info, err := ParseDepInfo(strings.Join([]string{cf.depends, cf.preDepends}, ","))
-	if err != nil {
-		return DepInfo{}, err
+func (cf BinaryPackage) Depends(arch string, profile string) string {
+	var deps []string
+	if cf.depends != "" {
+		deps = append(deps, cf.depends)
 	}
-	return info.Filter(arch, profile)
+	if cf.preDepends != "" {
+		deps = append(deps, cf.preDepends)
+	}
+	return strings.Join(deps, ",")
 }
 
 func buildPackageListItem(line string, format string) (PackageListItem, error) {

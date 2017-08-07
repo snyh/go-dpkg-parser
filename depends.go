@@ -20,6 +20,40 @@ func (a Archive) parseDepend(name string) error {
 	return nil
 }
 
+func (a Archive) CheckDep(str string) error {
+	if str == "" {
+		return nil
+	}
+	info, err := ParseDepInfo(str)
+	if err != nil {
+		return err
+	}
+	return a.checkDep(info)
+}
+func (a Archive) hasPackage(name string) bool {
+	_, ok := a.FindControl(name)
+	if ok {
+		return ok
+	}
+	return len(a.FindProvider(name)) != 0
+}
+
+func (a Archive) checkDep(info *DepInfo) error {
+	if info == nil {
+		return nil
+	}
+
+	if a.hasPackage(info.Name) {
+		return a.checkDep(info.And)
+	}
+
+	if info.Or != nil {
+		return a.checkDep(info.Or)
+	} else {
+		return fmt.Errorf("Can't find package %q", info.Name)
+	}
+}
+
 func AssertNoUseAny(arch string) {
 	if arch == "any" {
 		panic("It's wrong to query depends by architecture of any.")
@@ -88,14 +122,10 @@ func (info DepInfo) matchArch(arch string) bool {
 	return false
 }
 
-func (info DepInfo) Filter(arch string, profile string) (DepInfo, error) {
-	r := depInfoFilter(&info, func(di *DepInfo) bool {
+func (info DepInfo) Filter(arch string, profile string) *DepInfo {
+	return depInfoFilter(&info, func(di *DepInfo) bool {
 		return di != nil && di.match(arch, profile)
 	})
-	if r != nil {
-		return *r, nil
-	}
-	return info, fmt.Errorf("Empty Result")
 }
 
 type filterFunc func(*DepInfo) bool

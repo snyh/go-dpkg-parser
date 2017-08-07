@@ -6,12 +6,20 @@ import (
 	"testing"
 )
 
+func TestProvide(t *testing.T) {
+	str := "python-cffi-backend-api-9729, python-cffi-backend-api-max (= 10239), python-cffi-backend-api-min (= 9729)"
+	Assert(t, parseProvides(str), []string{
+		"python-cffi-backend-api-9729",
+		"python-cffi-backend-api-max",
+		"python-cffi-backend-api-min",
+	})
+}
+
 func TestFilterMatch(t *testing.T) {
 	str := "libbabeltrace-dev [amd64], libabc [m] | lib0 [mips] |lib2,   libefg [xx], lib3"
 	info, err := ParseDepInfo(str)
 	Assert(t, err, nil)
-	info, err = info.Filter("i386", "")
-	Assert(t, err, nil)
+	info = info.Filter("i386", "")
 	Assert(t, info.String(), "lib2, lib3")
 }
 func TestDepFilter(t *testing.T) {
@@ -19,8 +27,7 @@ func TestDepFilter(t *testing.T) {
 	info, err := ParseDepInfo(str)
 	Assert(t, err, nil)
 
-	info, err = info.Filter("i386", "")
-	Assert(t, err, nil)
+	info = info.Filter("i386", "")
 	Assert(t, info.String(), "lib2, libefg, lib3")
 }
 
@@ -110,17 +117,20 @@ func TestAllDepends(t *testing.T) {
 	}
 }
 
-func countAndAndOr(info DepInfo) (int, int) {
+func countAndAndOr(info *DepInfo) (int, int) {
+	if info == nil {
+		return 0, 0
+	}
 	and, or := 0, 0
 	if info.And != nil {
 		and++
-		t1, t2 := countAndAndOr(*info.And)
+		t1, t2 := countAndAndOr(info.And)
 		and += t1
 		or += t2
 	}
 	if info.Or != nil {
 		or++
-		t1, t2 := countAndAndOr(*info.Or)
+		t1, t2 := countAndAndOr(info.Or)
 		and += t1
 		or += t2
 	}
