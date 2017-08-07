@@ -23,19 +23,35 @@ const (
 )
 
 func lexPkgName(l *lexer.L) lexer.StateFunc {
-	ignoreSpaces(l)
+	ignoreSome(l, " ")
 	if !takeAny(l, _PKGNAME) {
 		return nil
 	}
 	l.Emit(lexer.TokenType(PKGNAME))
+
+	return lexArchQualifer
+}
+
+func lexArchQualifer(l *lexer.L) lexer.StateFunc {
+	ignoreSome(l, " ")
+	if l.Peek() == ':' {
+		l.Next()
+		l.Ignore()
+
+		if !takeAny(l, _ALPHANUM) {
+			return nil
+		}
+		l.Emit(lexer.TokenType(ARCH_QUALIFIER))
+	}
+
 	return lexPkgOthers
 }
 
 func lexPkgOthers(l *lexer.L) lexer.StateFunc {
-	ignoreSpaces(l)
+	ignoreSome(l, " ")
 	switch l.Peek() {
 	case '[':
-		if takeMatch(l, ARCH_QUALIFIER, '[', ']') {
+		if takeMatch(l, ARCH_SPEC, '[', ']') {
 			return lexPkgOthers
 		}
 	case '(':
@@ -50,11 +66,15 @@ func lexPkgOthers(l *lexer.L) lexer.StateFunc {
 		l.Next()
 		l.Emit(lexer.TokenType('|'))
 		return lexPkgName
+	case ',':
+		l.Next()
+		l.Emit(lexer.TokenType(','))
+		return lexPkgName
 	}
 	return nil
 }
 
-func parseDepInfo(str string) (DepInfo, error) {
+func ParseDepInfo(str string) (DepInfo, error) {
 	m := &MM{
 		L:   lexer.New(str, lexPkgName),
 		str: str,
@@ -88,8 +108,8 @@ func (m MM) Lex(lval *verSymType) int {
 	}
 }
 
-func ignoreSpaces(l *lexer.L) {
-	l.Take(" ")
+func ignoreSome(l *lexer.L, str string) {
+	l.Take(str)
 	l.Ignore()
 }
 

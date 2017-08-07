@@ -10,7 +10,7 @@ import (
 var network = flag.Bool("network", false, "download test data from network")
 
 func TestDumpRepository(t *testing.T) {
-	repoURL := "http://pools.corp.deepin.com/deepin"
+	repoURL := "http://packages.deepin.com/deepin"
 	rootDir := "/tmp/dump_repository"
 	codeName := "unstable"
 

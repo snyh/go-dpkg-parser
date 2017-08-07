@@ -1,6 +1,7 @@
 package dpkg
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -23,20 +24,6 @@ func AssertNoUseAny(arch string) {
 	if arch == "any" {
 		panic("It's wrong to query depends by architecture of any.")
 	}
-}
-
-func matchDepends(rawDeps []string, arch string, profile string) ([]DepInfo, error) {
-	var ret []DepInfo
-	for _, raw := range rawDeps {
-		info, err := parseDepInfo(raw)
-		if err != nil {
-			return nil, err
-		}
-		if info.Match(arch, profile) {
-			ret = append(ret, info)
-		}
-	}
-	return ret, nil
 }
 
 func parseSourceLine(str string, defSource, defVer string) (string, string) {
@@ -64,13 +51,17 @@ type DepInfo struct {
 	Archs    []string
 	Profiles []string
 
-	Or *DepInfo
+	And *DepInfo
+	Or  *DepInfo
 }
 
 func (info DepInfo) String() string {
 	r := info.Name
 	if info.Or != nil {
-		r += " Or " + info.Or.String()
+		r += " | " + info.Or.String()
+	}
+	if info.And != nil {
+		r += ", " + info.And.String()
 	}
 	return r
 }
@@ -97,39 +88,47 @@ func (info DepInfo) matchArch(arch string) bool {
 	return false
 }
 
-func (info DepInfo) Match(arch string, profile string) bool {
-	return info.Name != "" && info.matchArch(arch) && info.matchProfile(profile)
+func (info DepInfo) Filter(arch string, profile string) (DepInfo, error) {
+	r := depInfoFilter(&info, func(di *DepInfo) bool {
+		return di != nil && di.match(arch, profile)
+	})
+	if r != nil {
+		return *r, nil
+	}
+	return info, fmt.Errorf("Empty Result")
 }
 
-func buildPackageListItem(line string, format string) (PackageListItem, error) {
-	var r PackageListItem
-	fields := getArrayString(line, " ")
+type filterFunc func(*DepInfo) bool
 
-	n := len(fields)
-	if n < 4 || n > 7 {
-		return r, FormatError{"PackageList", line, nil}
+func depInfoFilter(info *DepInfo, fn filterFunc) *DepInfo {
+	if info == nil {
+		return info
+	}
+	info = depInfoFilterOr(info, fn)
+	if fn(info) {
+		info.And = depInfoFilter(info.And, fn)
+		return info
+	}
+	return depInfoFilter(info.And, fn)
+}
+
+func depInfoFilterOr(info *DepInfo, fn filterFunc) *DepInfo {
+	if info == nil {
+		return info
+	}
+	if fn(info) {
+		info.Or = depInfoFilterOr(info.Or, fn)
+		return info
 	}
 
-	for i, v := range fields {
-		switch i {
-		case 0:
-			r.Name = v
-		case 1:
-			r.Ptype = v
-		case 2:
-			r.Section = v
-		case 3:
-			r.Priority = v
-		case 4:
-			if !strings.HasPrefix(v, "arch=") {
-				return r, FormatError{"PackageList", line, nil}
-			}
-			r.Archs = getArrayString(v[len("arch="):], ",")
-		case 5:
-			r.Profile = v
-		case 6:
-			r.Essional = v == "essential=yes"
-		}
+	if info.Or == nil {
+		return depInfoFilterOr(info.And, fn)
 	}
-	return r, nil
+
+	info.Or.And = info.And
+	return depInfoFilterOr(info.Or, fn)
+}
+
+func (info DepInfo) match(arch string, profile string) bool {
+	return info.Name != "" && info.matchArch(arch) && info.matchProfile(profile)
 }

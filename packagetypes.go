@@ -22,8 +22,8 @@ type BinaryPackage struct {
 	Maintainer    string        `json:"maintainer"`
 	Provides      []string      `json:"provides"`
 
-	depends    []string
-	preDepends []string
+	depends    string
+	preDepends string
 }
 
 type PackageListItem struct {
@@ -65,9 +65,9 @@ type SourcePackage struct {
 	Section  string `json:"section"`
 	Priority string `json:"priority"`
 
-	buildDepends      []string
-	buildDependsArch  []string
-	buildDependsIndep []string
+	buildDepends      string
+	buildDependsArch  string
+	buildDependsIndep string
 }
 
 type Architecture string
@@ -117,8 +117,8 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.SHA256 = cf.Get("sha256")
 	t.Maintainer = cf.Get("maintainer")
 
-	t.depends = cf.GetArray("depends", ",")
-	t.preDepends = cf.GetArray("pre-depends", ",")
+	t.depends = cf.Get("depends")
+	t.preDepends = cf.Get("pre-depends")
 
 	//TODO: parse architecture qualifier
 	t.Provides = cf.GetArray("provides", ",")
@@ -139,9 +139,9 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t.Maintainer = cf.Get("maintainer")
 	t.Section = cf.Get("section")
 	t.Priority = cf.Get("priority")
-	t.buildDepends = cf.GetArray("build-depends", ",")
-	t.buildDependsArch = cf.GetArray("build-depends-arch", ",")
-	t.buildDependsIndep = cf.GetArray("build-depends-indep", ",")
+	t.buildDepends = cf.Get("build-depends")
+	t.buildDependsArch = cf.Get("build-depends-arch")
+	t.buildDependsIndep = cf.Get("build-depends-indep")
 
 	plist := cf.GetMultiline("package-list")
 	if len(plist) > 0 {
@@ -185,29 +185,65 @@ func (cf SourcePackage) GetBinary(arch string) []string {
 	return ret
 }
 
-func (cf SourcePackage) BuildDepends(arch string, profile string) ([]DepInfo, error) {
+func (cf SourcePackage) BuildDepends(arch string, profile string) (DepInfo, error) {
 	AssertNoUseAny(arch)
 
-	var rawDeps []string
+	var deps []string
 	switch arch {
 	case "linux-all", "all":
 		if len(cf.buildDependsIndep) > 0 {
-			rawDeps = cf.buildDependsIndep
+			deps = append(deps, cf.buildDependsIndep)
 		}
 	default:
 		if len(cf.buildDependsArch) > 0 {
-			rawDeps = cf.buildDependsArch
+			deps = append(deps, cf.buildDependsArch)
 		}
 	}
 
-	if len(rawDeps) == 0 {
-		rawDeps = UnionSet(cf.buildDepends, UnionSet(cf.buildDependsArch, cf.buildDependsIndep))
+	info, err := ParseDepInfo(strings.Join(deps, ","))
+	if err != nil {
+		return DepInfo{}, err
 	}
-
-	return matchDepends(rawDeps, arch, profile)
+	return info.Filter(arch, profile)
 }
 
-func (cf BinaryPackage) Depends(arch string, profile string) ([]DepInfo, error) {
-	AssertNoUseAny(arch)
-	return matchDepends(UnionSet(cf.depends, cf.preDepends), arch, profile)
+func (cf BinaryPackage) Depends(arch string, profile string) (DepInfo, error) {
+	info, err := ParseDepInfo(strings.Join([]string{cf.depends, cf.preDepends}, ","))
+	if err != nil {
+		return DepInfo{}, err
+	}
+	return info.Filter(arch, profile)
+}
+
+func buildPackageListItem(line string, format string) (PackageListItem, error) {
+	var r PackageListItem
+	fields := getArrayString(line, " ")
+
+	n := len(fields)
+	if n < 4 || n > 7 {
+		return r, FormatError{"PackageList", line, nil}
+	}
+
+	for i, v := range fields {
+		switch i {
+		case 0:
+			r.Name = v
+		case 1:
+			r.Ptype = v
+		case 2:
+			r.Section = v
+		case 3:
+			r.Priority = v
+		case 4:
+			if !strings.HasPrefix(v, "arch=") {
+				return r, FormatError{"PackageList", line, nil}
+			}
+			r.Archs = getArrayString(v[len("arch="):], ",")
+		case 5:
+			r.Profile = v
+		case 6:
+			r.Essional = v == "essential=yes"
+		}
+	}
+	return r, nil
 }

@@ -39,3 +39,7 @@ func (a Archive) FindBinary(name string) (BinaryPackage, error) {
 	}
 	return r.ToBinary()
 }
+
+func (a Archive) SatisfyDepends(str string) error {
+	panic("Not Implement")
+}
