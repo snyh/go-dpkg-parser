@@ -43,24 +43,28 @@ group:          pkg
 
 pkg:
                 pkgname
-                {
-                    $$.info.Name = $1.val;
-                }
         |       pkg VERSION
                 {
-                    $$.info.VerMin = $2.val;
+                    $$.info.Ver = $2.val;
                 }
         |       pkg ARCH_SPEC
                 {
-                    $$.info.Archs = getArrayString($2.val, " ");
+                    $$.info.Restrict.Archs = getArrayString($2.val, " ");
                 }
         |       pkg PROFILE
                 {
-                    $$.info.Profiles = getArrayString($2.val, " ");
+                    $$.info.Restrict.Profiles = getArrayString($2.val, " ");
                 }
         ;
 
 pkgname:        PKGNAME
+                {
+                    $$.info.Name = $1.val;
+                }
         |       PKGNAME ARCH_QUALIFIER
+                {
+                    $$.info.Name = $1.val;
+                    $$.info.Arch = $2.val;
+                }
         ;
 %%

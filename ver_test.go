@@ -41,16 +41,17 @@ func TestDepMatch(t *testing.T) {
 	info, err = ParseDepInfo(str)
 	Assert(t, err, nil)
 	Assert(t, info.Name, "libc6.1-dev")
-	Assert(t, info.Archs, []string{"alpha", "ia64"})
+	Assert(t, info.Restrict.Archs, []string{"alpha", "ia64"})
 	Assert(t, info.match("amd64", ""), false)
 	Assert(t, info.Or.Name, "ulibc")
 	Assert(t, info.Or.Or.Name, "linuxc")
 
-	str = "libbabeltrace-dev [amd64], libabc | lib0 |lib2,   libefg, lib3"
+	str = "libbabeltrace-dev [amd64] <p1>, libabc | lib0 |lib2,   libefg, lib3"
 	info, err = ParseDepInfo(str)
 
 	Assert(t, err, nil)
-	Assert(t, info.Archs, []string{"amd64"})
+	Assert(t, info.Restrict.Archs, []string{"amd64"})
+	Assert(t, info.Restrict.Profiles, []string{"p1"})
 
 	Assert(t, info.And.Name, "libabc")
 	Assert(t, info.And.Or.Name, "lib0")

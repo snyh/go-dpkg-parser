@@ -39,7 +39,7 @@ func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
 	return cf.ToReleaseFile()
 }
 
-// GetReleaseFile load ReleaseFile from dataDir with codeName
+// GetReleaseFile load ReleaseFile from dataDir with suite
 func LoadReleaseFile(path string) (ReleaseFile, error) {
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -94,6 +94,7 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 }
 func (rf ReleaseFile) valid() error {
 	if rf.Suite == "" {
+
 		return fmt.Errorf("NewReleaseFile input data is invalid. Without suite name")
 	}
 	if len(rf.Components) == 0 {

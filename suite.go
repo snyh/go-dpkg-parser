@@ -132,11 +132,7 @@ func (s *Suite) build() error {
 }
 
 func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive, error) {
-	var cache = Archive{
-		Architecture: arch,
-		Packages:     make(map[string]ControlFile),
-		Virtuals:     make(map[string][]string),
-	}
+	cache := NewArchive(arch)
 	if err := EnsureDirectory(path.Dir(cacheFile)); err != nil {
 		return cache, err
 	}

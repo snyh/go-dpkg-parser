@@ -5,30 +5,22 @@ import (
 	"strings"
 )
 
-type DependStatus struct {
-	satisfy bool
-	err     error
-	chain   *DependStatus
-
-	result []struct {
-		Name    string
-		Version string
-	}
-}
-
-func (a Archive) parseDepend(name string) error {
-	return nil
-}
-
 func (a Archive) CheckDep(str string) error {
 	if str == "" {
 		return nil
 	}
+	if v, ok := a.cache[str]; ok {
+		return v
+	}
+
 	info, err := ParseDepInfo(str)
 	if err != nil {
 		return err
 	}
-	return a.checkDep(info)
+	info = info.Filter(a.Architecture, "")
+	err = a.checkDep(info)
+	a.cache[str] = err
+	return err
 }
 func (a Archive) hasPackage(name string) bool {
 	_, ok := a.FindControl(name)
@@ -43,15 +35,25 @@ func (a Archive) checkDep(info *DepInfo) error {
 		return nil
 	}
 
+	str := info.String()
+	if v, ok := a.cache[str]; ok {
+		return v
+	}
+
 	if a.hasPackage(info.Name) {
-		return a.checkDep(info.And)
+		return a.record(str, a.checkDep(info.And))
 	}
 
 	if info.Or != nil {
-		return a.checkDep(info.Or)
+		return a.record(str, a.checkDep(info.Or))
 	} else {
-		return fmt.Errorf("Can't find package %q", info.Name)
+		return a.record(str, fmt.Errorf("Can't find package %q", info.Name))
 	}
+}
+
+func (a Archive) record(key string, v error) error {
+	a.cache[key] = v
+	return v
 }
 
 func AssertNoUseAny(arch string) {
@@ -78,12 +80,14 @@ func parseSourceLine(str string, defSource, defVer string) (string, string) {
 }
 
 type DepInfo struct {
-	Name   string
-	VerMin string
-	VerMax string
+	Name string
+	Ver  string
+	Arch string
 
-	Archs    []string
-	Profiles []string
+	Restrict struct {
+		Archs    []string
+		Profiles []string
+	}
 
 	And *DepInfo
 	Or  *DepInfo
@@ -98,28 +102,6 @@ func (info DepInfo) String() string {
 		r += ", " + info.And.String()
 	}
 	return r
-}
-func (info DepInfo) matchProfile(profile string) bool {
-	if len(info.Profiles) == 0 {
-		return true
-	}
-	for _, i := range info.Profiles {
-		if i == profile {
-			return true
-		}
-	}
-	return false
-}
-func (info DepInfo) matchArch(arch string) bool {
-	if len(info.Archs) == 0 {
-		return true
-	}
-	for _, i := range info.Archs {
-		if i == arch {
-			return true
-		}
-	}
-	return false
 }
 
 func (info DepInfo) Filter(arch string, profile string) *DepInfo {
@@ -161,4 +143,26 @@ func depInfoFilterOr(info *DepInfo, fn filterFunc) *DepInfo {
 
 func (info DepInfo) match(arch string, profile string) bool {
 	return info.Name != "" && info.matchArch(arch) && info.matchProfile(profile)
+}
+func (info DepInfo) matchProfile(profile string) bool {
+	if len(info.Restrict.Profiles) == 0 {
+		return true
+	}
+	for _, i := range info.Restrict.Profiles {
+		if i == profile {
+			return true
+		}
+	}
+	return false
+}
+func (info DepInfo) matchArch(arch string) bool {
+	if len(info.Restrict.Archs) == 0 {
+		return true
+	}
+	for _, i := range info.Restrict.Archs {
+		if i == arch {
+			return true
+		}
+	}
+	return false
 }

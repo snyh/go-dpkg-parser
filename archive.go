@@ -3,16 +3,18 @@ package dpkg
 type Archive struct {
 	Virtuals     map[string][]string
 	Packages     map[string]ControlFile
-	dependCache  map[string]DependStatus
 	Architecture string
+
+	cache map[string]error
 }
 
-func (a Archive) DependCheck(name string) error {
-	info, ok := a.dependCache[name]
-	if ok {
-		return info.err
+func NewArchive(arch string) Archive {
+	return Archive{
+		Architecture: arch,
+		Packages:     make(map[string]ControlFile),
+		Virtuals:     make(map[string][]string),
+		cache:        make(map[string]error),
 	}
-	return a.parseDepend(name)
 }
 
 func (a Archive) FindControl(name string) (ControlFile, bool) {

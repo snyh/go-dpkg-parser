@@ -35,7 +35,7 @@ const verEofCode = 1
 const verErrCode = 2
 const verInitialStackSize = 16
 
-//line ver.go.y:66
+//line ver.go.y:70
 
 //line yacctab:1
 var verExca = [...]int{
@@ -481,29 +481,36 @@ verdefault:
 			verVAL.info = verDollar[1].info
 			verVAL.info.Or = &tt
 		}
-	case 6:
-		verDollar = verS[verpt-1 : verpt+1]
-		//line ver.go.y:46
-		{
-			verVAL.info.Name = verDollar[1].val
-		}
 	case 7:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:50
+		//line ver.go.y:47
 		{
-			verVAL.info.VerMin = verDollar[2].val
+			verVAL.info.Ver = verDollar[2].val
 		}
 	case 8:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:54
+		//line ver.go.y:51
 		{
-			verVAL.info.Archs = getArrayString(verDollar[2].val, " ")
+			verVAL.info.Restrict.Archs = getArrayString(verDollar[2].val, " ")
 		}
 	case 9:
 		verDollar = verS[verpt-2 : verpt+1]
-		//line ver.go.y:58
+		//line ver.go.y:55
 		{
-			verVAL.info.Profiles = getArrayString(verDollar[2].val, " ")
+			verVAL.info.Restrict.Profiles = getArrayString(verDollar[2].val, " ")
+		}
+	case 10:
+		verDollar = verS[verpt-1 : verpt+1]
+		//line ver.go.y:61
+		{
+			verVAL.info.Name = verDollar[1].val
+		}
+	case 11:
+		verDollar = verS[verpt-2 : verpt+1]
+		//line ver.go.y:65
+		{
+			verVAL.info.Name = verDollar[1].val
+			verVAL.info.Arch = verDollar[2].val
 		}
 	}
 	goto verstack /* stack new state and value */
