@@ -19,7 +19,7 @@ type PackagesFileInfo struct {
 
 type ReleaseFile struct {
 	Date          string
-	CodeName      string
+	Suite         string
 	Description   string
 	Components    []string
 	Architectures Architectures
@@ -63,7 +63,7 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf.Date = cf.Get("date")
 
 	rf.Date = cf.Get("date")
-	rf.CodeName = cf.Get("codename")
+	rf.Suite = cf.Get("suite")
 	rf.Description = cf.Get("description")
 	rf.Date = cf.Get("date")
 	rf.Components = cf.GetArray("components", " ")
@@ -93,8 +93,8 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	return rf, rf.valid()
 }
 func (rf ReleaseFile) valid() error {
-	if rf.CodeName == "" {
-		return fmt.Errorf("NewReleaseFile input data is invalid. Without codename")
+	if rf.Suite == "" {
+		return fmt.Errorf("NewReleaseFile input data is invalid. Without suite name")
 	}
 	if len(rf.Components) == 0 {
 		return fmt.Errorf("NewReleaseFile input data is invalid. Without any components")

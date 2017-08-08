@@ -12,9 +12,9 @@ var network = flag.Bool("network", false, "download test data from network")
 func TestDumpRepository(t *testing.T) {
 	repoURL := "http://packages.deepin.com/deepin"
 	rootDir := "/tmp/dump_repository"
-	codeName := "unstable"
+	suite := "unstable"
 
-	cf, err := DownloadReleaseFile(repoURL, codeName)
+	cf, err := DownloadReleaseFile(repoURL, suite)
 	Assert(t, err, nil)
 
 	rf, err := cf.ToReleaseFile()
@@ -35,7 +35,7 @@ func TestRelease(t *testing.T) {
 	rf, err := cf.ToReleaseFile()
 	Assert(t, err, nil)
 
-	Assert(t, rf.CodeName, "experimental")
+	Assert(t, rf.Suite, "experimental")
 
 	Assert(t, len(rf.Architectures), 1)
 	Assert(t, rf.Architectures[0], "amd64")
@@ -52,7 +52,7 @@ func TestRelease(t *testing.T) {
 const testRelease = `
 Origin: deepin
 Label: deepin
-Codename: experimental
+Suite: experimental
 Version: 151218
 Date: Tue, 02 Feb 2016 09:14:25 UTC
 Architectures: amd64

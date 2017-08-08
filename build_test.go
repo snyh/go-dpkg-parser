@@ -24,9 +24,9 @@ func TestParseLine(t *testing.T) {
 
 func TestBuildCache(t *testing.T) {
 	targetDir := "testdata"
-	codeName := "unstable"
+	suite := "unstable"
 
-	m, err := NewSuite("http://packages.deepin.com/deepin/", codeName, targetDir, "")
+	m, err := NewSuite("http://packages.deepin.com/deepin/", suite, targetDir, "")
 	Assert(t, err, nil)
 
 	p, err := m.Archives["amd64"].FindBinary("lastore-daemon")

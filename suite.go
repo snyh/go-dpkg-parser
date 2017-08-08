@@ -9,7 +9,7 @@ import (
 type Suite struct {
 	Archives map[string]Archive
 
-	CodeName string
+	Suite string
 
 	dataDir    string
 	host       string
@@ -17,12 +17,12 @@ type Suite struct {
 	hash       string
 }
 
-func NewSuite(url string, codename string, dataDir string, hash string, archs ...string) (*Suite, error) {
+func NewSuite(url string, suite string, dataDir string, hash string, archs ...string) (*Suite, error) {
 	s := &Suite{
 		Archives:   make(map[string]Archive),
 		limitArchs: archs,
 		host:       url,
-		CodeName:   codename,
+		Suite:      suite,
 		dataDir:    dataDir,
 		hash:       hash,
 	}
@@ -38,9 +38,9 @@ func LoadPackages(fPath string) ([]ControlFile, error) {
 	return NewControlFiles(f, ScanBufferSize)
 }
 
-func DownloadReleaseFile(repoURL string, codeName string) (ControlFile, error) {
+func DownloadReleaseFile(repoURL string, suiteName string) (ControlFile, error) {
 	var r ControlFile
-	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, codeName, ReleaseFileName)
+	url := fmt.Sprintf("%s/dists/%s/%s", repoURL, suiteName, ReleaseFileName)
 	buf := bytes.NewBuffer(nil)
 	err := DownloadTo(url, buf)
 	if err != nil {
@@ -51,7 +51,7 @@ func DownloadReleaseFile(repoURL string, codeName string) (ControlFile, error) {
 
 func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
 	var rf ReleaseFile
-	raw, err := DownloadReleaseFile(s.host, s.CodeName)
+	raw, err := DownloadReleaseFile(s.host, s.Suite)
 	if err != nil {
 		return rf, err
 	}
@@ -166,7 +166,7 @@ func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive
 // DownloadRepository download files from rf.FileInfos()
 func DownloadRepository(repoURL string, rf ReleaseFile, rootDir string) error {
 	for _, f := range rf.FileInfos() {
-		url := repoURL + "/dists/" + rf.CodeName + "/" + f.Path
+		url := repoURL + "/dists/" + rf.Suite + "/" + f.Path
 		target := path.Join(rootDir, f.Path)
 		hash, _ := HashFile(target)
 		if hash == f.MD5 {
