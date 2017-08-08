@@ -23,7 +23,7 @@ const (
 )
 
 func lexPkgName(l *lexer.L) lexer.StateFunc {
-	ignoreSome(l, " ")
+	ignoreSpace(l)
 	if !takeAny(l, _PKGNAME) {
 		return nil
 	}
@@ -33,7 +33,7 @@ func lexPkgName(l *lexer.L) lexer.StateFunc {
 }
 
 func lexArchQualifer(l *lexer.L) lexer.StateFunc {
-	ignoreSome(l, " ")
+	ignoreSpace(l)
 	if l.Peek() == ':' {
 		l.Next()
 		l.Ignore()
@@ -48,7 +48,7 @@ func lexArchQualifer(l *lexer.L) lexer.StateFunc {
 }
 
 func lexPkgOthers(l *lexer.L) lexer.StateFunc {
-	ignoreSome(l, " ")
+	ignoreSpace(l)
 	switch l.Peek() {
 	case '[':
 		if takeMatch(l, ARCH_SPEC, '[', ']') {
@@ -97,7 +97,8 @@ func saveResult(l verLexer, info DepInfo) {
 }
 
 func (m MM) Error(err string) {
-	fmt.Println("ERR", err)
+	fmt.Printf("EEEE %q --> %s\n", m.str, err)
+	m.Err = fmt.Errorf(err)
 }
 
 func (m MM) Lex(lval *verSymType) int {
@@ -111,8 +112,8 @@ func (m MM) Lex(lval *verSymType) int {
 	}
 }
 
-func ignoreSome(l *lexer.L, str string) {
-	l.Take(str)
+func ignoreSpace(l *lexer.L) {
+	l.Take(" \n\t")
 	l.Ignore()
 }
 
