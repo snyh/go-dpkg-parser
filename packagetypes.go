@@ -147,6 +147,9 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	t.Homepage = cf.Get("homepage")
 	t.Format = cf.Get("format")
 	t.Binary = cf.GetArray("binary", ",")
+	if len(t.Binary) == 0 {
+		t.Binary = []string{t.Package}
+	}
 	t.Architecture = cf.GetArray("architecture", " ")
 	t.Maintainer = cf.Get("maintainer")
 	t.Section = cf.Get("section")
