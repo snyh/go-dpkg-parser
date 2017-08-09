@@ -93,6 +93,19 @@ type DepInfo struct {
 	Or  *DepInfo
 }
 
+func (info DepInfo) SimpleDeps() []string {
+	i := &info
+	var ret []string
+	for i != nil {
+		ret = append(ret, i.Name)
+		if i.And == nil {
+			break
+		}
+		i = i.And
+	}
+	return ret
+}
+
 func (info DepInfo) String() string {
 	r := info.Name
 	if info.Or != nil {
@@ -120,6 +133,9 @@ func depInfoFilter(info *DepInfo, fn filterFunc) *DepInfo {
 	if fn(info) {
 		info.And = depInfoFilter(info.And, fn)
 		return info
+	}
+	if info == nil {
+		return nil
 	}
 	return depInfoFilter(info.And, fn)
 }

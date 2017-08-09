@@ -2,6 +2,7 @@ package dpkg
 
 import (
 	"fmt"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -64,9 +65,36 @@ type SourcePackage struct {
 	Section  string `json:"section"`
 	Priority string `json:"priority"`
 
+	directory string
+	files     []string
+
 	buildDepends      string
 	buildDependsArch  string
 	buildDependsIndep string
+}
+
+type SourcefileInfo struct {
+	Path string
+	Size int
+	MD5  string
+}
+
+func (sp SourcePackage) Files(prefix string) []SourcefileInfo {
+	var ret []SourcefileInfo
+	for _, f := range sp.files {
+		fs := getArrayString(f, " ")
+		if len(fs) != 3 {
+			DebugPrintf("Unknown deb-src-files: %q", f)
+			continue
+		}
+		s, _ := strconv.Atoi(fs[1])
+		ret = append(ret, SourcefileInfo{
+			Path: path.Join(prefix, sp.directory, fs[2]),
+			Size: s,
+			MD5:  fs[0],
+		})
+	}
+	return ret
 }
 
 type Architecture string
@@ -150,6 +178,8 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 	if len(t.Binary) == 0 {
 		t.Binary = []string{t.Package}
 	}
+	t.directory = cf.Get("directory")
+	t.files = cf.GetMultiline("files")
 	t.Architecture = cf.GetArray("architecture", " ")
 	t.Maintainer = cf.Get("maintainer")
 	t.Section = cf.Get("section")
@@ -213,7 +243,18 @@ func (cf SourcePackage) BuildDepends(arch string, profile string) (*DepInfo, err
 			deps = append(deps, cf.buildDependsArch)
 		}
 	}
-	return ParseDepInfo(strings.Join(deps, ","))
+	var info *DepInfo
+	var err error
+
+	if len(deps) == 0 {
+		info, err = ParseDepInfo(cf.buildDepends)
+	} else {
+		info, err = ParseDepInfo(strings.Join(deps, ","))
+	}
+	if err != nil || info == nil {
+		return info, err
+	}
+	return info.Filter(arch, profile), err
 }
 
 func (cf BinaryPackage) Depends(arch string, profile string) string {
