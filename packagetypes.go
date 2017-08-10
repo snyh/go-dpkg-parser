@@ -66,7 +66,7 @@ type SourcePackage struct {
 	Priority string `json:"priority"`
 
 	directory string
-	files     []string
+	files256  []string
 
 	buildDepends      string
 	buildDependsArch  string
@@ -74,14 +74,14 @@ type SourcePackage struct {
 }
 
 type SourcefileInfo struct {
-	Path string
-	Size int
-	MD5  string
+	Path   string
+	Size   int
+	SHA256 string
 }
 
 func (sp SourcePackage) Files(prefix string) []SourcefileInfo {
 	var ret []SourcefileInfo
-	for _, f := range sp.files {
+	for _, f := range sp.files256 {
 		fs := getArrayString(f, " ")
 		if len(fs) != 3 {
 			DebugPrintf("Unknown deb-src-files: %q", f)
@@ -89,9 +89,9 @@ func (sp SourcePackage) Files(prefix string) []SourcefileInfo {
 		}
 		s, _ := strconv.Atoi(fs[1])
 		ret = append(ret, SourcefileInfo{
-			Path: path.Join(prefix, sp.directory, fs[2]),
-			Size: s,
-			MD5:  fs[0],
+			Path:   path.Join(prefix, sp.directory, fs[2]),
+			Size:   s,
+			SHA256: fs[0],
 		})
 	}
 	return ret
@@ -179,7 +179,7 @@ func (cf ControlFile) ToSource() (SourcePackage, error) {
 		t.Binary = []string{t.Package}
 	}
 	t.directory = cf.Get("directory")
-	t.files = cf.GetMultiline("files")
+	t.files256 = cf.GetMultiline("Checksums-Sha256")
 	t.Architecture = cf.GetArray("architecture", " ")
 	t.Maintainer = cf.Get("maintainer")
 	t.Section = cf.Get("section")
