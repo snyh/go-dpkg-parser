@@ -21,6 +21,7 @@ type BinaryPackage struct {
 	Homepage      string        `json:"homepage"`
 	SHA256        string        `json:"sha256"`
 	Maintainer    string        `json:"maintainer"`
+	Priority      string        `json:"priority"`
 
 	depends    string
 	preDepends string
@@ -143,6 +144,7 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.Homepage = cf.Get("homepage")
 	t.SHA256 = cf.Get("sha256")
 	t.Maintainer = cf.Get("maintainer")
+	t.Priority = cf.Get("priority")
 
 	t.depends = cf.Get("depends")
 	t.preDepends = cf.Get("pre-depends")
@@ -257,7 +259,8 @@ func (cf SourcePackage) BuildDepends(arch string, profile string) (*DepInfo, err
 	return info.Filter(arch, profile), err
 }
 
-func (cf BinaryPackage) Depends(arch string, profile string) string {
+func (cf BinaryPackage) Depends(arch string, profile string) (*DepInfo, error) {
+	AssertNoUseAny(arch)
 	var deps []string
 	if cf.depends != "" {
 		deps = append(deps, cf.depends)
@@ -265,7 +268,13 @@ func (cf BinaryPackage) Depends(arch string, profile string) string {
 	if cf.preDepends != "" {
 		deps = append(deps, cf.preDepends)
 	}
-	return strings.Join(deps, ",")
+
+	info, err := ParseDepInfo(strings.Join(deps, ","))
+	if err != nil || info == nil {
+		return info, err
+	}
+
+	return info.Filter(arch, profile), nil
 }
 
 func buildPackageListItem(line string, format string) (PackageListItem, error) {
