@@ -94,6 +94,8 @@ func (s *Suite) prepareDownload() (ReleaseFile, error) {
 	if len(s.limitArchs) != 0 {
 		rf.Architectures = (IntersectionSet(rf.Architectures, s.limitArchs))
 	}
+
+	rf.Suite = s.Suite // workaround insane suite value
 	return rf, DownloadRepository(s.host, rf, s.rootDir())
 }
 
