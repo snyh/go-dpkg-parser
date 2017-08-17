@@ -64,6 +64,9 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 
 	rf.Date = cf.Get("date")
 	rf.Suite = cf.Get("suite")
+	if rf.Suite == "" {
+		rf.Suite = cf.Get("codename")
+	}
 	rf.Description = cf.Get("description")
 	rf.Date = cf.Get("date")
 	rf.Components = cf.GetArray("components", " ")
