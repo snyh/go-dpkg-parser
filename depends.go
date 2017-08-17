@@ -5,22 +5,8 @@ import (
 	"strings"
 )
 
-func (a Archive) CheckDep(str string) error {
-	if str == "" {
-		return nil
-	}
-	if v, ok := a.cache[str]; ok {
-		return v
-	}
-
-	info, err := ParseDepInfo(str)
-	if err != nil {
-		return err
-	}
-	info = info.Filter(a.Architecture, "")
-	err = a.checkDep(info)
-	a.cache[str] = err
-	return err
+func (a Archive) CheckDep(info *DepInfo) error {
+	return a.checkDep(info.Filter(a.Architecture, ""))
 }
 func (a Archive) hasPackage(name string) bool {
 	_, ok := a.FindControl(name)
