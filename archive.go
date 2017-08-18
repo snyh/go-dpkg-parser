@@ -17,6 +17,10 @@ func NewArchive(arch string) Archive {
 	}
 }
 
+func (a Archive) Size() int {
+	return len(a.Packages)
+}
+
 func (a Archive) FindControl(name string) (ControlFile, bool) {
 	cf, ok := a.Packages[name]
 	return cf, ok

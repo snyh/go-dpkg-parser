@@ -10,21 +10,21 @@ type Suite struct {
 	Archives map[string]Archive
 
 	Suite string
+	Host  string
+	Hash  string
 
 	dataDir    string
-	host       string
 	limitArchs []string
-	hash       string
 }
 
 func NewSuite(url string, suite string, dataDir string, hash string, archs ...string) (*Suite, error) {
 	s := &Suite{
 		Archives:   make(map[string]Archive),
 		limitArchs: archs,
-		host:       url,
+		Host:       url,
 		Suite:      suite,
 		dataDir:    dataDir,
-		hash:       hash,
+		Hash:       hash,
 	}
 	return s, s.build()
 }
@@ -51,7 +51,7 @@ func DownloadReleaseFile(repoURL string, suiteName string) (ControlFile, error) 
 
 func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
 	var rf ReleaseFile
-	raw, err := DownloadReleaseFile(s.host, s.Suite)
+	raw, err := DownloadReleaseFile(s.Host, s.Suite)
 	if err != nil {
 		return rf, err
 	}
@@ -61,7 +61,7 @@ func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
 	}
 
 	// Update Suite Hash
-	s.hash = rf.Hash
+	s.Hash = rf.Hash
 
 	rPath := s.rootDir(ReleaseFileName)
 
@@ -73,12 +73,12 @@ func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
 }
 
 func (s *Suite) loadReleaseFile() (ReleaseFile, error) {
-	if s.hash == "" {
+	if s.Hash == "" {
 		return s.downloadReleaseFile()
 	}
 	rPath := s.rootDir(ReleaseFileName)
 	rf, err := LoadReleaseFile(rPath)
-	if rf.Hash != s.hash {
+	if rf.Hash != s.Hash {
 		DebugPrintf("Invalid cache release file %q. Redownload it\n", rPath)
 		return s.downloadReleaseFile()
 	}
@@ -96,14 +96,14 @@ func (s *Suite) prepareDownload() (ReleaseFile, error) {
 	}
 
 	rf.Suite = s.Suite // workaround insane suite value
-	return rf, DownloadRepository(s.host, rf, s.rootDir())
+	return rf, DownloadRepository(s.Host, rf, s.rootDir())
 }
 
 func (s *Suite) rootDir(subPath ...string) string {
-	if s.hash == "" {
+	if s.Hash == "" {
 		panic("Empty　Hash")
 	}
-	root := path.Join(s.dataDir, s.hash)
+	root := path.Join(s.dataDir, s.Hash)
 	return path.Join(append([]string{root}, subPath...)...)
 }
 
