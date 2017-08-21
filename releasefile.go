@@ -141,8 +141,12 @@ func (rf ReleaseFile) FileInfos() []PackagesFileInfo {
 	for _, component := range rf.Components {
 		for _, arch := range rf.Architectures {
 			raw := component + "/binary-" + string(arch) + "/Packages"
-			p, ok := rf.findComponent(raw)
-			if ok {
+			if p, ok := rf.findComponent(raw); ok {
+				p.Architecture = arch
+				set[raw] = p
+			}
+			raw = component + "/Contents-" + string(arch)
+			if p, ok := rf.findComponent(raw); ok {
 				p.Architecture = arch
 				set[raw] = p
 			}
