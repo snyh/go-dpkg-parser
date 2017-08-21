@@ -4,17 +4,24 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
 )
 
+const (
+	tCONTENTS     = "contents"
+	tCONTROLFILES = "controlfiles"
+)
+
 type PackagesFileInfo struct {
 	Size         uint64
 	Path         string
-	Gzip         bool
 	MD5          string
 	Architecture string
+
+	Type string
 }
 
 type ReleaseFile struct {
@@ -88,7 +95,6 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 		ps = append(ps, PackagesFileInfo{
 			Size: uint64(size),
 			Path: fs[2],
-			Gzip: strings.HasSuffix(fs[2], ".gz"),
 			MD5:  fs[0],
 		})
 	}
@@ -126,11 +132,13 @@ func (rf ReleaseFile) findComponent(raw string) (PackagesFileInfo, bool) {
 	found := false
 	var fallback PackagesFileInfo
 	for _, f := range rf.fileInfos {
-		if f.Path != raw && f.Path != raw+".gz" {
+		if f.Path != raw && f.Path != raw+".gz" && f.Path != raw+".bz2" {
 			continue
 		}
 		found, fallback = true, f
-		if f.Gzip {
+
+		switch strings.ToLower(path.Ext(f.Path)) {
+		case ".gz", ".bz2":
 			return f, found
 		}
 	}
@@ -143,11 +151,14 @@ func (rf ReleaseFile) FileInfos() []PackagesFileInfo {
 			raw := component + "/binary-" + string(arch) + "/Packages"
 			if p, ok := rf.findComponent(raw); ok {
 				p.Architecture = arch
+				p.Type = tCONTROLFILES
 				set[raw] = p
+
 			}
 			raw = component + "/Contents-" + string(arch)
 			if p, ok := rf.findComponent(raw); ok {
 				p.Architecture = arch
+				p.Type = tCONTENTS
 				set[raw] = p
 			}
 		}
@@ -155,6 +166,7 @@ func (rf ReleaseFile) FileInfos() []PackagesFileInfo {
 		raw := component + "/source/Sources"
 		if p, ok := rf.findComponent(raw); ok {
 			p.Architecture = "source"
+			p.Type = tCONTROLFILES
 			set[raw] = p
 		}
 	}

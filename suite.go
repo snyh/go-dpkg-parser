@@ -30,7 +30,7 @@ func NewSuite(url string, suite string, dataDir string, hash string, archs ...st
 }
 
 func LoadPackages(fPath string) ([]ControlFile, error) {
-	f, err := ReadFile(fPath, IsGzip(fPath))
+	f, err := ReadFile(fPath)
 	if err != nil {
 		return nil, err
 	}
@@ -113,10 +113,18 @@ func (s *Suite) build() error {
 		return err
 	}
 
+	contents := make(map[string][]string)
 	fs := make(map[string][]string)
 	hashs := make(map[string][]string)
 	for _, f := range rf.FileInfos() {
-		fs[f.Architecture] = append(fs[f.Architecture], s.rootDir(f.Path))
+		switch f.Type {
+		case tCONTROLFILES:
+			fs[f.Architecture] = append(fs[f.Architecture], s.rootDir(f.Path))
+		case tCONTENTS:
+			contents[f.Architecture] = append(contents[f.Architecture], s.rootDir(f.Path))
+		default:
+			DebugPrintf("Unknown component type %q for %v\n", f.Type, f.Path)
+		}
 		hashs[f.Architecture] = append(hashs[f.Architecture], f.MD5)
 	}
 

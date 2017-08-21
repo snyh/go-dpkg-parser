@@ -2,6 +2,7 @@ package dpkg
 
 import (
 	"bytes"
+	"compress/bzip2"
 	"compress/gzip"
 	"crypto/md5"
 	"encoding/gob"
@@ -24,33 +25,37 @@ func WriteToFile(content []byte, target string, mode os.FileMode) error {
 	return ioutil.WriteFile(target, content, mode)
 }
 
-func IsGzip(fpath string) bool {
-	return strings.HasSuffix(strings.ToLower(fpath), ".gz")
-}
-
 type readCloserWrap struct {
-	*gzip.Reader
-	a io.ReadWriteCloser
+	io.Reader
+	cs []io.Closer
 }
 
 func (w readCloserWrap) Close() error {
-	w.a.Close()
-	return w.Reader.Close()
+	for _, c := range w.cs {
+		c.Close()
+	}
+	return nil
 }
 
-func ReadFile(fpath string, unzip bool) (io.ReadCloser, error) {
+func ReadFile(fpath string) (io.ReadCloser, error) {
 	f, err := os.Open(fpath)
 	if err != nil {
 		return nil, err
 	}
-	if !unzip {
-		return f, err
+
+	switch strings.ToLower(path.Ext(fpath)) {
+	case ".gz":
+		gr, err := gzip.NewReader(f)
+		if err != nil {
+			return nil, FormatError{"LoadControlFileGroup", fpath, err}
+		}
+		return readCloserWrap{gr, []io.Closer{gr, f}}, nil
+	case "bz2":
+		gr := bzip2.NewReader(f)
+		return readCloserWrap{gr, []io.Closer{f}}, nil
+	default:
+		return f, nil
 	}
-	gr, err := gzip.NewReader(f)
-	if err != nil {
-		return nil, FormatError{"LoadControlFileGroup", fpath, err}
-	}
-	return readCloserWrap{gr, f}, nil
 }
 
 func DownloadTo(url string, w io.Writer) error {
