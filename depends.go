@@ -2,8 +2,43 @@ package dpkg
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
+
+var __together_cache__ = make(map[string]bool)
+
+func (a Archive) CanTogether(pkgNames []string) bool {
+	sort.Strings(pkgNames)
+	key := strings.Join(pkgNames, ",")
+	if v, ok := __together_cache__[key]; ok {
+		return v
+	}
+
+	for _, pkgname := range pkgNames {
+		bp, err := a.FindBinary(pkgname)
+		if err != nil {
+			DebugPrintf("Invalid binary package %v: %v\n", pkgname, err)
+			continue
+		}
+		for _, bc := range bp.deprecatedConflict() {
+			for _, cc := range pkgNames {
+				if cc == bc {
+					__together_cache__[key] = false
+					return false
+				}
+			}
+		}
+	}
+	__together_cache__[key] = true
+	return true
+
+	// return DryInstall(pkgNames...) == nil
+}
+
+func (a Archive) DryInstall(pkgs ...string) error {
+	panic("Not Implement")
+}
 
 func (a Archive) CheckDep(info *DepInfo) error {
 	return a.checkDep(info.Filter(a.Architecture, ""))

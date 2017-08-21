@@ -97,6 +97,15 @@ func (d ControlFile) GetMultiline(key string) []string {
 	return getMultiline(d.Get(key))
 }
 
+func last(s []string) string {
+	switch n := len(s); n {
+	case 0:
+		return ""
+	default:
+		return s[n-1]
+	}
+}
+
 func getArrayString(s string, sep string) []string {
 	var r []string
 	for _, c := range strings.Split(s, sep) {

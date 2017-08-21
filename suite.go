@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"path"
+	"reflect"
 )
 
 type Suite struct {
 	Archives map[string]Archive
+	Contents map[string]map[string][]string
 
 	Suite string
 	Host  string
@@ -20,6 +22,7 @@ type Suite struct {
 func NewSuite(url string, suite string, dataDir string, hash string, archs ...string) (*Suite, error) {
 	s := &Suite{
 		Archives:   make(map[string]Archive),
+		Contents:   make(map[string]map[string][]string),
 		limitArchs: archs,
 		Host:       url,
 		Suite:      suite,
@@ -115,44 +118,68 @@ func (s *Suite) build() error {
 
 	contents := make(map[string][]string)
 	fs := make(map[string][]string)
-	hashs := make(map[string][]string)
+	ahashs := make(map[string][]string)
+	chashs := make(map[string][]string)
 	for _, f := range rf.FileInfos() {
 		switch f.Type {
 		case tCONTROLFILES:
 			fs[f.Architecture] = append(fs[f.Architecture], s.rootDir(f.Path))
+			ahashs[f.Architecture] = append(ahashs[f.Architecture], f.MD5)
 		case tCONTENTS:
 			contents[f.Architecture] = append(contents[f.Architecture], s.rootDir(f.Path))
+			chashs[f.Architecture] = append(chashs[f.Architecture], f.MD5)
 		default:
 			DebugPrintf("Unknown component type %q for %v\n", f.Type, f.Path)
 		}
-		hashs[f.Architecture] = append(hashs[f.Architecture], f.MD5)
+
 	}
 
 	for arch, srcs := range fs {
 		cache, err := loadOrBuildArchive(
 			arch,
-			path.Join(s.dataDir, "db", HashArrayString(hashs[arch])),
+			path.Join(s.dataDir, "db", HashArrayString(ahashs[arch])),
 			srcs...)
 		if err != nil {
 			return err
 		}
 		s.Archives[arch] = cache
 	}
+
+	for arch, files := range contents {
+		cache, err := loadOrBuildContent(
+			arch,
+			path.Join(s.dataDir, "db", HashArrayString(chashs[arch])),
+			files...)
+		if err != nil {
+			return err
+		}
+		s.Contents[arch] = cache
+	}
 	return err
 }
 
-func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive, error) {
-	cache := NewArchive(arch)
-	if err := EnsureDirectory(path.Dir(cacheFile)); err != nil {
-		return cache, err
-	}
-	err := loadGOB(cacheFile, &cache)
-	if err == nil {
-		return cache, nil
-	}
+type BuildFunc func(files ...string) (interface{}, error)
 
+func loadOrBuild(ret interface{}, buildFn BuildFunc, arch string, cacheFile string, files ...string) (interface{}, error) {
+	err := EnsureDirectory(path.Dir(cacheFile))
+	if err != nil {
+		return nil, err
+	}
+	err = loadGOB(cacheFile, ret)
+	if err == nil {
+		return reflect.Indirect(reflect.ValueOf(ret)).Interface(), nil
+	}
 	DebugPrintf("Build %q from %v\n", cacheFile, files)
 
+	cache, err := buildFn(files...)
+	if err != nil {
+		return nil, err
+	}
+	return cache, storeGOB(cacheFile, cache)
+}
+
+func buildArchive(files ...string) (interface{}, error) {
+	cache := NewArchive("")
 	for _, fpath := range files {
 		cfs, err := LoadPackages(fpath)
 		if err != nil {
@@ -166,7 +193,21 @@ func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive
 			}
 		}
 	}
-	return cache, storeGOB(cacheFile, cache)
+	return cache, nil
+}
+
+func loadOrBuildArchive(arch string, cacheFile string, files ...string) (Archive, error) {
+	cache := NewArchive(arch)
+	v, err := loadOrBuild(&cache, buildArchive, arch, cacheFile, files...)
+	if err != nil {
+		return cache, err
+	}
+	ret, ok := v.(Archive)
+	ret.Architecture = arch
+	if !ok {
+		panic(fmt.Sprintf("Internal error %T", v))
+	}
+	return ret, nil
 }
 
 // DownloadRepository download files from rf.FileInfos()

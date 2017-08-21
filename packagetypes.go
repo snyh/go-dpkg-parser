@@ -23,6 +23,7 @@ type BinaryPackage struct {
 	Maintainer    string        `json:"maintainer"`
 	Priority      string        `json:"priority"`
 
+	conflicts  string
 	depends    string
 	preDepends string
 }
@@ -146,6 +147,7 @@ func (cf ControlFile) ToBinary() (BinaryPackage, error) {
 	t.Maintainer = cf.Get("maintainer")
 	t.Priority = cf.Get("priority")
 
+	t.conflicts = cf.Get("conflicts")
 	t.depends = cf.Get("depends")
 	t.preDepends = cf.Get("pre-depends")
 	return t, t.valid()
@@ -257,6 +259,14 @@ func (cf SourcePackage) BuildDepends(arch string, profile string) (*DepInfo, err
 		return info, err
 	}
 	return info.Filter(arch, profile), err
+}
+
+func (cf BinaryPackage) deprecatedConflict() []string {
+	info, _ := ParseDepInfo(cf.conflicts)
+	if info == nil {
+		return nil
+	}
+	return info.SimpleDeps()
 }
 
 func (cf BinaryPackage) Depends(arch string, profile string) (*DepInfo, error) {

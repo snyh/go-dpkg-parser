@@ -45,14 +45,14 @@ func ReadFile(fpath string) (io.ReadCloser, error) {
 
 	switch strings.ToLower(path.Ext(fpath)) {
 	case ".gz":
-		gr, err := gzip.NewReader(f)
+		r, err := gzip.NewReader(f)
 		if err != nil {
 			return nil, FormatError{"LoadControlFileGroup", fpath, err}
 		}
-		return readCloserWrap{gr, []io.Closer{gr, f}}, nil
-	case "bz2":
-		gr := bzip2.NewReader(f)
-		return readCloserWrap{gr, []io.Closer{f}}, nil
+		return readCloserWrap{r, []io.Closer{r, f}}, nil
+	case ".bz2":
+		r := bzip2.NewReader(f)
+		return readCloserWrap{r, []io.Closer{f}}, nil
 	default:
 		return f, nil
 	}

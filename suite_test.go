@@ -9,6 +9,10 @@ import (
 
 var network = flag.Bool("network", false, "download test data from network")
 
+func TestSplitContent(t *testing.T) {
+	Assert(t, parsePkgNameInContent("science/starpu-examples"), "starpu-examples")
+}
+
 func TestDumpRepository(t *testing.T) {
 	repoURL := "http://packages.deepin.com/deepin"
 	rootDir := "/tmp/dump_repository"
