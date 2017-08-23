@@ -11,9 +11,10 @@ type Suite struct {
 	Archives map[string]Archive
 	Contents map[string]map[string][]string
 
-	Suite string
-	Host  string
-	Hash  string
+	Suite     string
+	Host      string
+	Hash      string
+	Timestamp string
 
 	dataDir    string
 	limitArchs []string
@@ -65,6 +66,7 @@ func (s *Suite) downloadReleaseFile() (ReleaseFile, error) {
 
 	// Update Suite Hash
 	s.Hash = rf.Hash
+	s.Timestamp = rf.Date.UTC().String()
 
 	rPath := s.rootDir(ReleaseFileName)
 

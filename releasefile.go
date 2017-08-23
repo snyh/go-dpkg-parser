@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -25,7 +26,7 @@ type PackagesFileInfo struct {
 }
 
 type ReleaseFile struct {
-	Date          string
+	Date          time.Time
 	Suite         string
 	Description   string
 	Components    []string
@@ -60,6 +61,16 @@ func LoadReleaseFile(path string) (ReleaseFile, error) {
 	return cf.ToReleaseFile()
 }
 
+func parseSuiteDate(str string) (time.Time, error) {
+	for _, layout := range []string{time.RFC1123, time.RFC3339} {
+		v, err := time.Parse(layout, str)
+		if err == nil {
+			return v, nil
+		}
+	}
+	return time.Time{}, fmt.Errorf("unknown the layout of date string: %q", str)
+}
+
 // ToReleaseFile build a new ReleaseFile by reading contents from r
 func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	rf := ReleaseFile{}
@@ -67,15 +78,17 @@ func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
 	for _, arch := range cf.GetArray("architectures", " ") {
 		rf.Architectures = append(rf.Architectures, arch)
 	}
-	rf.Date = cf.Get("date")
-
-	rf.Date = cf.Get("date")
 	rf.Suite = cf.Get("suite")
 	if rf.Suite == "" {
 		rf.Suite = cf.Get("codename")
 	}
 	rf.Description = cf.Get("description")
-	rf.Date = cf.Get("date")
+	var err error
+	rf.Date, err = parseSuiteDate(cf.Get("date"))
+	if err != nil {
+		DebugPrintf("Unknown release date: %s\n", err)
+	}
+
 	rf.Components = cf.GetArray("components", " ")
 	rf.Hash = HashBytes([]byte(cf.Raw))
 
