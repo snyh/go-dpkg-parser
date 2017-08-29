@@ -9,11 +9,13 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"os"
 	"path"
 	"sort"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -56,6 +58,19 @@ func ReadFile(fpath string) (io.ReadCloser, error) {
 	default:
 		return f, nil
 	}
+}
+
+var httpClient = http.Client{
+	Transport: &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		Dial: func(_ string, addr string) (net.Conn, error) {
+			return net.Dial("tcp4", addr)
+		},
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	},
 }
 
 func DownloadTo(url string, w io.Writer) error {

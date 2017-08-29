@@ -26,10 +26,14 @@ func TestBuildCache(t *testing.T) {
 	targetDir := "testdata"
 	suite := "unstable"
 
-	m, err := NewSuite("http://packages.deepin.com/deepin/", suite, targetDir, "")
+	m := NewRepository(targetDir, nil)
+	err := m.AddSuite("http://packages.deepin.com/deepin/", suite, "")
 	Assert(t, err, nil)
 
-	p, err := m.Archives["amd64"].FindBinary("lastore-daemon")
+	archive, err := m.Archive("amd64")
+	Assert(t, err, nil)
+
+	p, err := archive.FindBinary("lastore-daemon")
 	Assert(t, err, nil)
 
 	Assert(t, p.Homepage, "http://github.com/linuxdeepin/lastore-daemon")

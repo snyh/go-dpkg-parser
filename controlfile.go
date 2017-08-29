@@ -13,6 +13,15 @@ type ControlFile struct {
 	Raw   string
 }
 
+func LoadPackages(fPath string) ([]ControlFile, error) {
+	f, err := ReadFile(fPath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return NewControlFiles(f, ScanBufferSize)
+}
+
 func NewControlFiles(r io.Reader, bufSize int) ([]ControlFile, error) {
 	s := bufio.NewScanner(r)
 	s.Buffer(nil, ScanBufferSize)

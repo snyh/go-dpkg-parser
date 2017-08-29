@@ -12,9 +12,18 @@ import (
 )
 
 const (
-	tCONTENTS     = "contents"
-	tCONTROLFILES = "controlfiles"
+	tCONTENTS = iota
+	tCONTROLFILES
 )
+
+type IndicesFile struct {
+	Path         string
+	Url          string
+	CachePath    string
+	Architecture string
+	Type         string
+	Hash         string
+}
 
 type PackagesFileInfo struct {
 	Size         uint64
@@ -22,7 +31,7 @@ type PackagesFileInfo struct {
 	MD5          string
 	Architecture string
 
-	Type string
+	Type int
 }
 
 type ReleaseFile struct {
@@ -31,11 +40,15 @@ type ReleaseFile struct {
 	Description   string
 	Components    []string
 	Architectures Architectures
-	fileInfos     []PackagesFileInfo
-	Hash          string
+
+	fileInfos []PackagesFileInfo
+
+	Hash string
+
+	Host string
 }
 
-func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
+func NewReleaseFile(host string, r io.Reader) (ReleaseFile, error) {
 	bs, err := ioutil.ReadAll(r)
 	if err != nil {
 		return ReleaseFile{}, err
@@ -44,11 +57,11 @@ func NewReleaseFile(r io.Reader) (ReleaseFile, error) {
 	if err != nil {
 		return ReleaseFile{}, err
 	}
-	return cf.ToReleaseFile()
+	return cf.ToReleaseFile(host)
 }
 
 // GetReleaseFile load ReleaseFile from dataDir with suite
-func LoadReleaseFile(path string) (ReleaseFile, error) {
+func LoadReleaseFile(host string, path string) (ReleaseFile, error) {
 	bs, err := ioutil.ReadFile(path)
 	if err != nil {
 		return ReleaseFile{}, fmt.Errorf("GetReleaseFile open file error: %v", err)
@@ -58,7 +71,7 @@ func LoadReleaseFile(path string) (ReleaseFile, error) {
 	if err != nil {
 		return ReleaseFile{}, err
 	}
-	return cf.ToReleaseFile()
+	return cf.ToReleaseFile(host)
 }
 
 func parseSuiteDate(str string) (time.Time, error) {
@@ -72,8 +85,10 @@ func parseSuiteDate(str string) (time.Time, error) {
 }
 
 // ToReleaseFile build a new ReleaseFile by reading contents from r
-func (cf ControlFile) ToReleaseFile() (ReleaseFile, error) {
-	rf := ReleaseFile{}
+func (cf ControlFile) ToReleaseFile(host string) (ReleaseFile, error) {
+	rf := ReleaseFile{
+		Host: host,
+	}
 
 	for _, arch := range cf.GetArray("architectures", " ") {
 		rf.Architectures = append(rf.Architectures, arch)
@@ -123,7 +138,7 @@ func (rf ReleaseFile) valid() error {
 		return fmt.Errorf("NewReleaseFile input data is invalid. Without any components")
 	}
 
-	if len(rf.FileInfos()) == 0 {
+	if len(rf.fileInfos) == 0 {
 		return fmt.Errorf("NewReleaseFile input data is invalid. Without any valid fileinfos")
 	}
 	return nil
@@ -157,7 +172,24 @@ func (rf ReleaseFile) findComponent(raw string) (PackagesFileInfo, bool) {
 	}
 	return fallback, found
 }
-func (rf ReleaseFile) FileInfos() []PackagesFileInfo {
+
+func (rf ReleaseFile) IndicesFiles(arch string, t int) []IndicesFile {
+	var ret []IndicesFile
+	for _, f := range rf.FileInfos1() {
+		if f.Type == t && f.Architecture == arch {
+			ret = append(ret, IndicesFile{
+				Path:         f.Path,
+				Url:          rf.Host + "/dists/" + rf.Suite + "/" + f.Path,
+				CachePath:    path.Join(rf.Hash, f.Path),
+				Hash:         f.MD5,
+				Architecture: f.Architecture,
+			})
+		}
+	}
+	return ret
+}
+
+func (rf ReleaseFile) FileInfos1() []PackagesFileInfo {
 	var set = make(map[string]PackagesFileInfo)
 	for _, component := range rf.Components {
 		for _, arch := range rf.Architectures {

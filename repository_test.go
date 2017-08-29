@@ -2,7 +2,6 @@ package dpkg
 
 import (
 	"flag"
-	"path"
 	"strings"
 	"testing"
 )
@@ -18,13 +17,11 @@ func TestDumpRepository(t *testing.T) {
 	rootDir := "/tmp/dump_repository"
 	suite := "unstable"
 
-	cf, err := DownloadReleaseFile(repoURL, suite)
+	rf, err := DownloadReleaseFile(repoURL, suite)
 	Assert(t, err, nil)
 
-	rf, err := cf.ToReleaseFile()
-	Assert(t, err, nil)
-
-	err = DownloadRepository(repoURL, rf, path.Join(rootDir, rf.Hash))
+	indices := rf.IndicesFiles("amd64", tCONTROLFILES)
+	_, err = BuildIndices(rootDir, BuildArchive, indices)
 	Assert(t, err, nil)
 }
 
@@ -36,7 +33,7 @@ func TestHash(t *testing.T) {
 func TestRelease(t *testing.T) {
 	cf, err := NewControlFile(testRelease)
 
-	rf, err := cf.ToReleaseFile()
+	rf, err := cf.ToReleaseFile("")
 	Assert(t, err, nil)
 
 	Assert(t, rf.Suite, "experimental")
@@ -46,7 +43,7 @@ func TestRelease(t *testing.T) {
 	Assert(t, strings.Join(rf.Components, ""), "non-free")
 
 	Assert(t, len(rf.fileInfos), 31)
-	Assert(t, len(rf.FileInfos()), 2)
+	Assert(t, len(rf.FileInfos1()), 2)
 	pf := rf.fileInfos[2]
 	Assert(t, pf.Size, uint64(0x8f))
 	Assert(t, pf.MD5, "f23e539f4e40f8491b5b5512d1e7aaa9")

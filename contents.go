@@ -2,7 +2,6 @@ package dpkg
 
 import (
 	"bufio"
-	"fmt"
 	"strings"
 )
 
@@ -46,26 +45,4 @@ func parseContentIndices(f string) map[string][]string {
 		ret[pkgname] = append(ret[pkgname], fpath)
 	}
 	return ret
-}
-
-func buildContent(files ...string) (interface{}, error) {
-	ret := make(map[string][]string)
-	for _, f := range files {
-		for name, ps := range parseContentIndices(f) {
-			ret[name] = ps
-		}
-	}
-	return ret, nil
-}
-func loadOrBuildContent(arch string, cacheFile string, files ...string) (map[string][]string, error) {
-	cache := make(map[string][]string)
-	v, err := loadOrBuild(&cache, buildContent, arch, cacheFile, files...)
-	if err != nil {
-		return nil, err
-	}
-	ret, ok := v.(map[string][]string)
-	if !ok {
-		panic(fmt.Sprintf("Internal error %T", v))
-	}
-	return ret, nil
 }
