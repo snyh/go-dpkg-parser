@@ -12,18 +12,18 @@ func TestSplitContent(t *testing.T) {
 	Assert(t, parsePkgNameInContent("science/starpu-examples"), "starpu-examples")
 }
 
-func TestDumpRepository(t *testing.T) {
-	repoURL := "http://packages.deepin.com/deepin"
-	rootDir := "/tmp/dump_repository"
-	suite := "unstable"
+// func TestDumpRepository(t *testing.T) {
+// 	repoURL := "http://packages.deepin.com/deepin"
+// 	rootDir := "/tmp/dump_repository"
+// 	suite := "unstable"
 
-	rf, err := DownloadReleaseFile(repoURL, suite)
-	Assert(t, err, nil)
+// 	rf, err := DownloadReleaseFile(repoURL, suite)
+// 	Assert(t, err, nil)
 
-	indices := rf.IndicesFiles("amd64", tCONTROLFILES)
-	_, err = BuildIndices(rootDir, BuildArchive, indices)
-	Assert(t, err, nil)
-}
+// 	indices := rf.IndicesFiles("amd64", tCONTROLFILES)
+// 	_, err = BuildIndices(rootDir, BuildArchive, indices)
+// 	Assert(t, err, nil)
+// }
 
 func TestHash(t *testing.T) {
 	v := HashBytes([]byte("hello"))

@@ -22,21 +22,28 @@ func TestParseLine(t *testing.T) {
 	Assert(t, fs[0], "haskell-mbox")
 }
 
-func TestBuildCache(t *testing.T) {
+func ExampleNewRepository() {
 	targetDir := "testdata"
 	suite := "unstable"
 
 	m := NewRepository(targetDir)
 	err := m.AddSuite("http://packages.deepin.com/deepin/", suite, "")
-	Assert(t, err, nil)
+	if err != nil {
+		panic(err)
+	}
 
 	archive, err := m.Archive("amd64")
-	Assert(t, err, nil)
+	if err != nil {
+		panic(err)
+	}
 
 	p, err := archive.FindBinary("lastore-daemon")
-	Assert(t, err, nil)
+	if err != nil {
+		panic(err)
+	}
 
-	Assert(t, p.Homepage, "http://github.com/linuxdeepin/lastore-daemon")
+	fmt.Println(p.Homepage)
+	// Output: http://github.com/linuxdeepin/lastore-daemon
 }
 
 func TestLarageControlFile(t *testing.T) {
