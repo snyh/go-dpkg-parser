@@ -26,7 +26,7 @@ func TestBuildCache(t *testing.T) {
 	targetDir := "testdata"
 	suite := "unstable"
 
-	m := NewRepository(targetDir, nil)
+	m := NewRepository(targetDir)
 	err := m.AddSuite("http://packages.deepin.com/deepin/", suite, "")
 	Assert(t, err, nil)
 
