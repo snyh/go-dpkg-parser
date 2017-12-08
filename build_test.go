@@ -23,26 +23,35 @@ func TestParseLine(t *testing.T) {
 }
 
 func ExampleNewRepository() {
+	// Enable _Debug_ will output download progress to stderr
+	// Debug = true
+
 	targetDir := "testdata"
 	suite := "unstable"
 
-	m := NewRepository(targetDir)
+	var m *Repository = NewRepository(targetDir)
+
+	// This will automatically download and only download the release file.
 	err := m.AddSuite("http://packages.deepin.com/deepin/", suite, "")
 	if err != nil {
 		panic(err)
 	}
 
-	archive, err := m.Archive("amd64")
+	// This will download Packages.gz files by need.
+	// It will automatically handle cache data which specified by targetDir
+	var ar Archive
+	ar, err = m.Archive("amd64")
 	if err != nil {
 		panic(err)
 	}
 
-	p, err := archive.FindBinary("lastore-daemon")
+	var bp BinaryPackage
+	bp, err = ar.FindBinary("lastore-daemon")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(p.Homepage)
+	fmt.Println(bp.Homepage)
 	// Output: http://github.com/linuxdeepin/lastore-daemon
 }
 
